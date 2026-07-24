@@ -1,149 +1,145 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface HeroSectionProps {
-  onAddToCart: (title: string) => void;
-}
-
-const ACCESSORIES_SLIDES = [
+const SLIDES = [
   {
-    title: 'BROWSE ACCESSORIES',
-    year: '2026',
-    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80'
+    leftImage: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
+    rightImage: 'https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?auto=format&fit=crop&w=600&q=80',
+    discount: '10% OFF',
+    subText: 'ON YOUR FIRST ORDER',
+    accentColor: '#ca8a04',
+    bgColor: '#fef9c3' // Soft mustard/beige theme
   },
   {
-    title: 'FOOTWEAR & BAGS',
-    year: '2026',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80'
+    leftImage: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80',
+    rightImage: 'https://images.unsplash.com/photo-1551803091-e20673f15770?auto=format&fit=crop&w=600&q=80',
+    discount: '15% OFF',
+    subText: 'SUMMER PRIVILEGE',
+    accentColor: '#dc2626',
+    bgColor: '#fee2e2' // Soft red/pink theme
   },
   {
-    title: 'TECHNICAL OUTERWEAR',
-    year: '2026',
-    image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80'
+    leftImage: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80',
+    rightImage: 'https://images.unsplash.com/photo-1605763240000-7e93b172d754?auto=format&fit=crop&w=600&q=80',
+    discount: 'NEW SEASON',
+    subText: 'ATELIER CAPSULE 2026',
+    accentColor: '#1d4ed8',
+    bgColor: '#eff6ff' // Soft slate blue theme
+  },
+  {
+    leftImage: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80',
+    rightImage: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=600&q=80',
+    discount: '20% OFF',
+    subText: 'ARCHIVE CLASSICS EVENT',
+    accentColor: '#15803d',
+    bgColor: '#f0fdf4' // Soft olive green theme
   }
 ];
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onAddToCart }) => {
-  const [slideIndex, setSlideIndex] = useState<number>(0);
-  const activeSlide = ACCESSORIES_SLIDES[slideIndex];
+export const HeroSection: React.FC = () => {
+  const [index, setIndex] = useState(0);
 
-  const handleNextSlide = () => {
-    setSlideIndex((prev) => (prev + 1) % ACCESSORIES_SLIDES.length);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handlePrev = () => {
+    setIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
   };
 
-  const handlePrevSlide = () => {
-    setSlideIndex((prev) => (prev - 1 + ACCESSORIES_SLIDES.length) % ACCESSORIES_SLIDES.length);
+  const handleNext = () => {
+    setIndex((prev) => (prev + 1) % SLIDES.length);
   };
+
+  const active = SLIDES[index];
 
   return (
-    <div className="space-y-6 my-4">
-      {/* Main Top Large Hero Banner */}
-      <section className="relative rounded-3xl bg-[#e0f2fe] border border-sky-200/60 overflow-hidden grid grid-cols-1 lg:grid-cols-12 items-center min-h-[440px]">
-        {/* Left Side Image */}
-        <div className="lg:col-span-6 h-full flex items-center justify-center p-6 lg:p-0">
-          <img
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=80"
-            alt="Elevate your everyday looks"
-            className="w-full h-full max-h-[460px] object-cover object-top rounded-2xl lg:rounded-none"
+    <section 
+      className="relative w-full rounded-2xl overflow-hidden border border-luxury-gold-light/20 shadow-xs min-h-[320px] md:min-h-[400px] flex items-center transition-colors duration-500"
+      style={{ backgroundColor: active.bgColor }}
+    >
+      
+      {/* Slide Container */}
+      <div className="w-full grid grid-cols-12 items-center">
+        
+        {/* Left Model */}
+        <div className="col-span-4 h-[320px] md:h-[400px] overflow-hidden relative">
+          <img 
+            src={active.leftImage} 
+            alt="New Arrivals Left" 
+            className="w-full h-full object-cover object-top animate-fade-in"
+          />
+          {/* Gradient fading into the center */}
+          <div 
+            className="absolute inset-y-0 right-0 w-28 transition-all duration-500 pointer-events-none"
+            style={{ backgroundImage: `linear-gradient(to right, transparent, ${active.bgColor})` }}
           />
         </div>
 
-        {/* Right Side Content */}
-        <div className="lg:col-span-6 p-8 sm:p-12 lg:p-14 flex flex-col items-start gap-5">
-          <span className="bg-white/80 text-[#0369a1] border border-sky-200 text-[11px] font-bold px-4 py-1.5 rounded-full shadow-xs">
-            Fashion made simple
-          </span>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-            <span className="text-[#0284c7]">El</span>evate your <br />
-            every<span className="text-[#0284c7]">day</span> looks
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md">
-            AuraFashion brings you a wide range of trendy and stylish clothing at affordable prices.
+        {/* Center Banner Offer */}
+        <div className="col-span-4 flex flex-col items-center justify-center text-center p-4 md:p-8 space-y-3 z-10">
+          <span className="text-[10px] md:text-xs font-black tracking-widest text-slate-400">FLAT</span>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none text-luxury-charcoal" style={{ color: active.accentColor }}>
+            {active.discount}
+          </h2>
+          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-slate-500 max-w-[150px] md:max-w-none">
+            {active.subText}
           </p>
-
-          <button
-            onClick={() => onAddToCart('Elevate Everyday Outfit')}
-            className="bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold px-8 py-3.5 rounded-full shadow-md shadow-sky-600/20 transition-all text-xs uppercase tracking-wider cursor-pointer transform hover:-translate-y-0.5 mt-2"
+          <a 
+            href="#products" 
+            className="inline-block mt-4 px-6 py-2 border-2 border-luxury-charcoal hover:bg-luxury-charcoal hover:text-white text-luxury-charcoal text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-md transition-all"
           >
-            Shop now
-          </button>
-        </div>
-      </section>
-
-      {/* Bottom Two Feature Banners Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Feature Card - 50% OFF */}
-        <div className="lg:col-span-6 rounded-3xl bg-white border border-sky-200/80 p-6 sm:p-8 grid grid-cols-12 items-center gap-4 min-h-[220px] shadow-xs">
-          <div className="col-span-5 h-full flex items-center justify-center">
-            <img
-              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80"
-              alt="50% off model"
-              className="w-full h-48 object-cover rounded-2xl shadow-xs"
-            />
-          </div>
-
-          <div className="col-span-7 flex flex-col items-start gap-2.5">
-            <h2 className="text-4xl sm:text-5xl font-black text-[#0284c7] tracking-tight">
-              50% <span className="text-2xl sm:text-3xl text-slate-900 font-bold">off</span>
-            </h2>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              AuraFashion brings you a wide range of trendy and stylish clothing at affordable prices.
-            </p>
-            <button
-              onClick={() => onAddToCart('50% Off Special Collection')}
-              className="mt-1 border border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 font-bold px-5 py-2 rounded-full text-xs transition-all cursor-pointer"
-            >
-              Shop now
-            </button>
-          </div>
+            SHOP NOW
+          </a>
         </div>
 
-        {/* Right Feature Card - Browse Accessories Slider */}
-        <div className="lg:col-span-6 rounded-3xl bg-[#bae6fd] p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden min-h-[220px]">
-          {/* Top Bar inside Banner */}
-          <div className="flex items-center justify-between z-10">
-            <span className="text-xs font-bold text-[#0369a1]">
-              New arrival &bull; {activeSlide.year}
-            </span>
-
-            {/* Slider Arrow Controls */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={handlePrevSlide}
-                className="w-7 h-7 bg-white hover:bg-slate-100 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer shadow-xs"
-                title="Previous"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              <button
-                onClick={handleNextSlide}
-                className="w-7 h-7 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-full flex items-center justify-center transition-colors cursor-pointer shadow-xs"
-                title="Next"
-              >
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
-
-          {/* Bottom Title & Right Side Image */}
-          <div className="grid grid-cols-12 gap-4 items-end mt-4 z-10">
-            <div className="col-span-7">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase leading-tight">
-                {activeSlide.title}
-              </h2>
-            </div>
-            <div className="col-span-5 flex justify-end">
-              <img
-                src={activeSlide.image}
-                alt={activeSlide.title}
-                className="w-full h-36 object-cover rounded-2xl shadow-xs"
-              />
-            </div>
-          </div>
+        {/* Right Model */}
+        <div className="col-span-4 h-[320px] md:h-[400px] overflow-hidden relative">
+          <img 
+            src={active.rightImage} 
+            alt="New Arrivals Right" 
+            className="w-full h-full object-cover object-top animate-fade-in"
+          />
+          {/* Gradient fading into the center */}
+          <div 
+            className="absolute inset-y-0 left-0 w-28 transition-all duration-500 pointer-events-none"
+            style={{ backgroundImage: `linear-gradient(to left, transparent, ${active.bgColor})` }}
+          />
         </div>
+
       </div>
-    </div>
+
+      {/* Nav Controls */}
+      <button 
+        onClick={handlePrev}
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/70 hover:bg-white text-slate-700 flex items-center justify-center border border-luxury-gold-light/20 shadow-xs cursor-pointer z-10"
+        title="Previous banner"
+      >
+        <ChevronLeft size={16} />
+      </button>
+
+      <button 
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/70 hover:bg-white text-slate-700 flex items-center justify-center border border-luxury-gold-light/20 shadow-xs cursor-pointer z-10"
+        title="Next banner"
+      >
+        <ChevronRight size={16} />
+      </button>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+        {SLIDES.map((_, idx) => (
+          <button 
+            key={idx}
+            onClick={() => setIndex(idx)}
+            className={`w-2 h-2 rounded-full transition-all ${index === idx ? 'bg-luxury-gold w-4' : 'bg-slate-300'}`}
+          />
+        ))}
+      </div>
+
+    </section>
   );
 };

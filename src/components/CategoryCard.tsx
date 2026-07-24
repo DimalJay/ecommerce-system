@@ -17,22 +17,22 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onSelectCa
   return (
     <div
       onClick={() => onSelectCategory(category.id)}
-      className="bg-white border border-sky-100/90 rounded-2xl p-4 cursor-pointer shadow-xs hover:shadow-lg hover:border-sky-300 hover:-translate-y-1 transition-all duration-300 group"
+      className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 cursor-pointer shadow-3xs hover:shadow-md hover:border-luxury-gold-light/60 hover:-translate-y-1 transition-all duration-500 group"
     >
-      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-3 bg-sky-50/50">
+      <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-3 bg-luxury-sand">
         <img
           src={category.image}
           alt={category.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-700"
         />
-        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-sky-100">
-          <span className="text-[10px] font-bold text-[#0284c7] uppercase tracking-wider">{category.count}</span>
+        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full border border-luxury-gold-light/20">
+          <span className="text-[9px] font-black text-luxury-gold uppercase tracking-wider">{category.count}</span>
         </div>
       </div>
 
-      <div>
-        <h3 className="text-sm font-black text-slate-900 leading-snug">{category.name}</h3>
-        <p className="text-xs text-slate-500 font-medium mt-0.5">{category.subtitle}</p>
+      <div className="px-1">
+        <h3 className="text-xs sm:text-sm font-black text-luxury-charcoal leading-snug group-hover:text-luxury-gold transition-colors">{category.name}</h3>
+        <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{category.subtitle}</p>
       </div>
     </div>
   );
