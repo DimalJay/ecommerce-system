@@ -1,10 +1,12 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } from "axios";
 
 export class HTTPError extends Error {
-  constructor(public response?: AxiosResponse) {
+  response?: AxiosResponse;
+  constructor(response?: AxiosResponse) {
     super(
       response?.data?.message ?? `Failed to Fetch. Status: ${response?.status}`,
     );
+    this.response = response;
   }
 }
 
@@ -16,7 +18,7 @@ export const backend = axios.create({
 });
 
 backend.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     if (response.data?.error) {
       throw new Error(response.data.error);
     }
