@@ -55,7 +55,12 @@ const mockItems: AdminItem[] = [
   }
 ];
 
-export const ItemTable: React.FC = () => {
+interface ItemTableProps {
+  onEdit: (item: AdminItem) => void;
+  onDelete: (item: AdminItem) => void;
+}
+
+export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
   return (
     <div className="w-full bg-white rounded-3xl shadow-sm border border-[#f5f0e6] overflow-hidden">
       <div className="overflow-x-auto">
@@ -109,12 +114,14 @@ export const ItemTable: React.FC = () => {
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <button 
+                      onClick={() => onEdit(item)}
                       className="p-2 text-slate-400 hover:text-[#c5a880] hover:bg-[#f5f0e6] rounded-lg transition-colors"
                       title="Edit Item"
                     >
                       <Edit2 size={18} />
                     </button>
                     <button 
+                      onClick={() => onDelete(item)}
                       className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
                       title="Delete Item"
                     >
