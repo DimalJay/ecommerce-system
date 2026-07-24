@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Search, Filter } from 'lucide-react';
 import { Navbar, Footer } from '../components';
+import { ItemTable } from '../components/admin/ItemTable';
 
 export const ItemManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,10 +50,8 @@ export const ItemManagement: React.FC = () => {
           </button>
         </div>
 
-        {/* Table Area (Placeholder for ItemTable component) */}
-        <div className="bg-white rounded-3xl shadow-sm border border-[#f5f0e6] overflow-hidden min-h-[400px] flex items-center justify-center">
-           <p className="text-slate-400">Item Table will be rendered here...</p>
-        </div>
+        {/* Table Area */}
+        <ItemTable />
 
       </main>
 
