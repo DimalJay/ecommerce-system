@@ -5,9 +5,9 @@ import {
   Heart,
   User,
   Sparkles,
-  ShoppingBag,
   Menu
 } from 'lucide-react';
+import webLogo from '../assets/Web Logo.png';
 
 interface NavbarProps {
   searchQuery: string;
@@ -48,11 +48,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <a href="/" className="flex items-center gap-2.5 cursor-pointer group">
-              <div className="w-9 h-9 bg-luxury-charcoal text-luxury-gold rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                <ShoppingBag size={18} />
+              {/* OLD LOGO PRESERVED BELOW
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-luxury-charcoal text-luxury-gold rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                  <ShoppingBag size={18} />
+                </div>
+                <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-luxury-charcoal font-sans">
+                  Aura<span className="text-luxury-gold">Atelier</span>
+                </span>
               </div>
+              */}
+              <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-9 w-auto object-contain" />
               <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-luxury-charcoal font-sans">
-                Aura<span className="text-luxury-gold">Atelier</span>
+                Aura<span className="text-luxury-gold">Fashion</span>
               </span>
             </a>
           </div>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  ShoppingBag,
   CheckCircle2,
   Mail,
   Phone,
   Clock,
   Globe
 } from 'lucide-react';
+import webLogo from '../assets/Web Logo.png';
 
 export const Footer: React.FC = () => {
   const [emailInput, setEmailInput] = useState<string>('');
@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-950 border-t border-slate-900 pt-16 pb-12 px-6 sm:px-12 mt-20 text-slate-400">
       <div className="max-w-7xl mx-auto space-y-16">
-        
+
 
 
         {/* Main Footer Links Columns */}
@@ -31,11 +31,19 @@ export const Footer: React.FC = () => {
           {/* Column 1: Brand & Contact Touchpoints */}
           <div className="md:col-span-4 space-y-5">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-slate-900 text-luxury-gold rounded-xl flex items-center justify-center border border-slate-800">
-                <ShoppingBag size={18} />
+              {/* OLD LOGO PRESERVED BELOW
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-slate-900 text-luxury-gold rounded-xl flex items-center justify-center border border-slate-800">
+                  <ShoppingBag size={18} />
+                </div>
+                <span className="text-2xl font-black tracking-tight text-white font-serif italic">
+                  Aura<span className="text-luxury-gold font-sans not-italic">Atelier</span>
+                </span>
               </div>
-              <span className="text-2xl font-black tracking-tight text-white font-serif italic">
-                Aura<span className="text-luxury-gold font-sans not-italic">Atelier</span>
+              */}
+              <img src={webLogo} alt="Aura Fashion Logo" className="h-6 sm:h-8 w-auto object-contain" />
+              <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-sans">
+                Aura<span className="text-luxury-gold">Fashion</span>
               </span>
             </div>
 
