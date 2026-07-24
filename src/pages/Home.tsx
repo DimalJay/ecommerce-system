@@ -230,7 +230,7 @@ export const Home: React.FC = () => {
         {/* SHOP FOR WOMEN Section */}
         <section className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               SHOP FOR WOMEN
             </h2>
             <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
@@ -238,7 +238,7 @@ export const Home: React.FC = () => {
             </p>
             <button 
               onClick={() => triggerToast('Redirecting to Women Collection...')}
-              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
+              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
             >
               Shop Now
             </button>
@@ -253,10 +253,10 @@ export const Home: React.FC = () => {
                 className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-102"
               />
               <div className="absolute inset-0 bg-slate-950/20 flex flex-col justify-end p-6">
-                <span className="text-[10px] font-black tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
+                <span className="text-[10px] font-bold tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
                   Featured Looks
                 </span>
-                <h3 className="text-2xl font-black text-white leading-tight uppercase font-serif italic">
+                <h3 className="text-xl font-extrabold text-white leading-tight uppercase font-sans">
                   ESSENTIAL FEMININE SILHOUETTES
                 </h3>
               </div>
@@ -279,7 +279,7 @@ export const Home: React.FC = () => {
           <div className="flex justify-center pt-4">
             <button 
               onClick={() => triggerToast('Redirecting to full Women collection...')}
-              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-black uppercase tracking-widest rounded-md transition-all cursor-pointer"
+              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
             >
               Shop More
             </button>
@@ -289,7 +289,7 @@ export const Home: React.FC = () => {
         {/* SHOP FOR MEN Section */}
         <section className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               SHOP FOR MEN
             </h2>
             <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
@@ -297,7 +297,7 @@ export const Home: React.FC = () => {
             </p>
             <button 
               onClick={() => triggerToast('Redirecting to Men Collection...')}
-              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
+              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
             >
               Shop Now
             </button>
@@ -312,10 +312,10 @@ export const Home: React.FC = () => {
                 className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-102"
               />
               <div className="absolute inset-0 bg-slate-950/20 flex flex-col justify-end p-6">
-                <span className="text-[10px] font-black tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
+                <span className="text-[10px] font-bold tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
                   Signature Men
                 </span>
-                <h3 className="text-2xl font-black text-white leading-tight uppercase font-serif italic">
+                <h3 className="text-xl font-extrabold text-white leading-tight uppercase font-sans">
                   ELEVATED TAILORINGS & CARGOS
                 </h3>
               </div>
@@ -338,7 +338,7 @@ export const Home: React.FC = () => {
           <div className="flex justify-center pt-4">
             <button 
               onClick={() => triggerToast('Redirecting to full Men collection...')}
-              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-black uppercase tracking-widest rounded-md transition-all cursor-pointer"
+              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
             >
               Shop More
             </button>
@@ -348,7 +348,7 @@ export const Home: React.FC = () => {
         {/* SHOP FOR KIDS Section */}
         <section className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               SHOP FOR KIDS
             </h2>
             <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
@@ -356,7 +356,7 @@ export const Home: React.FC = () => {
             </p>
             <button 
               onClick={() => triggerToast('Redirecting to Kids Collection...')}
-              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
+              className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
             >
               Shop Now
             </button>
@@ -371,10 +371,10 @@ export const Home: React.FC = () => {
                 className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-102"
               />
               <div className="absolute inset-0 bg-slate-950/20 flex flex-col justify-end p-6">
-                <span className="text-[10px] font-black tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
+                <span className="text-[10px] font-bold tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
                   Junior Atelier
                 </span>
-                <h3 className="text-2xl font-black text-white leading-tight uppercase font-serif italic">
+                <h3 className="text-xl font-extrabold text-white leading-tight uppercase font-sans">
                   PLAYFUL VIBRANT ESSENTIALS
                 </h3>
               </div>
@@ -397,7 +397,7 @@ export const Home: React.FC = () => {
           <div className="flex justify-center pt-4">
             <button 
               onClick={() => triggerToast('Redirecting to full Kids collection...')}
-              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-black uppercase tracking-widest rounded-md transition-all cursor-pointer"
+              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
             >
               Shop More
             </button>
@@ -407,7 +407,7 @@ export const Home: React.FC = () => {
         {/* OUR NEW ARRIVALS Section */}
         <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               OUR NEW ARRIVALS
             </h2>
             <span className="text-xs font-bold text-luxury-gold uppercase tracking-wider">
@@ -430,7 +430,7 @@ export const Home: React.FC = () => {
           <div className="flex justify-center pt-4">
             <button 
               onClick={() => triggerToast('Redirecting to all New Arrivals...')}
-              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-black uppercase tracking-widest rounded-md transition-all cursor-pointer"
+              className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
             >
               Shop More
             </button>
@@ -440,7 +440,7 @@ export const Home: React.FC = () => {
         {/* OUR OFFERS Section */}
         <section className="space-y-6">
           <div className="border-b border-slate-200/60 pb-3">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               OUR OFFERS
             </h2>
           </div>
@@ -451,7 +451,7 @@ export const Home: React.FC = () => {
                 <Percent size={18} />
               </div>
               <div>
-                <h4 className="text-sm font-black uppercase text-slate-900 tracking-wider">Flat 10% Off First Order</h4>
+                <h4 className="text-sm font-bold uppercase text-slate-900 tracking-wider">Flat 10% Off First Order</h4>
                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">Sign up to our Atelier privileges and apply promo code <strong className="font-mono text-slate-800">AURA20</strong> at checkout.</p>
               </div>
             </div>
@@ -481,7 +481,7 @@ export const Home: React.FC = () => {
         {/* EXPERIENCE THE DIFFERENCE Section */}
         <section className="space-y-8 bg-white border border-luxury-gold-light/20 p-8 rounded-3xl">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-slate-950">
+            <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
               EXPERIENCE THE DIFFERENCE
             </h2>
             <p className="text-xs text-slate-500">
@@ -494,7 +494,7 @@ export const Home: React.FC = () => {
               <div className="w-12 h-12 bg-luxury-sand text-luxury-gold rounded-full flex items-center justify-center border border-luxury-gold-light/20">
                 <Truck size={22} />
               </div>
-              <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">Free Global Shipping</h4>
+              <h4 className="text-xs font-bold uppercase text-slate-900 tracking-wider">Free Global Shipping</h4>
               <p className="text-[11px] text-slate-500">Complimentary express dispatch on orders over $300.</p>
             </div>
 
@@ -502,7 +502,7 @@ export const Home: React.FC = () => {
               <div className="w-12 h-12 bg-luxury-sand text-luxury-gold rounded-full flex items-center justify-center border border-luxury-gold-light/20">
                 <ShieldCheck size={22} />
               </div>
-              <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">3-Year Guarantee</h4>
+              <h4 className="text-xs font-bold uppercase text-slate-900 tracking-wider">3-Year Guarantee</h4>
               <p className="text-[11px] text-slate-500">Guaranteed 100% authentic premium craftsmanship.</p>
             </div>
 
@@ -510,7 +510,7 @@ export const Home: React.FC = () => {
               <div className="w-12 h-12 bg-luxury-sand text-luxury-gold rounded-full flex items-center justify-center border border-luxury-gold-light/20">
                 <RotateCcw size={22} />
               </div>
-              <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">30-Day Easy Returns</h4>
+              <h4 className="text-xs font-bold uppercase text-slate-900 tracking-wider">30-Day Easy Returns</h4>
               <p className="text-[11px] text-slate-500">Hassle-free exchange and full refund policy.</p>
             </div>
 
@@ -518,7 +518,7 @@ export const Home: React.FC = () => {
               <div className="w-12 h-12 bg-luxury-sand text-luxury-gold rounded-full flex items-center justify-center border border-luxury-gold-light/20">
                 <Lock size={22} />
               </div>
-              <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">Secure Checkout</h4>
+              <h4 className="text-xs font-bold uppercase text-slate-900 tracking-wider">Secure Checkout</h4>
               <p className="text-[11px] text-slate-500">256-Bit SSL encrypted safe payment processing.</p>
             </div>
           </div>

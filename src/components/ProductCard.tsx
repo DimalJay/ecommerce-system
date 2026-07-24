@@ -44,7 +44,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Discount / Category Badge */}
         {product.discount && (
-          <span className="absolute top-3 left-3 bg-luxury-gold text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-2xs">
+          <span className="absolute top-3 left-3 bg-luxury-gold text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-2xs">
             {product.discount}
           </span>
         )}
@@ -67,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Quick View */}
           <button
             onClick={() => onOpenQuickView(product)}
-            className="flex-1 bg-white/90 hover:bg-white text-luxury-charcoal text-[10px] font-black py-3 rounded-xl backdrop-blur-xs shadow-md border border-luxury-gold-light/40 flex items-center justify-center gap-1.5 cursor-pointer transition-all uppercase tracking-wider"
+            className="flex-1 bg-white/90 hover:bg-white text-luxury-charcoal text-[10px] font-bold py-3 rounded-xl backdrop-blur-xs shadow-md border border-luxury-gold-light/40 flex items-center justify-center gap-1.5 cursor-pointer transition-all uppercase tracking-wider"
           >
             <Eye size={12} />
             Quick View
@@ -111,7 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Brand/Color Name Subtitle */}
-        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">
           {product.colorName}
         </span>
 
@@ -123,7 +123,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Bottom Price & Add Button */}
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-luxury-sand">
           <div className="flex items-baseline gap-2">
-            <span className="text-base font-black text-luxury-gold">
+            <span className="text-base font-bold text-luxury-gold">
               ${product.price.toFixed(2)}
             </span>
             {product.oldPrice && (
@@ -135,7 +135,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           <button
             onClick={() => onAddToCart(product, 'M', product.colorName)}
-            className="bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/40 hover:border-luxury-gold px-3.5 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase transition-all flex items-center gap-1.5 cursor-pointer"
+            className="bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/40 hover:border-luxury-gold px-3.5 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <ShoppingBag size={11} />
             + Add

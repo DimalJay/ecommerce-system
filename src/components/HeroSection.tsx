@@ -80,17 +80,17 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Center Banner Offer */}
-        <div className="col-span-4 flex flex-col items-center justify-center text-center p-4 md:p-8 space-y-3 z-10">
-          <span className="text-[10px] md:text-xs font-black tracking-widest text-slate-400">FLAT</span>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none text-luxury-charcoal" style={{ color: active.accentColor }}>
+        <div className="col-span-4 flex flex-col items-center justify-center text-center p-4 md:p-8 space-y-3 z-10 font-sans">
+          <span className="text-[10px] md:text-xs font-bold tracking-widest text-slate-400">FLAT</span>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none text-luxury-charcoal" style={{ color: active.accentColor }}>
             {active.discount}
           </h2>
-          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-slate-500 max-w-[150px] md:max-w-none">
+          <p className="text-[9px] md:text-[11px] font-bold uppercase tracking-widest text-slate-500 max-w-[150px] md:max-w-none">
             {active.subText}
           </p>
           <a 
             href="#products" 
-            className="inline-block mt-4 px-6 py-2 border-2 border-luxury-charcoal hover:bg-luxury-charcoal hover:text-white text-luxury-charcoal text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-md transition-all"
+            className="inline-block mt-4 px-6 py-2 border-2 border-luxury-charcoal hover:bg-luxury-charcoal hover:text-white text-luxury-charcoal text-[9px] md:text-[10px] font-bold uppercase tracking-widest rounded-md transition-all"
           >
             SHOP NOW
           </a>

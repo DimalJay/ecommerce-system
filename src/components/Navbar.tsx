@@ -51,8 +51,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="w-9 h-9 bg-luxury-charcoal text-luxury-gold rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                 <ShoppingBag size={18} />
               </div>
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-luxury-charcoal font-serif italic">
-                Aura<span className="text-luxury-gold font-sans not-italic">Atelier</span>
+              <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-luxury-charcoal font-sans">
+                Aura<span className="text-luxury-gold">Atelier</span>
               </span>
             </a>
           </div>
