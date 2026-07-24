@@ -10,4 +10,8 @@ export { QuickViewModal } from './QuickViewModal';
 export { SizeGuideModal } from './SizeGuideModal';
 export { TestimonialGrid } from './TestimonialGrid';
 export { InstagramGrid } from './InstagramGrid';
+export { BrandTicker } from './BrandTicker';
+export { ProductSpotlightSection } from './ProductSpotlightSection';
+export { OffersGrid } from './OffersGrid';
+export { ExperienceDifference } from './ExperienceDifference';
 
