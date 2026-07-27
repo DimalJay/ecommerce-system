@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import {
   Navbar,
@@ -18,8 +19,9 @@ import {
 import { PRODUCTS } from '../data';
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  
+
   // Advanced Cart & Wishlist States
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
@@ -142,12 +144,8 @@ export const Home: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    triggerToast('Redirecting to checkout...');
-    setTimeout(() => {
-      alert('Secure Checkout Simulated!');
-      setCartItems([]);
-      setIsCartOpen(false);
-    }, 1000);
+    setIsCartOpen(false);
+    navigate('/checkout');
   };
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -190,7 +188,7 @@ export const Home: React.FC = () => {
 
       {/* Main Home Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-8 w-full flex-1 py-6 space-y-16">
-        
+
         {/* Hero Section Banner */}
         <HeroSection />
 
