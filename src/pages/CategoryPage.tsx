@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, Grid, Filter, CheckCircle2, List, Heart, ShoppingBag } from 'lucide-react';
-import { Navbar, Footer, ProductCard, CartDrawer, WishlistDrawer, QuickViewModal, SizeGuideModal } from '../components';
+import { AppLayout, ProductCard } from '../components';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data';
 import type { Product } from '../components/ProductCard';
@@ -9,13 +9,15 @@ import type { Product } from '../components/ProductCard';
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
   const navigate = useNavigate();
-  const { addToCart, addToCartWithQty, cartItems, isCartOpen, setIsCartOpen, updateCartQty, removeCartItem } = useCart();
+  
+  const {
+    addToCart,
+    wishlist,
+    toggleWishlist,
+    setActiveQuickViewProduct
+  } = useCart();
 
   // States
-  const [wishlist, setWishlist] = useState<number[]>([2]);
-  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
-  const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
-  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -77,38 +79,10 @@ export const CategoryPage: React.FC = () => {
 
   const meta = getCategoryMeta();
 
-  // Wishlist controls
-  const toggleWishlist = (productId: number) => {
-    setWishlist((prev) => {
-      const exists = prev.includes(productId);
-      if (exists) {
-        triggerToast('Removed item from saved collection');
-        return prev.filter((id) => id !== productId);
-      } else {
-        triggerToast('Added item to saved collection');
-        return [...prev, productId];
-      }
-    });
-  };
-
   const handleAddToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     addToCart(product, size, color);
     triggerToast(`Added ${product.title} to your bag`);
-    setIsCartOpen(true);
   };
-
-  const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    addToCartWithQty(product, size, color, qty);
-    triggerToast(`Added ${qty}x ${product.title} to your bag`);
-    setIsCartOpen(true);
-  };
-
-  const handleMoveToCart = (product: Product, size: string, color: string) => {
-    addToCart(product, size, color);
-    setIsCartOpen(true);
-  };
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // List of other categories
   const otherCategories = [
@@ -135,16 +109,7 @@ export const CategoryPage: React.FC = () => {
   ].filter((cat) => cat.key !== categoryName?.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-luxury-cream text-luxury-charcoal font-sans selection:bg-luxury-gold selection:text-white flex flex-col justify-between">
-      <Navbar
-        searchQuery=""
-        setSearchQuery={() => {}}
-        wishlistCount={wishlist.length}
-        cartCount={cartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-      />
-
+    <AppLayout>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-120 bg-luxury-charcoal text-white px-5 py-3 rounded-2xl shadow-2xl border border-luxury-gold/30 flex items-center gap-3 text-xs font-bold animate-slide-over">
@@ -340,36 +305,7 @@ export const CategoryPage: React.FC = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      {/* Slide Drawers */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={updateCartQty}
-        onRemoveItem={removeCartItem}
-      />
-
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistIds={wishlist}
-        onRemoveFromWishlist={toggleWishlist}
-        onMoveToCart={handleMoveToCart}
-      />
-
-      <QuickViewModal
-        product={activeQuickViewProduct}
-        isOpen={activeQuickViewProduct !== null}
-        onClose={() => setActiveQuickViewProduct(null)}
-        onAddToCart={handleAddToCartWithQty}
-        onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
-      />
-
-      <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
-    </div>
+    </AppLayout>
   );
 };
 

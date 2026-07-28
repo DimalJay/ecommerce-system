@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, ChevronUp, Package, ShieldCheck } from 'lucide-react';
-import { Navbar, Footer, CartDrawer, WishlistDrawer } from '../components';
-import { useCart } from '../context/CartContext';
+import { AppLayout } from '../components';
 import type { Product } from '../components/ProductCard';
 
 interface OrderItem {
@@ -33,13 +32,8 @@ interface Order {
 }
 
 export const OrderHistory: React.FC = () => {
-  const { addToCart, cartItems, isCartOpen, setIsCartOpen, updateCartQty, removeCartItem } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-
-  // Wishlist state for Navbar
-  const [wishlist, setWishlist] = useState<number[]>([2]);
-  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -56,17 +50,6 @@ export const OrderHistory: React.FC = () => {
     setExpandedOrderId(expandedOrderId === id ? null : id);
   };
 
-  const handleRemoveFromWishlist = (productId: number) => {
-    setWishlist((prev) => prev.filter((id) => id !== productId));
-  };
-
-  const handleMoveToCart = (product: Product, size: string, color: string) => {
-    addToCart(product, size, color);
-    setIsCartOpen(true);
-  };
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   const getStatusColor = (status: Order['status']) => {
     switch (status) {
       case 'Processing':
@@ -81,16 +64,7 @@ export const OrderHistory: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-luxury-cream text-luxury-charcoal font-sans selection:bg-luxury-gold selection:text-white flex flex-col justify-between">
-      <Navbar
-        searchQuery=""
-        setSearchQuery={() => {}}
-        wishlistCount={wishlist.length}
-        cartCount={cartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-      />
-
+    <AppLayout>
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-12 w-full flex-1 space-y-10">
         {/* Header Breadcrumbs & Title */}
         <div className="space-y-4">
@@ -298,26 +272,7 @@ export const OrderHistory: React.FC = () => {
           </div>
         )}
       </main>
-
-      <Footer />
-
-      {/* Slide drawers */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={updateCartQty}
-        onRemoveItem={removeCartItem}
-      />
-
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistIds={wishlist}
-        onRemoveFromWishlist={handleRemoveFromWishlist}
-        onMoveToCart={handleMoveToCart}
-      />
-    </div>
+    </AppLayout>
   );
 };
 

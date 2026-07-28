@@ -21,6 +21,14 @@ interface CartContextType {
   promoError: string;
   setPromoError: (error: string) => void;
   handleApplyPromo: (code: string) => boolean;
+  wishlist: number[];
+  isWishlistOpen: boolean;
+  setIsWishlistOpen: (open: boolean) => void;
+  toggleWishlist: (productId: number) => void;
+  activeQuickViewProduct: Product | null;
+  setActiveQuickViewProduct: (product: Product | null) => void;
+  isSizeGuideOpen: boolean;
+  setIsSizeGuideOpen: (open: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -39,6 +47,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [promoCode, setPromoCode] = useState<string>('');
   const [promoApplied, setPromoApplied] = useState<boolean>(false);
   const [promoError, setPromoError] = useState<string>('');
+
+  const [wishlist, setWishlist] = useState<number[]>([2]);
+  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
+
+  const toggleWishlist = (productId: number) => {
+    setWishlist((prev) => {
+      const exists = prev.includes(productId);
+      if (exists) {
+        return prev.filter((id) => id !== productId);
+      } else {
+        return [...prev, productId];
+      }
+    });
+  };
 
   const addToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     const targetColor = color === 'Default' ? product.colorName : color;
@@ -143,7 +167,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         promoApplied,
         promoError,
         setPromoError,
-        handleApplyPromo
+        handleApplyPromo,
+        wishlist,
+        isWishlistOpen,
+        setIsWishlistOpen,
+        toggleWishlist,
+        activeQuickViewProduct,
+        setActiveQuickViewProduct,
+        isSizeGuideOpen,
+        setIsSizeGuideOpen
       }}
     >
       {children}

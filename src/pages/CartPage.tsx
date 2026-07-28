@@ -4,7 +4,7 @@ import {
   Sparkles,
   ArrowLeft
 } from 'lucide-react';
-import { Navbar, Footer } from '../components';
+import { AppLayout } from '../components';
 import { useCart, getItemKey } from '../context/CartContext';
 import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartToolbar } from '../components/cart/CartToolbar';
@@ -14,7 +14,6 @@ import { CartItemCard } from '../components/cart/CartItemCard';
 export const CartPage: React.FC = () => {
   const {
     cartItems,
-    setIsCartOpen,
     updateCartQty,
     removeCartItem,
     removeCheckedOutItems,
@@ -26,7 +25,6 @@ export const CartPage: React.FC = () => {
   } = useCart();
 
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -122,7 +120,7 @@ export const CartPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-luxury-cream text-luxury-charcoal font-sans">
+    <AppLayout>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-120 bg-luxury-charcoal text-white px-5 py-3 rounded-2xl shadow-2xl border border-luxury-gold/30 flex items-center gap-3 text-xs font-bold animate-slide-over">
@@ -130,16 +128,6 @@ export const CartPage: React.FC = () => {
           <span>{toastMessage}</span>
         </div>
       )}
-
-      {/* Header Navigation */}
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        wishlistCount={1}
-        cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => {}}
-      />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -244,9 +232,7 @@ export const CartPage: React.FC = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <Footer />
-    </div>
+    </AppLayout>
   );
 };
 

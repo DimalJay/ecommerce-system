@@ -6,6 +6,7 @@ export { CartDrawer, type CartItem } from './CartDrawer';
 export { WishlistDrawer } from './WishlistDrawer';
 export { QuickViewModal } from './QuickViewModal';
 export { SizeGuideModal } from './SizeGuideModal';
+export { AppLayout } from './AppLayout';
 
 // Home Page Specific Components
 export { HeroSection } from './home/HeroSection';
