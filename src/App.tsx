@@ -14,15 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/admin/items" element={<ItemManagement />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route
-            path="/checkout"
-            element={
-              <Checkout
-                cartItems={[]}
-                onPlaceOrder={(order) => console.log('Order placed:', order)}
-              />
-            }
-          />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </Router>
     </CartProvider>

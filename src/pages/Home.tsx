@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import {
   Navbar,
@@ -19,7 +18,6 @@ import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 
 export const Home: React.FC = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [wishlist, setWishlist] = useState<number[]>([2]);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
