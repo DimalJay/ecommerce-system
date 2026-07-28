@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
@@ -124,12 +125,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Profile Account Button */}
-            <button
+            <Link
+              to="/order-history"
               className="hidden sm:flex p-2.5 bg-white hover:bg-luxury-sand border border-luxury-gold-light/30 rounded-full text-slate-700 hover:text-luxury-gold transition-all cursor-pointer"
-              title="Account"
+              title="Order History"
             >
               <User size={18} />
-            </button>
+            </Link>
           </div>
         </div>
       </header>

@@ -107,12 +107,35 @@ export const Checkout: React.FC = () => {
     }
 
     const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
-    console.log('Order placed:', {
-      items: cartItems,
+
+    const newOrder = {
+      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+      items: cartItems.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,
+        selectedColor: item.selectedColor,
+      })),
       shippingInfo,
       paymentMethod,
       total,
-    });
+      status: 'Processing',
+    };
+
+    try {
+      const existingOrdersRaw = localStorage.getItem('orders');
+      const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
+      localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
+    } catch (err) {
+      console.error('Failed to save order to localStorage:', err);
+    }
+
+    console.log('Order placed:', newOrder);
     alert('Order placed successfully! Thank you for your purchase.');
     const keysToRemove = cartItems.map(getItemKey);
     removeCheckedOutItems(keysToRemove);
