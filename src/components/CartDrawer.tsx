@@ -49,7 +49,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end">
+    <div className="fixed inset-0 z-100 flex justify-end">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in"
@@ -100,7 +100,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
               <div>
                 <h3 className="font-bold text-luxury-charcoal">Your bag is empty</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-[240px]">
+                <p className="text-xs text-slate-400 mt-1 max-w-60">
                   Explore our latest arrivals to curating your luxury outfit collection.
                 </p>
               </div>
@@ -155,7 +155,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       >
                         <Minus size={10} />
                       </button>
-                      <span className="px-2 text-xs font-bold text-luxury-charcoal min-w-[16px] text-center">
+                      <span className="px-2 text-xs font-bold text-luxury-charcoal min-w-4 text-center">
                         {item.quantity}
                       </span>
                       <button 
