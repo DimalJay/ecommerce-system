@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Grid, Filter, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ArrowLeft, Grid, Filter, CheckCircle2, List, Heart, ShoppingBag } from 'lucide-react';
 import { Navbar, Footer, ProductCard, CartDrawer, WishlistDrawer, QuickViewModal, SizeGuideModal } from '../components';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data';
@@ -17,6 +17,7 @@ export const CategoryPage: React.FC = () => {
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -180,15 +181,18 @@ export const CategoryPage: React.FC = () => {
                 <Filter size={12} />
                 Filter
               </button>
-              <button className="flex items-center gap-1.5 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer">
-                <Grid size={12} />
-                Layout
+              <button
+                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                className="flex items-center gap-1.5 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer"
+              >
+                {viewMode === 'grid' ? <List size={12} /> : <Grid size={12} />}
+                <span>{viewMode === 'grid' ? 'List View' : 'Grid View'}</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Filtered Products Grid */}
+        {/* Filtered Products Grid/List */}
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20 bg-white border border-luxury-gold-light/20 rounded-3xl p-8 max-w-md mx-auto space-y-4">
             <p className="text-sm text-slate-500 font-semibold">No items available in this category.</p>
@@ -196,7 +200,7 @@ export const CategoryPage: React.FC = () => {
               Back to Home
             </Link>
           </div>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((p) => (
               <ProductCard
@@ -207,6 +211,92 @@ export const CategoryPage: React.FC = () => {
                 onAddToCart={handleAddToCart}
                 onOpenQuickView={setActiveQuickViewProduct}
               />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredProducts.map((p) => (
+              <div
+                key={p.id}
+                className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 flex flex-col sm:flex-row items-center gap-6 transition-all duration-300 hover:shadow-md hover:border-luxury-gold-light/50"
+              >
+                {/* Image */}
+                <div className="relative w-full sm:w-48 aspect-3/4 rounded-2xl overflow-hidden shrink-0 bg-luxury-sand">
+                  <Link to={`/product/${p.id}`} className="block w-full h-full">
+                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                  </Link>
+                  {p.discount && (
+                    <span className="absolute top-3 left-3 bg-luxury-gold text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      {p.discount}
+                    </span>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 text-left space-y-3 w-full">
+                  <div className="flex justify-between items-start gap-4">
+                    <div>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">
+                        {p.colorName}
+                      </span>
+                      <Link to={`/product/${p.id}`} className="block mt-1">
+                        <h3 className="text-base font-extrabold text-luxury-charcoal hover:text-luxury-gold transition-colors">
+                          {p.title}
+                        </h3>
+                      </Link>
+                    </div>
+                    {/* Price */}
+                    <div className="text-right">
+                      <span className="text-lg font-black text-luxury-gold block">
+                        Rs. {p.price.toFixed(2)}
+                      </span>
+                      {p.oldPrice && (
+                        <span className="text-xs text-slate-400 line-through font-bold">
+                          Rs. {p.oldPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                    High-performance technical fabrication and modern tailored aesthetics suited for everyday luxury. Features premium craftsmanship and dynamic swatches.
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-luxury-sand">
+                    {/* Rating */}
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <span className="text-amber-400">★</span>
+                      <span className="font-bold text-luxury-charcoal">{p.rating}</span>
+                      <span className="text-slate-400">({p.reviewsCount} reviews)</span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleWishlist(p.id)}
+                        className={`p-2 rounded-full border transition-all cursor-pointer ${
+                          wishlist.includes(p.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-slate-200 text-slate-400 hover:text-rose-500'
+                        }`}
+                      >
+                        <Heart size={14} fill={wishlist.includes(p.id) ? '#f43f5e' : 'none'} />
+                      </button>
+                      <button
+                        onClick={() => setActiveQuickViewProduct(p)}
+                        className="px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold text-luxury-charcoal rounded-full text-[10px] font-bold tracking-widest uppercase transition-all bg-white cursor-pointer"
+                      >
+                        Quick View
+                      </button>
+                      <button
+                        onClick={() => handleAddToCart(p)}
+                        className="px-5 py-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-full text-[10px] font-bold tracking-widest uppercase transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                      >
+                        <ShoppingBag size={12} />
+                        Add to Bag
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         )}
