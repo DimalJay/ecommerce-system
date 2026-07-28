@@ -4,11 +4,12 @@ import {
   Sparkles,
   ArrowLeft
 } from 'lucide-react';
-import { Navbar, Footer, CartItemCard } from '../components';
+import { Navbar, Footer } from '../components';
 import { useCart, getItemKey } from '../context/CartContext';
 import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartToolbar } from '../components/cart/CartToolbar';
 import { CartSummary } from '../components/cart/CartSummary';
+import { CartItemCard } from '../components/cart/CartItemCard';
 
 export const CartPage: React.FC = () => {
   const {

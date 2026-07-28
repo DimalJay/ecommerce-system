@@ -14,5 +14,3 @@ export { BrandTicker } from './BrandTicker';
 export { ProductSpotlightSection } from './ProductSpotlightSection';
 export { OffersGrid } from './OffersGrid';
 export { ExperienceDifference } from './ExperienceDifference';
-export { CartItemCard } from './CartItemCard';
-
