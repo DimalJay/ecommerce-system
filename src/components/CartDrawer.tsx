@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { X, Minus, Plus, Trash2, ShoppingBag, Sparkles, CreditCard } from 'lucide-react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { X, Minus, Plus, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
 import type { Product } from './ProductCard';
 
 export interface CartItem {
@@ -15,7 +16,7 @@ interface CartDrawerProps {
   cartItems: CartItem[];
   onUpdateQuantity: (productId: number, size: string, color: string, newQty: number) => void;
   onRemoveItem: (productId: number, size: string, color: string) => void;
-  onCheckout: () => void;
+  onCheckout?: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -23,29 +24,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onClose,
   cartItems,
   onUpdateQuantity,
-  onRemoveItem,
-  onCheckout
+  onRemoveItem
 }) => {
-  const [promoCode, setPromoCode] = useState('');
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [promoError, setPromoError] = useState('');
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const discount = promoApplied ? subtotal * 0.2 : 0;
-  const shipping = subtotal > 300 || subtotal === 0 ? 0 : 25;
-  const total = subtotal - discount + shipping;
+  const shipping = subtotal >= 300 || subtotal === 0 ? 0 : 25;
+  const total = subtotal + shipping;
 
-  const handleApplyPromo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (promoCode.toUpperCase() === 'AURA20') {
-      setPromoApplied(true);
-      setPromoError('');
-    } else {
-      setPromoError('Invalid promo code. Try "AURA20"');
-      setPromoApplied(false);
-    }
+  const handleViewBag = () => {
+    onClose();
+    navigate('/cart');
   };
 
   return (
@@ -178,39 +169,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {/* Footer Billing Section */}
         {cartItems.length > 0 && (
           <div className="p-6 bg-white border-t border-luxury-gold-light/30 space-y-4">
-            {/* Promo Code Input */}
-            <form onSubmit={handleApplyPromo} className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="PROMO CODE (e.g. AURA20)"
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
-                disabled={promoApplied}
-                className="flex-1 px-4 py-2 border border-luxury-gold-light/40 rounded-xl text-xs font-semibold focus:outline-none focus:border-luxury-gold disabled:bg-luxury-sand disabled:text-slate-400"
-              />
-              <button 
-                type="submit"
-                disabled={promoApplied}
-                className="px-4 bg-luxury-charcoal hover:bg-luxury-gold text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
-              >
-                {promoApplied ? 'Applied' : 'Apply'}
-              </button>
-            </form>
-            {promoError && <p className="text-[10px] text-rose-500 font-bold mt-1">{promoError}</p>}
-            {promoApplied && <p className="text-[10px] text-emerald-600 font-bold mt-1">20% Storewide Discount Active!</p>}
-
-            {/* Calculations */}
+            {/* Calculations Summary */}
             <div className="space-y-1.5 text-xs text-slate-500 pt-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span className="font-semibold text-luxury-charcoal">${subtotal.toFixed(2)}</span>
               </div>
-              {promoApplied && (
-                <div className="flex justify-between text-emerald-700">
-                  <span>AURA20 discount (-20%)</span>
-                  <span>-${discount.toFixed(2)}</span>
-                </div>
-              )}
               <div className="flex justify-between">
                 <span>Express Delivery</span>
                 <span>{shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)}`}</span>
@@ -221,13 +185,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             </div>
 
-            {/* Checkout Button */}
+            {/* View Bag Button */}
             <button 
-              onClick={onCheckout}
+              onClick={handleViewBag}
               className="w-full bg-luxury-gold hover:bg-luxury-gold-dark text-white font-bold py-3.5 rounded-full shadow-lg shadow-luxury-gold/15 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
             >
-              <CreditCard size={14} />
-              Proceed to Secure Checkout
+              <span>View Bag</span>
+              <ArrowRight size={14} />
             </button>
           </div>
         )}

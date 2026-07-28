@@ -6,7 +6,6 @@ import {
   HeroSection,
   Footer,
   CartDrawer,
-  type CartItem,
   WishlistDrawer,
   QuickViewModal,
   SizeGuideModal,
@@ -17,23 +16,23 @@ import {
   type Product
 } from '../components';
 import { PRODUCTS } from '../data';
+import { useCart } from '../context/CartContext';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // Advanced Cart & Wishlist States
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      product: PRODUCTS[0],
-      quantity: 1,
-      selectedSize: 'M',
-      selectedColor: PRODUCTS[0].colorName
-    }
-  ]);
   const [wishlist, setWishlist] = useState<number[]>([2]);
-  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+
+  const {
+    cartItems,
+    isCartOpen,
+    setIsCartOpen,
+    addToCart,
+    addToCartWithQty,
+    updateCartQty,
+    removeCartItem
+  } = useCart();
 
   // Modals
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
@@ -50,78 +49,21 @@ export const Home: React.FC = () => {
   };
 
   const handleAddToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex(
-        (item) =>
-          item.product.id === product.id &&
-          item.selectedSize === size &&
-          item.selectedColor === color
-      );
-
-      if (existingIndex > -1) {
-        const next = [...prev];
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: next[existingIndex].quantity + 1
-        };
-        return next;
-      }
-
-      return [...prev, { product, quantity: 1, selectedSize: size, selectedColor: color }];
-    });
+    addToCart(product, size, color);
     triggerToast(`Added ${product.title} to your bag`);
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex(
-        (item) =>
-          item.product.id === product.id &&
-          item.selectedSize === size &&
-          item.selectedColor === color
-      );
-
-      if (existingIndex > -1) {
-        const next = [...prev];
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: next[existingIndex].quantity + qty
-        };
-        return next;
-      }
-
-      return [...prev, { product, quantity: qty, selectedSize: size, selectedColor: color }];
-    });
+    addToCartWithQty(product, size, color, qty);
     triggerToast(`Added ${qty}x ${product.title} to your bag`);
   };
 
   const handleUpdateCartQty = (productId: number, size: string, color: string, newQty: number) => {
-    if (newQty <= 0) {
-      handleRemoveCartItem(productId, size, color);
-      return;
-    }
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.product.id === productId &&
-        item.selectedSize === size &&
-        item.selectedColor === color
-          ? { ...item, quantity: newQty }
-          : item
-      )
-    );
+    updateCartQty(productId, size, color, newQty);
   };
 
   const handleRemoveCartItem = (productId: number, size: string, color: string) => {
-    setCartItems((prev) =>
-      prev.filter(
-        (item) =>
-          !(
-            item.product.id === productId &&
-            item.selectedSize === size &&
-            item.selectedColor === color
-          )
-      )
-    );
+    removeCartItem(productId, size, color);
     triggerToast('Removed item from your bag');
   };
 
@@ -141,11 +83,6 @@ export const Home: React.FC = () => {
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     handleAddToCart(product, size, color);
     setIsCartOpen(true);
-  };
-
-  const handleCheckout = () => {
-    setIsCartOpen(false);
-    navigate('/checkout');
   };
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -180,7 +117,7 @@ export const Home: React.FC = () => {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 bg-slate-950 text-white border border-slate-800 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-[200] animate-bounce text-xs">
+        <div className="fixed bottom-6 right-6 bg-slate-950 text-white border border-slate-800 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-200 animate-bounce text-xs">
           <CheckCircle2 size={16} className="text-emerald-500" />
           <span>{toastMessage}</span>
         </div>
@@ -269,7 +206,6 @@ export const Home: React.FC = () => {
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateCartQty}
         onRemoveItem={handleRemoveCartItem}
-        onCheckout={handleCheckout}
       />
 
       {/* Interactive Wishlist Drawer */}
