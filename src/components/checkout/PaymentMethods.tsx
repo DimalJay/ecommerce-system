@@ -25,6 +25,37 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   onChange,
   inputClass,
 }) => {
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.substring(0, 16);
+    const matches = value.match(/\d{1,4}/g);
+    const formatted = matches ? matches.join(' ') : '';
+    const syntheticEvent = {
+      target: { value: formatted }
+    } as any;
+    onChange('cardNumber')(syntheticEvent);
+  };
+
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.substring(0, 4);
+    if (value.length > 2) {
+      value = `${value.substring(0, 2)}/${value.substring(2)}`;
+    }
+    const syntheticEvent = {
+      target: { value }
+    } as any;
+    onChange('expiry')(syntheticEvent);
+  };
+
+  const handleCVVChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '').substring(0, 4);
+    const syntheticEvent = {
+      target: { value }
+    } as any;
+    onChange('cvv')(syntheticEvent);
+  };
+
   return (
     <section className="bg-white border border-luxury-gold-light/20 rounded-3xl p-6 sm:p-8">
       <div className="flex items-center gap-3 mb-1">
@@ -61,8 +92,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
                 <input
                   type="text"
                   placeholder="4242 4242 4242 4242"
+                  maxLength={19}
                   value={form.cardNumber}
-                  onChange={onChange('cardNumber')}
+                  onChange={handleCardNumberChange}
                   className={inputClass}
                 />
               </CheckoutField>
@@ -79,9 +111,10 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
                 <CheckoutField label="Expiry Date">
                   <input
                     type="text"
-                    placeholder="12 / 27"
+                    placeholder="MM/YY"
+                    maxLength={5}
                     value={form.expiry}
-                    onChange={onChange('expiry')}
+                    onChange={handleExpiryChange}
                     className={inputClass}
                   />
                 </CheckoutField>
@@ -89,8 +122,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
                   <input
                     type="text"
                     placeholder="123"
+                    maxLength={4}
                     value={form.cvv}
-                    onChange={onChange('cvv')}
+                    onChange={handleCVVChange}
                     className={inputClass}
                   />
                 </CheckoutField>

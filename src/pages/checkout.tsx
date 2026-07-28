@@ -72,6 +72,40 @@ export const Checkout: React.FC = () => {
       alert('Your cart is empty.');
       return;
     }
+
+    if (paymentMethod === 'card') {
+      const cleanCardNumber = form.cardNumber.replace(/\s+/g, '');
+      if (!/^\d{16}$/.test(cleanCardNumber)) {
+        alert('Invalid Card Number. Must be exactly 16 digits.');
+        return;
+      }
+
+      const cleanExpiry = form.expiry.trim();
+      const expiryMatch = cleanExpiry.match(/^(0[1-9]|1[0-2])\s*\/\s*([0-9]{2})$/);
+      if (!expiryMatch) {
+        alert('Invalid Expiry Date. Please use MM/YY format (e.g., 12/28).');
+        return;
+      }
+
+      const expiryMonth = parseInt(expiryMatch[1], 10);
+      const expiryYear = parseInt(`20${expiryMatch[2]}`, 10);
+
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+
+      if (expiryYear < currentYear || (expiryYear === currentYear && expiryMonth < currentMonth)) {
+        alert('The card has expired. Past dates are not accepted.');
+        return;
+      }
+
+      const cleanCVV = form.cvv.trim();
+      if (!/^\d{3,4}$/.test(cleanCVV)) {
+        alert('Invalid CVV. Must be 3 or 4 digits.');
+        return;
+      }
+    }
+
     const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
     console.log('Order placed:', {
       items: cartItems,

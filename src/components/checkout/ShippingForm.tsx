@@ -103,10 +103,16 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({
             className={inputClass}
             required
           >
-            <option value="">Select state</option>
-            <option value="New York">New York</option>
-            <option value="California">California</option>
-            <option value="Texas">Texas</option>
+            <option value="">Select Province</option>
+            <option value="Western">Western Province</option>
+            <option value="Central">Central Province</option>
+            <option value="Southern">Southern Province</option>
+            <option value="North Western">North Western Province</option>
+            <option value="Sabaragamuwa">Sabaragamuwa Province</option>
+            <option value="Eastern">Eastern Province</option>
+            <option value="Uva">Uva Province</option>
+            <option value="North Central">North Central Province</option>
+            <option value="Northern">Northern Province</option>
           </select>
         </CheckoutField>
         <CheckoutField label="Postal Code" required>
