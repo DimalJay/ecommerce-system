@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import {
   Navbar,
@@ -18,6 +19,7 @@ import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [wishlist, setWishlist] = useState<number[]>([2]);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
@@ -138,7 +140,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Women collection...')}
+          onShopMore={() => navigate('/category/women')}
         />
 
         {/* SHOP FOR MEN Section */}
@@ -152,7 +154,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Men collection...')}
+          onShopMore={() => navigate('/category/men')}
         />
 
         {/* SHOP FOR KIDS Section */}
@@ -166,7 +168,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Kids collection...')}
+          onShopMore={() => navigate('/category/kids')}
         />
 
         {/* OUR NEW ARRIVALS Section */}
@@ -180,7 +182,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to all New Arrivals...')}
+          onShopMore={() => navigate('/category/outerwear')}
         />
 
         {/* OUR OFFERS Section */}

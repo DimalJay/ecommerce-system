@@ -3,3 +3,4 @@ export { ItemManagement, default as ItemManagementDefault } from './ItemManageme
 export { Checkout } from './checkout';
 export { ProductDetails } from './ProductDetails';
 export { OrderHistory } from './OrderHistory';
+export { CategoryPage } from './CategoryPage';
