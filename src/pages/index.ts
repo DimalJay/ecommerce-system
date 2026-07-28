@@ -4,3 +4,4 @@ export { Checkout } from './checkout';
 export { ProductDetails } from './ProductDetails';
 export { OrderHistory } from './OrderHistory';
 export { CategoryPage } from './CategoryPage';
+export { AuthPage } from './AuthPage';

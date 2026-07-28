@@ -60,7 +60,7 @@ export const ProductDetails: React.FC = () => {
   if (!product) {
     return (
       <AppLayout>
-        <main className="max-w-7xl mx-auto px-4 py-32 text-center space-y-6">
+        <main className="max-w-[1440px] mx-auto px-4 py-32 text-center space-y-6">
           <h1 className="text-3xl font-black">Product Not Found</h1>
           <p className="text-slate-500">The product you are looking for does not exist or has been removed.</p>
           <Link to="/" className="inline-flex items-center gap-2 px-8 py-3 bg-luxury-gold text-white font-bold rounded-full text-xs uppercase tracking-widest hover:bg-luxury-gold-dark transition-all">
@@ -101,7 +101,7 @@ export const ProductDetails: React.FC = () => {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">
           <Link to="/" className="hover:text-luxury-gold transition-colors">Atelier</Link>

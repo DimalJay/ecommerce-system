@@ -40,7 +40,7 @@ export const ItemManagement: React.FC = () => {
         onOpenWishlist={() => {}}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
         
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

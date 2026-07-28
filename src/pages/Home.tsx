@@ -53,13 +53,13 @@ export const Home: React.FC = () => {
         </div>
       )}
 
-      {/* Hero Section */}
-      <HeroSection />
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
+        {/* Hero Section */}
+        <HeroSection />
 
-      {/* Brand Ticker Banner */}
-      <BrandTicker />
+        {/* Brand Ticker Banner */}
+        <BrandTicker />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
         {/* SHOP FOR WOMEN Section */}
         <ProductSpotlightSection
           title="SHOP FOR WOMEN"

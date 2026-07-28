@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ItemManagement from './pages/ItemManagement';
-import { Checkout, ProductDetails, OrderHistory, CategoryPage } from './pages';
+import { Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage } from './pages';
 import { CartPage } from './pages/CartPage';
 import { CartProvider } from './context/CartContext';
 
@@ -18,6 +18,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
+          <Route path="/auth" element={<AuthPage />} />
         </Routes>
       </Router>
     </CartProvider>

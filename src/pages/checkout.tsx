@@ -153,7 +153,7 @@ export const Checkout: React.FC = () => {
         onOpenWishlist={() => {}}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-10 py-10">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal">
             Checkout

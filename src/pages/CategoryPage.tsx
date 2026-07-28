@@ -118,7 +118,7 @@ export const CategoryPage: React.FC = () => {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-12">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-12">
         {/* Navigation & Header */}
         <div className="space-y-4">
           <Link
