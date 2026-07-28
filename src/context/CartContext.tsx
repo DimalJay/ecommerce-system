@@ -51,12 +51,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
 
       if (existingIndex > -1) {
-        const next = [...prev];
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: next[existingIndex].quantity + 1
-        };
-        return next;
+        return prev;
       }
 
       return [...prev, { product, quantity: 1, selectedSize: size, selectedColor: targetColor }];

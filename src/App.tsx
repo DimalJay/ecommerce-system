@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ItemManagement from './pages/ItemManagement';
-import { Checkout } from './pages';
+import { Checkout, ProductDetails } from './pages';
 import { CartPage } from './pages/CartPage';
 import { CartProvider } from './context/CartContext';
 
@@ -15,6 +15,7 @@ function App() {
           <Route path="/admin/items" element={<ItemManagement />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </Router>
     </CartProvider>

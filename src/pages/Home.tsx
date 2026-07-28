@@ -49,6 +49,7 @@ export const Home: React.FC = () => {
   const handleAddToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     addToCart(product, size, color);
     triggerToast(`Added ${product.title} to your bag`);
+    setIsCartOpen(true);
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
@@ -93,11 +94,7 @@ export const Home: React.FC = () => {
   const menProducts = PRODUCTS.slice(3, 6);
 
   const kidsSpotlightImage = 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=700&q=80';
-  const kidsProducts = PRODUCTS.slice(1, 4).map(p => ({
-    ...p,
-    id: p.id + 10,
-    title: p.title.replace('Stratus Technical Cargo Pant', 'Junior Chino Pant').replace('Core Base Layer', 'Junior Cotton Layer').replace('Glacier Expedition Daypack', 'Junior Explorer Bag')
-  }));
+  const kidsProducts = PRODUCTS.filter((p) => p.category === 'kids');
 
   const newArrivals = PRODUCTS.filter(p => p.isNew);
 
