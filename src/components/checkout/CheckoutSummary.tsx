@@ -67,7 +67,7 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
                   <p className="text-[11px] text-slate-500 mt-1">Qty: {item.quantity}</p>
                 </div>
                 <div className="text-sm font-extrabold text-luxury-charcoal whitespace-nowrap">
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  Rs. {(item.product.price * item.quantity).toFixed(2)}
                 </div>
               </div>
             ))
@@ -77,29 +77,29 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         <div className="space-y-2.5 pt-4 border-t border-luxury-gold-light/20 text-sm">
           <div className="flex justify-between text-slate-600">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>Rs. {subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-slate-600">
             <span>Estimated Shipping</span>
             <span className="font-semibold text-luxury-charcoal">
-              {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+              {shipping === 0 ? 'Free' : `Rs. ${shipping.toFixed(2)}`}
             </span>
           </div>
           {promoApplied && (
             <div className="flex justify-between text-emerald-600 font-medium">
               <span>Discount (AURA20)</span>
-              <span>- ${discount.toFixed(2)}</span>
+              <span>- Rs. {discount.toFixed(2)}</span>
             </div>
           )}
           <div className="flex justify-between text-slate-600">
             <span>Tax (Calculated at checkout)</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>Rs. {tax.toFixed(2)}</span>
           </div>
         </div>
 
         <div className="flex justify-between items-center mt-5 pt-4 border-t border-luxury-gold-light/20">
           <span className="font-extrabold text-luxury-charcoal">Total</span>
-          <span className="text-2xl font-extrabold text-luxury-charcoal">${total.toFixed(2)}</span>
+          <span className="text-2xl font-extrabold text-luxury-charcoal">Rs. {total.toFixed(2)}</span>
         </div>
 
         <button

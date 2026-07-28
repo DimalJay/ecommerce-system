@@ -91,7 +91,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose }) =
               {/* Price & Stock */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Price ($)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Price (Rs.)</label>
                   <input 
                     type="number" 
                     placeholder="0.00"

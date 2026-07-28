@@ -19,7 +19,7 @@ export const ExperienceDifference: React.FC = () => {
             <Truck size={22} />
           </div>
           <h4 className="text-xs font-bold uppercase text-slate-900 tracking-wider">Free Global Shipping</h4>
-          <p className="text-[11px] text-slate-500">Complimentary express dispatch on orders over $300.</p>
+          <p className="text-[11px] text-slate-500">Complimentary express dispatch on orders over Rs. 300.</p>
         </div>
 
         <div className="flex flex-col items-center text-center p-4 gap-3">

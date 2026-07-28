@@ -185,7 +185,7 @@ export const CartPage: React.FC = () => {
                     </span>
                   ) : (
                     <span>
-                      Add <strong className="text-luxury-charcoal">${(300 - selectedSubtotal).toFixed(2)}</strong> more of selected items for <strong className="text-luxury-gold">Complimentary Express Shipping</strong>.
+                      Add <strong className="text-luxury-charcoal">Rs. {(300 - selectedSubtotal).toFixed(2)}</strong> more of selected items for <strong className="text-luxury-gold">Complimentary Express Shipping</strong>.
                     </span>
                   )}
                 </div>

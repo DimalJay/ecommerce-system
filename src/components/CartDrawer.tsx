@@ -76,7 +76,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </span>
             ) : (
               <span className="text-slate-600">
-                Spend <strong className="text-luxury-charcoal">${(300 - subtotal).toFixed(2)}</strong> more for free worldwide shipping.
+                Spend <strong className="text-luxury-charcoal">Rs. {(300 - subtotal).toFixed(2)}</strong> more for free worldwide shipping.
               </span>
             )}
           </div>
@@ -157,7 +157,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       </button>
                     </div>
                     <span className="text-xs font-extrabold text-luxury-gold">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      Rs. {(item.product.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -173,15 +173,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="space-y-1.5 text-xs text-slate-500 pt-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-semibold text-luxury-charcoal">${subtotal.toFixed(2)}</span>
+                <span className="font-semibold text-luxury-charcoal">Rs. {subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Express Delivery</span>
-                <span>{shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)}`}</span>
+                <span>{shipping === 0 ? 'Complimentary' : `Rs. ${shipping.toFixed(2)}`}</span>
               </div>
               <div className="flex justify-between text-sm font-black text-luxury-charcoal pt-2 border-t border-luxury-sand">
                 <span className="uppercase tracking-wider">Total Est.</span>
-                <span className="text-base text-luxury-gold">${total.toFixed(2)}</span>
+                <span className="text-base text-luxury-gold">Rs. {total.toFixed(2)}</span>
               </div>
             </div>
 

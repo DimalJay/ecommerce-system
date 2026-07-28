@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Announcement Ticker */}
       <div className="bg-luxury-charcoal text-luxury-cream text-center py-2.5 px-4 text-[10px] font-black tracking-widest flex items-center justify-center gap-2 uppercase border-b border-luxury-gold/20">
         <Sparkles size={12} className="text-luxury-gold animate-pulse" />
-        <span>COMPLIMENTARY WORLDWIDE EXPRESS SHIPPING ON ORDERS OVER $300</span>
+        <span>COMPLIMENTARY WORLDWIDE EXPRESS SHIPPING ON ORDERS OVER Rs. 300</span>
         <span className="hidden sm:inline-block text-luxury-gold-light/40">|</span>
         <span className="hidden sm:inline-block bg-luxury-gold/25 text-luxury-gold-light border border-luxury-gold/30 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest">
           AURA20

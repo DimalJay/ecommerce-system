@@ -212,16 +212,16 @@ export const ProductDetails: React.FC = () => {
             {/* Price Indicator */}
             <div className="flex items-baseline gap-3 border-y border-luxury-gold-light/20 py-4">
               <span className="text-3xl font-black text-luxury-gold">
-                ${product.price.toFixed(2)}
+                Rs. {product.price.toFixed(2)}
               </span>
               {product.oldPrice && (
                 <span className="text-sm text-slate-400 line-through font-bold">
-                  ${product.oldPrice.toFixed(2)}
+                  Rs. {product.oldPrice.toFixed(2)}
                 </span>
               )}
               {product.oldPrice && (
                 <span className="text-[10px] font-extrabold uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                  SAVE ${(product.oldPrice - product.price).toFixed(2)}
+                  SAVE Rs. {(product.oldPrice - product.price).toFixed(2)}
                 </span>
               )}
             </div>
@@ -384,7 +384,7 @@ export const ProductDetails: React.FC = () => {
                 </button>
                 {openTab === 'shipping' && (
                   <div className="pb-3 text-xs text-slate-500 leading-relaxed space-y-1 animate-fade-in">
-                    <p>Complimentary worldwide shipping on orders exceeding $300.</p>
+                    <p>Complimentary worldwide shipping on orders exceeding Rs. 300.</p>
                     <p>Standard delivery window is 2-5 business days. Free returns within 30 days of receiving your package.</p>
                   </div>
                 )}

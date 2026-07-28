@@ -77,14 +77,14 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         <div className="flex justify-between">
           <span>Selected Items ({selectedCount})</span>
           <span className="font-semibold text-luxury-charcoal">
-            ${selectedSubtotal.toFixed(2)}
+            Rs. {selectedSubtotal.toFixed(2)}
           </span>
         </div>
 
         {promoApplied && (
           <div className="flex justify-between text-emerald-700 font-medium">
             <span>AURA20 Promo Discount (-20%)</span>
-            <span>-${discount.toFixed(2)}</span>
+            <span>-Rs. {discount.toFixed(2)}</span>
           </div>
         )}
 
@@ -94,14 +94,14 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
             {shipping === 0 ? (
               <span className="text-emerald-700 font-bold">Complimentary</span>
             ) : (
-              `$${shipping.toFixed(2)}`
+              `Rs. ${shipping.toFixed(2)}`
             )}
           </span>
         </div>
 
         <div className="flex justify-between text-base font-black text-luxury-charcoal pt-2 border-t border-luxury-sand">
           <span className="uppercase tracking-wider">Estimated Total</span>
-          <span className="text-lg text-luxury-gold">${total.toFixed(2)}</span>
+          <span className="text-lg text-luxury-gold">Rs. {total.toFixed(2)}</span>
         </div>
       </div>
 

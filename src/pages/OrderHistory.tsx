@@ -170,7 +170,7 @@ export const OrderHistory: React.FC = () => {
                           Total Paid
                         </span>
                         <span className="text-xs font-black text-luxury-gold">
-                          ${order.total.toFixed(2)}
+                          Rs. {order.total.toFixed(2)}
                         </span>
                       </div>
 
@@ -230,7 +230,7 @@ export const OrderHistory: React.FC = () => {
                               </div>
                               <div className="text-right space-y-0.5">
                                 <span className="text-xs font-bold text-luxury-gold block">
-                                  ${item.product.price.toFixed(2)}
+                                  Rs. {item.product.price.toFixed(2)}
                                 </span>
                                 <span className="text-[10px] text-slate-400 block font-medium">
                                   Qty: {item.quantity}
@@ -280,7 +280,7 @@ export const OrderHistory: React.FC = () => {
                             <div className="flex justify-between text-slate-400 pt-2 border-t border-luxury-sand">
                               <span>Estimated Total</span>
                               <span className="font-black text-luxury-gold">
-                                ${order.total.toFixed(2)}
+                                Rs. {order.total.toFixed(2)}
                               </span>
                             </div>
                             <div className="flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-50 px-2 py-1 rounded-md font-bold w-fit mt-3">

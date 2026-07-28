@@ -50,7 +50,7 @@ export const OffersGrid: React.FC<OffersGridProps> = ({ onClaimOffer }) => {
           </div>
           <div>
             <h4 className="text-sm font-bold uppercase text-slate-900 tracking-wider">Free Global Express Shipping</h4>
-            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">Spend over $300 and receive complimentary secure express shipping directly to your doorstep globally.</p>
+            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">Spend over Rs. 300 and receive complimentary secure express shipping directly to your doorstep globally.</p>
           </div>
         </div>
       </div>
