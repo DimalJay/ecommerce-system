@@ -65,6 +65,8 @@ export const ItemManagement: React.FC = () => {
             <input 
               type="text" 
               placeholder="Search items..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-luxury-cream border border-luxury-sand rounded-xl focus:outline-none focus:border-luxury-gold transition-colors"
             />
           </div>

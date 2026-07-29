@@ -24,6 +24,7 @@ export const Checkout: React.FC = () => {
     handleApplyPromo
   } = useCart();
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState(globalPromoCode || '');
@@ -47,9 +48,9 @@ export const Checkout: React.FC = () => {
 
   const handleChange =
     (field: keyof typeof form) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setForm((prev) => ({ ...prev, [field]: e.target.value }));
+      };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const discount = promoApplied ? subtotal * 0.2 : 0;
@@ -60,10 +61,7 @@ export const Checkout: React.FC = () => {
 
   const applyPromo = () => {
     if (promoCode.trim().length === 0) return;
-    const success = handleApplyPromo(promoCode.trim());
-    if (!success) {
-      alert(promoError || 'Invalid promo code. Try "AURA20"');
-    }
+    handleApplyPromo(promoCode.trim());
   };
 
   const handlePlaceOrder = (e: React.FormEvent) => {
@@ -145,12 +143,12 @@ export const Checkout: React.FC = () => {
   return (
     <div className="min-h-screen bg-luxury-cream text-luxury-charcoal font-sans selection:bg-luxury-gold selection:text-white">
       <Navbar
-        searchQuery=""
-        setSearchQuery={() => {}}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
         wishlistCount={0}
         cartCount={itemCount}
-        onOpenCart={() => {}}
-        onOpenWishlist={() => {}}
+        onOpenCart={() => { }}
+        onOpenWishlist={() => { }}
       />
 
       <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10">
