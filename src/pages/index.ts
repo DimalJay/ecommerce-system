@@ -1,2 +1,3 @@
-export { Home, default as HomeDefault } from './Home';
-export { ItemManagement, default as ItemManagementDefault } from './ItemManagement';
+export { Home } from './Home';
+export { CartPage } from './CartPage';
+export { default } from './Home';
