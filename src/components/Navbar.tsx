@@ -72,8 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a href="/category/Men" className="hover:text-luxury-gold transition-colors">
               Men
             </a>
-            <a href="/category/Accessories" className="hover:text-luxury-gold transition-colors">
-              Accessories
+            <a href="/category/New-Arrivals" className="hover:text-luxury-gold transition-colors">
+              New Arrivals
             </a>
           </nav>
 
