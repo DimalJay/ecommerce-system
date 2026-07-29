@@ -1,7 +1,7 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Minus, Plus, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
+import { X, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
 import type { Product } from './ProductCard';
+import { QuantitySelector } from './ui';
 
 export interface CartItem {
   product: Product;
@@ -16,7 +16,6 @@ interface CartDrawerProps {
   cartItems: CartItem[];
   onUpdateQuantity: (productId: number, size: string, color: string, newQty: number) => void;
   onRemoveItem: (productId: number, size: string, color: string) => void;
-  onCheckout?: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -139,23 +138,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   {/* Quantity and Price */}
                   <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-2 py-0.5 bg-luxury-cream">
-                      <button 
-                        onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity - 1)}
-                        className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-                      >
-                        <Minus size={10} />
-                      </button>
-                      <span className="px-2 text-xs font-bold text-luxury-charcoal min-w-4 text-center">
-                        {item.quantity}
-                      </span>
-                      <button 
-                        onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity + 1)}
-                        className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-                      >
-                        <Plus size={10} />
-                      </button>
-                    </div>
+                    <QuantitySelector
+                      quantity={item.quantity}
+                      onDecrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity - 1)}
+                      onIncrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity + 1)}
+                      variant="pill"
+                    />
                     <span className="text-xs font-extrabold text-luxury-gold">
                       Rs. {(item.product.price * item.quantity).toFixed(2)}
                     </span>

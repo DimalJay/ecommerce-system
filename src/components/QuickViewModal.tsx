@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { X, Star, ShoppingBag, Ruler, Check } from 'lucide-react';
+import { X, ShoppingBag, Ruler } from 'lucide-react';
 import type { Product } from './ProductCard';
+import { StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -22,8 +23,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  // Initialize selected color once product loads
-  React.useEffect(() => {
+  useEffect(() => {
     if (product) {
       setSelectedColor(product.swatches?.[0] ?? product.colorName);
       setSelectedSize('M');
@@ -37,8 +37,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     onAddToCart(product, selectedSize, selectedColor, quantity);
     onClose();
   };
-
-  const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
@@ -85,20 +83,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             </h2>
 
             {/* Ratings and Reviews */}
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    size={14} 
-                    fill={i < Math.floor(product.rating) ? '#f59e0b' : 'none'} 
-                    className={i < Math.floor(product.rating) ? 'text-amber-500' : 'text-slate-300'}
-                  />
-                ))}
-              </div>
-              <span className="font-extrabold text-luxury-charcoal">{product.rating}</span>
+            <StarRating rating={product.rating} showValue>
               <span className="text-slate-400">({product.reviewsCount} customer reviews)</span>
-            </div>
+            </StarRating>
 
             {/* Price tag */}
             <div className="flex items-baseline gap-3 pt-2">
@@ -128,21 +115,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   Size Guide
                 </button>
               </div>
-              <div className="flex gap-2">
-                {sizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={`w-10 h-10 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                      selectedSize === s
-                        ? 'bg-luxury-charcoal border-luxury-charcoal text-white shadow-md'
-                        : 'border-luxury-gold-light/40 hover:border-luxury-gold bg-white text-slate-600'
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+              <SizeSelector selectedSize={selectedSize} onSelect={setSelectedSize} />
             </div>
 
             {/* Color Swatch Selection */}
@@ -151,23 +124,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="text-xs font-bold text-luxury-charcoal uppercase tracking-wider block">
                   Color: <span className="font-medium text-slate-500">{selectedColor}</span>
                 </span>
-                <div className="flex gap-2">
-                  {product.swatches.map((colorVal, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedColor(colorVal)}
-                      className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
-                        selectedColor === colorVal
-                          ? 'ring-2 ring-luxury-gold border-white'
-                          : 'border-slate-300'
-                      }`}
-                      style={{ backgroundColor: colorVal }}
-                      title={colorVal}
-                    >
-                      {selectedColor === colorVal && <Check size={10} className="text-white drop-shadow-xs" />}
-                    </button>
-                  ))}
-                </div>
+                <ColorSwatches swatches={product.swatches} selectedColor={selectedColor} onSelect={setSelectedColor} />
               </div>
             )}
           </div>
@@ -176,23 +133,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           <div className="flex flex-col gap-3 pt-4 border-t border-luxury-sand">
             <div className="flex gap-4">
               {/* Quantity */}
-              <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-4 py-2 bg-white">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
-                >
-                  -
-                </button>
-                <span className="px-4 text-xs font-bold text-luxury-charcoal min-w-[24px] text-center">
-                  {quantity}
-                </span>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
-                >
-                  +
-                </button>
-              </div>
+              <QuantitySelector
+                quantity={quantity}
+                onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
+                onIncrease={() => setQuantity(quantity + 1)}
+                variant="pill"
+              />
 
               {/* Add to Bag */}
               <button 
@@ -213,7 +159,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               View Full Details
             </Link>
           </div>
-
         </div>
       </div>
     </div>

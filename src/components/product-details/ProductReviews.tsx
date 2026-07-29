@@ -1,6 +1,7 @@
-import React from 'react';
-import { Star, ShieldCheck } from 'lucide-react';
+import type React from 'react';
+import { ShieldCheck } from 'lucide-react';
 import type { Product } from '../ProductCard';
+import { StarRating } from '../ui';
 
 interface ProductReviewsProps {
   product: Product;
@@ -22,12 +23,8 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
         {/* Overview Summary Box */}
         <div className="bg-white border border-luxury-gold-light/20 p-6 rounded-3xl text-center space-y-3">
           <span className="text-5xl font-black text-luxury-charcoal">{product.rating}</span>
-          <div className="flex justify-center text-amber-500">
-            <Star size={18} fill="#f59e0b" className="text-amber-500" />
-            <Star size={18} fill="#f59e0b" className="text-amber-500" />
-            <Star size={18} fill="#f59e0b" className="text-amber-500" />
-            <Star size={18} fill="#f59e0b" className="text-amber-500" />
-            <Star size={18} fill="#f59e0b" className="text-amber-500" />
+          <div className="flex justify-center">
+            <StarRating rating={product.rating} size={18} />
           </div>
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
             Overall score based on {product.reviewsCount} reviews
@@ -62,11 +59,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
                   <h4 className="text-sm font-bold text-luxury-charcoal">{rev.name}</h4>
                   <p className="text-[10px] text-slate-400 font-medium">{rev.date}</p>
                 </div>
-                <div className="flex text-amber-500">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={12} fill={i < Math.floor(rev.rating) ? '#f59e0b' : 'none'} className="text-amber-500" />
-                  ))}
-                </div>
+                <StarRating rating={rev.rating} size={12} />
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-luxury-charcoal">{rev.title}</p>

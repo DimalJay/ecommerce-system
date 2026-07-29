@@ -1,6 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Eye, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Eye } from 'lucide-react';
+import { StarRating } from './ui';
 
 export interface Product {
   id: number;
@@ -91,13 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex flex-col flex-1 gap-2.5">
         {/* Rating & Color Swatches Row */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-xs text-slate-500">
-            <span className="flex items-center text-amber-400">
-              <Star size={12} fill="#f59e0b" className="text-amber-500" />
-            </span>
-            <span className="text-[11px] font-bold text-luxury-charcoal">{product.rating}</span>
-            <span className="text-[10px] text-slate-400">({product.reviewsCount})</span>
-          </div>
+          <StarRating rating={product.rating} size={12} />
 
           {product.swatches && (
             <div className="flex items-center gap-1">
@@ -106,8 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   key={idx}
                   className="w-2.5 h-2.5 rounded-full border border-slate-250 shadow-3xs"
                   style={{ backgroundColor: sw }}
-                  title={product.colorName}
-                ></span>
+                />
               ))}
             </div>
           )}

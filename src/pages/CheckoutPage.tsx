@@ -20,7 +20,6 @@ export const Checkout: React.FC = () => {
     removeCheckedOutItems,
     promoCode: globalPromoCode,
     promoApplied,
-    promoError,
     handleApplyPromo
   } = useCart();
 

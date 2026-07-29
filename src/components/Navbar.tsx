@@ -60,18 +60,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-slate-600">
-            <a href="/" className="text-luxury-gold border-b-2 border-luxury-gold pb-1 font-black">
+            <Link to="/" className="text-luxury-gold border-b-2 border-luxury-gold pb-1 font-black">
               New Arrivals
-            </a>
-            <a href="#collections" className="hover:text-luxury-gold transition-colors">
+            </Link>
+            <Link to="/" className="hover:text-luxury-gold transition-colors">
               Collections
-            </a>
-            <a href="#products" className="hover:text-luxury-gold transition-colors">
+            </Link>
+            <Link to="/" className="hover:text-luxury-gold transition-colors">
               Shop
-            </a>
-            <a href="#deals" className="hover:text-luxury-gold transition-colors">
+            </Link>
+            <Link to="/" className="hover:text-luxury-gold transition-colors">
               Deals
-            </a>
+            </Link>
           </nav>
 
           {/* Right Search Bar & Actions */}
