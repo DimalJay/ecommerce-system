@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState } from 'react';
 import type { Product } from '../components/ProductCard';
 import type { CartItem } from '../components/CartDrawer';
 import { PRODUCTS } from '../data';
+import { PROMO_CODE } from '../lib/constants';
+
 
 export const getItemKey = (item: { product: { id: number }; selectedSize: string; selectedColor: string }) =>
   `${item.product.id}-${item.selectedSize}-${item.selectedColor}`;
@@ -163,12 +165,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const handleApplyPromo = (code: string): boolean => {
-    if (code.trim().toUpperCase() === 'AURA20') {
+    if (code.trim().toUpperCase() === PROMO_CODE) {
       setPromoApplied(true);
       setPromoError('');
       return true;
     } else {
-      setPromoError('Invalid promo code. Try "AURA20"');
+      setPromoError(`Invalid promo code. Try "${PROMO_CODE}"`);
       setPromoApplied(false);
       return false;
     }

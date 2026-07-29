@@ -1,50 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { AppLayout, ProductCard } from '../components';
 import { ProductImageGallery, ProductInfoSection, ProductSpecsAccordion, ProductReviews } from '../components/product-details';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data';
 import type { Product } from '../components/ProductCard';
+import { useToast } from '../hooks/useToast';
+import { Toast } from '../components/ui';
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  
-  const {
-    addToCart,
-    addToCartWithQty,
-    setIsCartOpen,
-    wishlist,
-    toggleWishlist,
-    setActiveQuickViewProduct,
-    setIsSizeGuideOpen
-  } = useCart();
 
-  // Find product by ID
+  const { addToCart, addToCartWithQty, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
+
   const product = PRODUCTS.find((p) => p.id === Number(id));
 
-  // States
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
-  const [wishlisted, setWishlisted] = useState<boolean>(false);
-
-  // Images Gallery State
   const [activeImage, setActiveImage] = useState<string>('');
   const [imageThumbnails, setImageThumbnails] = useState<string[]>([]);
-
-  // Toast State
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const triggerToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  const { toastMessage, triggerToast } = useToast();
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (product) {
-      setSelectedColor(product.colorName);
+      setSelectedColor(product.swatches?.[0] ?? product.colorName);
       setActiveImage(product.image);
       setImageThumbnails([
         product.image,
@@ -77,8 +59,7 @@ export const ProductDetails: React.FC = () => {
 
   const handleToggleWishlist = () => {
     toggleWishlist(product.id);
-    setWishlisted((prev) => !prev);
-    triggerToast(wishlisted ? 'Removed from saved collection' : 'Added to saved collection');
+    triggerToast(wishlist.includes(product.id) ? 'Removed from saved collection' : 'Added to saved collection');
   };
 
   const handleAddToCart = (p: Product, size: string = 'M', color: string = 'Default') => {
@@ -87,21 +68,13 @@ export const ProductDetails: React.FC = () => {
     setIsCartOpen(true);
   };
 
-  // Find related products in the same category
   const relatedProducts = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   return (
     <AppLayout>
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-120 bg-luxury-charcoal text-white px-5 py-3 rounded-2xl shadow-2xl border border-luxury-gold/30 flex items-center gap-3 text-xs font-bold animate-slide-over">
-          <CheckCircle2 size={16} className="text-luxury-gold" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      {toastMessage && <Toast message={toastMessage} />}
 
       <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
-        {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">
           <Link to="/" className="hover:text-luxury-gold transition-colors">Atelier</Link>
           <ChevronRight size={12} className="text-slate-300" />
@@ -110,65 +83,35 @@ export const ProductDetails: React.FC = () => {
           <span className="text-luxury-charcoal font-bold">{product.title}</span>
         </div>
 
-        {/* Product Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
-          {/* Gallery component */}
-          <ProductImageGallery
-            activeImage={activeImage}
-            setActiveImage={setActiveImage}
-            imageThumbnails={imageThumbnails}
-            title={product.title}
-            discount={product.discount}
-          />
+          <ProductImageGallery activeImage={activeImage} setActiveImage={setActiveImage} imageThumbnails={imageThumbnails} title={product.title} discount={product.discount} />
 
-          {/* Details & Specs component */}
           <div className="lg:col-span-5 space-y-8">
-            <ProductInfoSection
-              product={product}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-              selectedSize={selectedSize}
-              setSelectedSize={setSelectedSize}
-              quantity={quantity}
-              setQuantity={setQuantity}
-              wishlisted={wishlist.includes(product.id)}
-              onToggleWishlist={handleToggleWishlist}
-              onAddToBag={handleAddToBag}
+            <ProductInfoSection product={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor}
+              selectedSize={selectedSize} setSelectedSize={setSelectedSize} quantity={quantity} setQuantity={setQuantity}
+              wishlisted={wishlist.includes(product.id)} onToggleWishlist={handleToggleWishlist} onAddToBag={handleAddToBag}
               onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
             />
-
             <ProductSpecsAccordion product={product} />
           </div>
         </div>
 
-        {/* Related Products Section */}
         {relatedProducts.length > 0 && (
           <section className="space-y-6 pt-10 border-t border-luxury-gold-light/20">
             <div className="text-center max-w-xl mx-auto mb-10">
-              <span className="text-[10px] font-black text-luxury-gold uppercase tracking-widest block mb-2">
-                Atelier Recommendations
-              </span>
-              <h2 className="text-3xl font-black text-luxury-charcoal tracking-tight font-sans">
-                You May Also Like
-              </h2>
+              <span className="text-[10px] font-black text-luxury-gold uppercase tracking-widest block mb-2">Atelier Recommendations</span>
+              <h2 className="text-3xl font-black text-luxury-charcoal tracking-tight font-sans">You May Also Like</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  isWishlisted={wishlist.includes(p.id)}
-                  onToggleWishlist={toggleWishlist}
-                  onAddToCart={handleAddToCart}
-                  onOpenQuickView={setActiveQuickViewProduct}
+                <ProductCard key={p.id} product={p} isWishlisted={wishlist.includes(p.id)}
+                  onToggleWishlist={toggleWishlist} onAddToCart={handleAddToCart} onOpenQuickView={setActiveQuickViewProduct}
                 />
               ))}
             </div>
           </section>
         )}
 
-        {/* Customer Review Section */}
         <ProductReviews product={product} />
       </main>
     </AppLayout>

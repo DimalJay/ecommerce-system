@@ -1,6 +1,7 @@
-import React from 'react';
-import { Star, ShoppingBag, Heart, Minus, Plus } from 'lucide-react';
+import type React from 'react';
+import { ShoppingBag, Heart } from 'lucide-react';
 import type { Product } from '../ProductCard';
+import { StarRating, ColorSwatches, SizeSelector, QuantitySelector } from '../ui';
 
 interface ProductInfoSectionProps {
   product: Product;
@@ -39,17 +40,12 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
           {product.title}
         </h1>
 
-        {/* Rating Summary */}
-        <div className="flex items-center gap-2 text-sm text-slate-500 pt-1">
-          <div className="flex items-center text-amber-400">
-            <Star size={14} fill="#f59e0b" className="text-amber-500" />
-          </div>
-          <span className="font-extrabold text-luxury-charcoal">{product.rating}</span>
+        <StarRating rating={product.rating} showValue>
           <span>&bull;</span>
           <span className="font-semibold text-slate-400 hover:text-luxury-gold transition-colors cursor-pointer">
             {product.reviewsCount} customer reviews
           </span>
-        </div>
+        </StarRating>
       </div>
 
       {/* Price Indicator */}
@@ -58,14 +54,14 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
           Rs. {product.price.toFixed(2)}
         </span>
         {product.oldPrice && (
-          <span className="text-sm text-slate-400 line-through font-bold">
-            Rs. {product.oldPrice.toFixed(2)}
-          </span>
-        )}
-        {product.oldPrice && (
-          <span className="text-[10px] font-extrabold uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-            SAVE Rs. {(product.oldPrice - product.price).toFixed(2)}
-          </span>
+          <>
+            <span className="text-sm text-slate-400 line-through font-bold">
+              Rs. {product.oldPrice.toFixed(2)}
+            </span>
+            <span className="text-[10px] font-extrabold uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+              SAVE Rs. {(product.oldPrice - product.price).toFixed(2)}
+            </span>
+          </>
         )}
       </div>
 
@@ -75,19 +71,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
           Color: <strong className="text-luxury-charcoal font-black">{selectedColor}</strong>
         </span>
         {product.swatches && (
-          <div className="flex items-center gap-2.5">
-            {product.swatches.map((sw, idx) => (
-              <button
-                key={idx}
-                onClick={() => setSelectedColor(product.colorName)}
-                className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer hover:scale-105 ${
-                  selectedColor === product.colorName ? 'border-luxury-gold ring-1 ring-luxury-gold/30' : 'border-slate-300'
-                }`}
-                style={{ backgroundColor: sw }}
-                title={product.colorName}
-              />
-            ))}
-          </div>
+          <ColorSwatches swatches={product.swatches} selectedColor={selectedColor} onSelect={setSelectedColor} />
         )}
       </div>
 
@@ -105,49 +89,18 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             Size Guide
           </button>
         </div>
-        <div className="grid grid-cols-5 gap-2">
-          {['XS', 'S', 'M', 'L', 'XL'].map((sz) => (
-            <button
-              key={sz}
-              type="button"
-              onClick={() => setSelectedSize(sz)}
-              className={`py-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                selectedSize === sz
-                  ? 'border-luxury-gold bg-luxury-sand text-luxury-charcoal'
-                  : 'border-luxury-gold-light/20 bg-white hover:border-luxury-gold-light/50 text-slate-600'
-              }`}
-            >
-              {sz}
-            </button>
-          ))}
-        </div>
+        <SizeSelector selectedSize={selectedSize} onSelect={setSelectedSize} />
       </div>
 
       {/* Quantity Selector & Action Buttons */}
       <div className="space-y-4 pt-2">
         <div className="flex gap-4">
-          {/* Quantity Controls */}
-          <div className="flex items-center border border-luxury-gold-light/40 rounded-2xl px-4 py-2 bg-white">
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-            >
-              <Minus size={14} />
-            </button>
-            <span className="px-4 text-sm font-black text-luxury-charcoal min-w-[24px] text-center">
-              {quantity}
-            </span>
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => q + 1)}
-              className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-            >
-              <Plus size={14} />
-            </button>
-          </div>
+          <QuantitySelector
+            quantity={quantity}
+            onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
+            onIncrease={() => setQuantity((q) => q + 1)}
+          />
 
-          {/* Add to Cart */}
           <button
             type="button"
             onClick={onAddToBag}
@@ -157,7 +110,6 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             Add to Atelier Bag
           </button>
 
-          {/* Add to Wishlist */}
           <button
             type="button"
             onClick={onToggleWishlist}

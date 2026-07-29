@@ -63,17 +63,17 @@ interface ItemTableProps {
   sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({ 
-  onEdit, 
-  onDelete, 
-  searchQuery, 
-  categoryFilter, 
-  sortBy 
+export const ItemTable: React.FC<ItemTableProps> = ({
+  onEdit,
+  onDelete,
+  searchQuery,
+  categoryFilter,
+  sortBy
 }) => {
   const filteredItems = mockItems
     .filter((item) => {
       // Category Filter
-      if (categoryFilter !== 'All' && item.category !== categoryFilter) {
+      if (categoryFilter !== 'All' && item.category.toLowerCase() !== categoryFilter.toLowerCase()) {
         return false;
       }
       // Search query
@@ -93,76 +93,81 @@ export const ItemTable: React.FC<ItemTableProps> = ({
     });
 
   return (
-    <div className="w-full bg-white rounded-3xl shadow-sm border border-[#f5f0e6] overflow-hidden">
+    <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-[#fbf9f6] text-slate-500 text-sm uppercase tracking-wider border-b border-[#f5f0e6]">
-              <th className="px-6 py-4 font-semibold">Product</th>
-              <th className="px-6 py-4 font-semibold">Category</th>
-              <th className="px-6 py-4 font-semibold">Price</th>
-              <th className="px-6 py-4 font-semibold">Stock</th>
-              <th className="px-6 py-4 font-semibold">Status</th>
-              <th className="px-6 py-4 font-semibold text-right">Actions</th>
+            <tr className="bg-luxury-sand/50 text-slate-700 text-xs font-black uppercase tracking-wider border-b border-luxury-gold-light/30">
+              <th className="px-6 py-4">Product</th>
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Price</th>
+              <th className="px-6 py-4">Stock</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#f5f0e6]">
+          <tbody className="divide-y divide-luxury-gold-light/20">
             {filteredItems.map((item) => (
-              <tr key={item.id} className="hover:bg-[#fbf9f6] transition-colors group">
+              <tr key={item.id} className="hover:bg-luxury-cream/50 transition-colors duration-150 group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      className="w-12 h-12 rounded-xl object-cover border border-[#f5f0e6]"
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-12 h-12 rounded-xl object-cover border border-luxury-gold-light/30 shadow-2xs"
                     />
                     <div>
-                      <p className="font-semibold text-slate-900 group-hover:text-[#c5a880] transition-colors">{item.name}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">SKU: {item.sku}</p>
+                      <p className="font-bold text-luxury-charcoal group-hover:text-luxury-gold transition-colors text-xs sm:text-sm">{item.name}</p>
+                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">SKU: {item.sku}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-slate-600">{item.category}</span>
+                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{item.category}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="font-medium text-slate-900">Rs. {item.price.toFixed(2)}</span>
+                  <span className="font-extrabold text-luxury-charcoal text-xs sm:text-sm">Rs. {item.price.toFixed(2)}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-slate-600">{item.stock} units</span>
+                  <span className="text-xs font-medium text-slate-600">{item.stock} units</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-                    item.status === 'In Stock' 
-                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.status === 'In Stock'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
                       : item.status === 'Low Stock'
-                      ? 'bg-amber-50 text-amber-600 border-amber-100'
-                      : 'bg-rose-50 text-rose-600 border-rose-100'
-                  }`}>
+                        ? 'bg-amber-50 text-amber-700 border-amber-200/80'
+                        : 'bg-rose-50 text-rose-700 border-rose-200/80'
+                    }`}>
                     {item.status}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center justify-end gap-2">
-                    <button 
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button
+                      type="button"
                       onClick={() => onEdit(item)}
-                      className="p-2 text-slate-400 hover:text-[#c5a880] hover:bg-[#f5f0e6] rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-luxury-gold hover:bg-luxury-sand/60 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Edit Item"
+                      aria-label="Edit Item"
                     >
-                      <Edit2 size={18} />
+                      <Edit2 size={16} />
                     </button>
-                    <button 
+                    <button
+                      type="button"
                       onClick={() => onDelete(item)}
-                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Delete Item"
+                      aria-label="Delete Item"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
-                    <button 
-                      className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                    <button
+                      type="button"
+                      className="p-2 text-slate-400 hover:text-luxury-charcoal hover:bg-slate-100 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="More Options"
+                      aria-label="More Options"
                     >
-                      <MoreVertical size={18} />
+                      <MoreVertical size={16} />
                     </button>
                   </div>
                 </td>
@@ -171,17 +176,17 @@ export const ItemTable: React.FC<ItemTableProps> = ({
           </tbody>
         </table>
       </div>
-      
-      {/* Pagination / Footer */}
-      <div className="px-6 py-4 bg-white border-t border-[#f5f0e6] flex items-center justify-between">
-        <p className="text-sm text-slate-500">
-          Showing <span className="font-medium">1</span> to <span className="font-medium">4</span> of <span className="font-medium">4</span> items
+
+      {/* Pagination Footer */}
+      <div className="px-6 py-4 bg-white border-t border-luxury-gold-light/20 flex items-center justify-between">
+        <p className="text-xs text-slate-500 font-medium">
+          Showing <span className="font-bold text-luxury-charcoal">{filteredItems.length > 0 ? 1 : 0}</span> to <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> of <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> items
         </p>
         <div className="flex gap-2">
-          <button className="px-3 py-1 text-sm border border-[#f5f0e6] text-slate-400 rounded-lg cursor-not-allowed">
+          <button type="button" className="px-3 py-1.5 text-xs font-bold border border-luxury-gold-light/30 text-slate-400 rounded-xl cursor-not-allowed opacity-60">
             Previous
           </button>
-          <button className="px-3 py-1 text-sm border border-[#f5f0e6] text-slate-400 rounded-lg cursor-not-allowed">
+          <button type="button" className="px-3 py-1.5 text-xs font-bold border border-luxury-gold-light/30 text-slate-400 rounded-xl cursor-not-allowed opacity-60">
             Next
           </button>
         </div>

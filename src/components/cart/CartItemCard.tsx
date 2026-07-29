@@ -1,6 +1,7 @@
-import React from 'react';
-import { Minus, Plus, Trash2, Check } from 'lucide-react';
+import type React from 'react';
+import { Trash2, Check } from 'lucide-react';
 import type { CartItem } from '../CartDrawer';
+import { QuantitySelector } from '../ui';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -71,30 +72,14 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
         </div>
       </div>
 
-      {/* Controls & Price (Mobile & Desktop layout) */}
+      {/* Controls & Price */}
       <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-luxury-sand">
-        {/* Quantity Controls */}
-        <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-3 py-1 bg-luxury-cream">
-          <button
-            type="button"
-            onClick={() => onUpdateQuantity(item.quantity - 1)}
-            className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-            aria-label="Decrease quantity"
-          >
-            <Minus size={12} />
-          </button>
-          <span className="px-3 text-xs font-bold text-luxury-charcoal min-w-[20px] text-center">
-            {item.quantity}
-          </span>
-          <button
-            type="button"
-            onClick={() => onUpdateQuantity(item.quantity + 1)}
-            className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
-            aria-label="Increase quantity"
-          >
-            <Plus size={12} />
-          </button>
-        </div>
+        <QuantitySelector
+          quantity={item.quantity}
+          onDecrease={() => onUpdateQuantity(item.quantity - 1)}
+          onIncrease={() => onUpdateQuantity(item.quantity + 1)}
+          variant="compact"
+        />
 
         {/* Row Subtotal */}
         <div className="text-right min-w-[80px]">

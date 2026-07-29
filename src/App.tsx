@@ -5,7 +5,6 @@ import { Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage, OrderMa
 import { CartPage } from './pages/CartPage';
 import { CartProvider } from './context/CartContext';
 
-
 function App() {
   return (
     <CartProvider>

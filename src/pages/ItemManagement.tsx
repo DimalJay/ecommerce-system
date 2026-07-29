@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Search, ChevronDown } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
-import { ItemTable, type AdminItem } from '../components/admin/ItemTable';
-import { AddItemModal } from '../components/admin/AddItemModal';
-import { UpdateItemModal } from '../components/admin/UpdateItemModal';
-import { ConfirmDeleteModal } from '../components/admin/ConfirmDeleteModal';
+import { Plus, Filter, ChevronDown } from 'lucide-react';
+import { AppLayout } from '../components';
+import { ItemTable, AddItemModal, UpdateItemModal, ConfirmDeleteModal, type AdminItem } from '../components/admin';
+import { SearchInput } from '../components/ui';
 
 export const ItemManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,21 +17,9 @@ export const ItemManagement: React.FC = () => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const handleEditItem = (item: AdminItem) => {
-    setSelectedItem(item);
-    setIsUpdateModalOpen(true);
-  };
-
-  const handleDeleteClick = (item: AdminItem) => {
-    setSelectedItem(item);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleConfirmDelete = (item: AdminItem) => {
-    alert(`Item "${item.name}" deleted! (Mock)`);
-    setIsDeleteModalOpen(false);
-    setSelectedItem(null);
-  };
+  const handleEditItem = (item: AdminItem) => { setSelectedItem(item); setIsUpdateModalOpen(true); };
+  const handleDeleteClick = (item: AdminItem) => { setSelectedItem(item); setIsDeleteModalOpen(true); };
+  const handleConfirmDelete = (item: AdminItem) => { alert(`Item "${item.name}" deleted! (Mock)`); setIsDeleteModalOpen(false); setSelectedItem(null); };
 
   const getSortLabel = (val: string) => {
     switch (val) {
@@ -44,22 +30,23 @@ export const ItemManagement: React.FC = () => {
     }
   };
 
+  const categories = ['All', 'Women', 'Men', 'Unisex', 'Kids'];
+
   return (
-    <div className="min-h-screen bg-luxury-cream text-slate-900 flex flex-col font-sans">
-      <AdminNavbar />
-
+    <AppLayout>
       <main className="max-w-[1440px] mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
-
+        
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-luxury-gold-light/20 pb-6 gap-4 text-left">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Inventory Management</h1>
             <p className="text-slate-500 mt-1">Manage your store's inventory, prices, and availability.</p>
           </div>
-
-          <button
+          
+          <button 
+            type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg"
+            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
           >
             <Plus size={16} />
             <span>Add New Item</span>
@@ -67,116 +54,80 @@ export const ItemManagement: React.FC = () => {
         </div>
 
         {/* Controls Bar */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-luxury-sand/55 z-30 relative">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input
-              type="text"
-              placeholder="Search items by name, SKU, or category..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-luxury-cream border border-luxury-sand rounded-full focus:outline-none focus:border-luxury-gold text-xs font-semibold"
-            />
-          </div>
+        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-luxury-sand">
+          <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Search items..." className="w-full sm:w-96" />
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Custom Category Dropdown */}
-            <div className="relative w-44">
+            {/* Category Filter Dropdown */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={() => {
-                  setIsCategoryOpen(!isCategoryOpen);
-                  setIsSortOpen(false);
-                }}
-                className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-luxury-gold-light/30 rounded-xl focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all text-xs font-bold text-slate-600 cursor-pointer focus:outline-none"
+                onClick={() => { setIsCategoryOpen(!isCategoryOpen); setIsSortOpen(false); }}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 bg-luxury-cream border border-luxury-sand rounded-xl hover:bg-luxury-sand transition-colors cursor-pointer"
               >
-                <span>{categoryFilter === 'All' ? 'All Categories' : categoryFilter}</span>
-                <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                <Filter size={16} className="text-luxury-gold" />
+                <span>Category: {categoryFilter}</span>
+                <ChevronDown size={14} className={`transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isCategoryOpen && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setIsCategoryOpen(false)} />
-                  <div className="absolute left-0 mt-1.5 w-full bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-40 text-left py-1 animate-fade-in">
-                    {['All', 'Women', 'Men', 'Unisex'].map((cat) => {
-                      const isSelected = categoryFilter === cat;
-                      return (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => {
-                            setCategoryFilter(cat);
-                            setIsCategoryOpen(false);
-                          }}
-                          className={`block w-full text-left px-4 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
-                            isSelected 
-                              ? 'bg-luxury-charcoal text-white font-bold' 
-                              : 'text-slate-600 hover:bg-luxury-sand/30'
-                          }`}
-                        >
-                          {cat === 'All' ? 'All Categories' : cat}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
+                <div className="absolute right-0 mt-2 w-44 bg-white border border-luxury-gold-light/30 rounded-xl shadow-xl p-1 z-30 space-y-0.5 animate-fade-in">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => { setCategoryFilter(cat); setIsCategoryOpen(false); }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                        categoryFilter === cat ? 'bg-luxury-sand text-luxury-gold-dark' : 'text-slate-600 hover:bg-luxury-cream'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 
-            {/* Custom Sort Dropdown */}
-            <div className="relative w-44">
+            {/* Sort Dropdown */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={() => {
-                  setIsSortOpen(!isSortOpen);
-                  setIsCategoryOpen(false);
-                }}
-                className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-luxury-gold-light/30 rounded-xl focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all text-xs font-bold text-slate-600 cursor-pointer focus:outline-none"
+                onClick={() => { setIsSortOpen(!isSortOpen); setIsCategoryOpen(false); }}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 bg-luxury-cream border border-luxury-sand rounded-xl hover:bg-luxury-sand transition-colors cursor-pointer"
               >
-                <span>{getSortLabel(sortBy)}</span>
-                <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isSortOpen ? 'rotate-180' : ''}`} />
+                <span>Sort: {getSortLabel(sortBy)}</span>
+                <ChevronDown size={14} className={`transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isSortOpen && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setIsSortOpen(false)} />
-                  <div className="absolute left-0 mt-1.5 w-full bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-40 text-left py-1 animate-fade-in">
-                    {[
-                      { val: 'default', label: 'Default Order' },
-                      { val: 'price-low', label: 'Price: Low to High' },
-                      { val: 'price-high', label: 'Price: High to Low' },
-                      { val: 'name-az', label: 'Name: A-Z' }
-                    ].map((opt) => {
-                      const isSelected = sortBy === opt.val;
-                      return (
-                        <button
-                          key={opt.val}
-                          type="button"
-                          onClick={() => {
-                            setSortBy(opt.val);
-                            setIsSortOpen(false);
-                          }}
-                          className={`block w-full text-left px-4 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
-                            isSelected 
-                              ? 'bg-luxury-charcoal text-white font-bold' 
-                              : 'text-slate-600 hover:bg-luxury-sand/30'
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-luxury-gold-light/30 rounded-xl shadow-xl p-1 z-30 space-y-0.5 animate-fade-in">
+                  {[
+                    { key: 'default', label: 'Default Order' },
+                    { key: 'price-low', label: 'Price: Low to High' },
+                    { key: 'price-high', label: 'Price: High to Low' },
+                    { key: 'name-az', label: 'Name: A-Z' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => { setSortBy(opt.key); setIsSortOpen(false); }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                        sortBy === opt.key ? 'bg-luxury-sand text-luxury-gold-dark' : 'text-slate-600 hover:bg-luxury-cream'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </div>
         </div>
 
         {/* Table Area */}
-        <ItemTable
-          onEdit={handleEditItem}
-          onDelete={handleDeleteClick}
+        <ItemTable 
+          onEdit={handleEditItem} 
+          onDelete={handleDeleteClick} 
           searchQuery={searchQuery}
           categoryFilter={categoryFilter}
           sortBy={sortBy}
@@ -185,9 +136,9 @@ export const ItemManagement: React.FC = () => {
       </main>
 
       {/* Modals */}
-      <AddItemModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+      <AddItemModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
       />
       <UpdateItemModal
         isOpen={isUpdateModalOpen}
@@ -206,7 +157,7 @@ export const ItemManagement: React.FC = () => {
         onConfirm={handleConfirmDelete}
         item={selectedItem}
       />
-    </div>
+    </AppLayout>
   );
 };
 

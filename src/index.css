@@ -21,11 +21,13 @@ body {
   min-height: 100vh;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom premium scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: #f5f0e6;
@@ -38,12 +40,30 @@ body {
   background: #aa8c65;
 }
 
+/* Custom UI Utilities for Glassmorphism & Micro-interactions */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(223, 211, 195, 0.35);
+}
+
+.glass-nav {
+  background: rgba(251, 249, 246, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(223, 211, 195, 0.3);
+}
+
+/* Custom animations with smooth easing */
 @keyframes slideOver {
   from {
     transform: translateX(100%);
+    opacity: 0.8;
   }
   to {
     transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -58,7 +78,7 @@ body {
 
 @keyframes scaleUp {
   from {
-    transform: scale(0.95);
+    transform: scale(0.96);
     opacity: 0;
   }
   to {
@@ -68,15 +88,15 @@ body {
 }
 
 .animate-slide-over {
-  animation: slideOver 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideOver 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
 .animate-scale-up {
-  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes marquee {
@@ -91,5 +111,3 @@ body {
 .animate-marquee {
   animation: marquee 25s linear infinite;
 }
-
-

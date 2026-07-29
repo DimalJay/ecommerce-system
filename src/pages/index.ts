@@ -1,6 +1,6 @@
-export { Home, default as HomeDefault } from './Home';
-export { ItemManagement, default as ItemManagementDefault } from './ItemManagement';
-export { Checkout } from './checkout';
+export { Home } from './Home';
+export { ItemManagement } from './ItemManagement';
+export { Checkout } from './CheckoutPage';
 export { ProductDetails } from './ProductDetails';
 export { OrderHistory } from './OrderHistory';
 export { CategoryPage } from './CategoryPage';
@@ -8,3 +8,4 @@ export { AuthPage } from './AuthPage';
 export { OrderManagement } from './OrderManagement';
 export { AdminAuthPage } from './AdminAuthPage';
 
+export { CartPage } from './CartPage';
