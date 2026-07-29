@@ -20,7 +20,7 @@ export const OtherCategoriesGrid: React.FC<OtherCategoriesGridProps> = ({ catego
           Explore Collections
         </span>
         <h2 className="text-2xl font-black text-luxury-charcoal tracking-tight font-sans">
-          Other Curated Categories
+          Other Categories
         </h2>
       </div>
 
