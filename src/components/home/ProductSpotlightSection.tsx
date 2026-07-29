@@ -62,7 +62,7 @@ export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = (
         </div>
 
         {/* Right 3 items */}
-        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
           {products.map((product) => (
             <ProductCard
               key={product.id}
