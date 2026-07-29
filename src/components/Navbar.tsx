@@ -123,11 +123,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/35 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all cursor-pointer font-bold flex items-center gap-1.5 text-xs"
+                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/35 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all cursor-pointer font-bold flex items-center justify-center"
                   title={`Signed in as ${user.name}`}
                 >
                   <User size={16} />
-                  <span className="hidden md:inline font-black uppercase text-[9px] tracking-widest">{user.name}</span>
                 </button>
 
                 {isProfileDropdownOpen && (
