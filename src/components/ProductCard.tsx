@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   return (
     <div className="group bg-white border border-luxury-gold-light/25 hover:border-luxury-gold-light/70 rounded-3xl p-4 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-luxury-gold/5 hover:-translate-y-1.5 relative overflow-hidden">
-      
+
       {/* Product Image Box with Overlay */}
       <div className="relative bg-luxury-sand h-72 w-full rounded-2xl overflow-hidden mb-3.5 border border-luxury-gold-light/15">
         <Link to={`/product/${product.id}`} className="block h-full w-full">
@@ -68,36 +68,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-label="Wishlist"
         >
-          <Heart 
-            size={16} 
-            fill={isWishlisted ? '#f43f5e' : 'none'} 
-            className={isWishlisted ? 'text-rose-500' : 'text-slate-600 transition-transform group-hover:scale-110'} 
+          <Heart
+            size={16}
+            fill={isWishlisted ? '#f43f5e' : 'none'}
+            className={isWishlisted ? 'text-rose-500' : 'text-slate-600 transition-transform group-hover:scale-110'}
           />
         </button>
 
-        {/* Quick View & Quick Add Hover Slide-up Overlay */}
-        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 ease-out flex gap-2 z-10">
-          {/* Quick View */}
-          <button
-            type="button"
-            onClick={() => onOpenQuickView(product)}
-            className="flex-1 bg-white/95 hover:bg-white text-luxury-charcoal text-[10px] font-bold py-2.5 px-3 rounded-xl backdrop-blur-md shadow-md border border-luxury-gold-light/40 flex items-center justify-center gap-1.5 cursor-pointer transition-all uppercase tracking-wider active:scale-[0.98]"
-          >
-            <Eye size={13} />
-            Quick View
-          </button>
-          
-          {/* Direct Add */}
-          <button
-            type="button"
-            onClick={() => onAddToCart(product, 'M', product.colorName)}
-            className="p-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-xl shadow-md flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-[0.98]"
-            title="Quick Add to Bag"
-            aria-label="Quick Add to Bag"
-          >
-            <ShoppingBag size={14} />
-          </button>
-        </div>
+        {/* Quick View Button */}
+        <button
+          type="button"
+          onClick={() => onOpenQuickView(product)}
+          className="absolute top-14 right-3 w-9 h-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-md shadow-sm border border-luxury-gold-light/20 flex items-center justify-center text-slate-600 hover:text-luxury-gold transition-all duration-200 cursor-pointer z-10 active:scale-90 lg:opacity-0 lg:group-hover:opacity-100 lg:-translate-x-2 lg:group-hover:translate-x-0"
+          title="Quick View"
+          aria-label="Quick View"
+        >
+          <Eye size={16} />
+        </button>
       </div>
 
       {/* Product Details Section */}

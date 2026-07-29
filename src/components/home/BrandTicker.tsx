@@ -10,14 +10,14 @@ const BRAND_LOGOS = [
 
 export const BrandTicker: React.FC = () => {
   return (
-    <section className="bg-white border-y border-slate-100 py-6 overflow-hidden">
+    <section className="bg-white border-y border-slate-100 py-3 sm:py-6 overflow-hidden">
       <div className="w-full relative flex items-center">
         {/* Infinite Marquee Wrapper */}
-        <div className="flex animate-marquee gap-24 whitespace-nowrap">
+        <div className="flex animate-marquee gap-12 sm:gap-24 whitespace-nowrap">
           {[...Array(4)].map((_, i) => (
             <React.Fragment key={i}>
               {BRAND_LOGOS.map((brand, idx) => (
-                <div key={`${i}-${idx}`} className={`text-xl uppercase tracking-widest ${brand.style} mx-4`}>
+                <div key={`${i}-${idx}`} className={`text-sm sm:text-xl uppercase tracking-widest ${brand.style} mx-3 sm:mx-4`}>
                   {brand.name}
                 </div>
               ))}
