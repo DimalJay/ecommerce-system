@@ -7,6 +7,9 @@ import { UpdateItemModal } from '../components/admin/UpdateItemModal';
 import { ConfirmDeleteModal } from '../components/admin/ConfirmDeleteModal';
 
 export const ItemManagement: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('default');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -51,23 +54,53 @@ export const ItemManagement: React.FC = () => {
         </div>
 
         {/* Controls Bar */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-luxury-sand">
-          <div className="relative w-full sm:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-luxury-sand/55">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input 
               type="text" 
-              placeholder="Search items..." 
-              className="w-full pl-10 pr-4 py-2 bg-luxury-cream border border-luxury-sand rounded-xl focus:outline-none focus:border-luxury-gold transition-colors"
+              placeholder="Search items by name, SKU, or category..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-luxury-cream border border-luxury-sand rounded-full focus:outline-none focus:border-luxury-gold text-xs font-semibold"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 text-slate-600 bg-luxury-cream border border-luxury-sand rounded-xl hover:bg-luxury-sand transition-colors">
-            <Filter size={20} />
-            <span>Filter</span>
-          </button>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Category Filter */}
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-4 py-2.5 bg-luxury-cream border border-luxury-gold-light/30 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all text-xs font-bold text-slate-600 rounded-full cursor-pointer focus:outline-none"
+            >
+              <option value="All">All Categories</option>
+              <option value="Women">Women</option>
+              <option value="Men">Men</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+
+            {/* Sort Dropdown */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2.5 bg-luxury-cream border border-luxury-gold-light/30 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all text-xs font-bold text-slate-600 rounded-full cursor-pointer focus:outline-none"
+            >
+              <option value="default">Default Order</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="name-az">Name: A-Z</option>
+            </select>
+          </div>
         </div>
 
         {/* Table Area */}
-        <ItemTable onEdit={handleEditItem} onDelete={handleDeleteClick} />
+        <ItemTable 
+          onEdit={handleEditItem} 
+          onDelete={handleDeleteClick} 
+          searchQuery={searchQuery}
+          categoryFilter={categoryFilter}
+          sortBy={sortBy}
+        />
 
       </main>
       

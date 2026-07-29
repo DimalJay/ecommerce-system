@@ -58,7 +58,7 @@ export const OrderControls: React.FC<OrderControlsProps> = ({
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as any)}
-          className="bg-luxury-cream border border-luxury-sand rounded-xl px-3 py-2 text-xs font-bold text-slate-600 focus:outline-none focus:border-luxury-gold"
+          className="px-4 py-2.5 bg-luxury-cream border border-luxury-gold-light/30 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all text-xs font-bold text-slate-600 rounded-full cursor-pointer focus:outline-none"
         >
           <option value="newest">Newest Orders</option>
           <option value="oldest">Oldest Orders</option>
