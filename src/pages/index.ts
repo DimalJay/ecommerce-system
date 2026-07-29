@@ -5,4 +5,7 @@ export { ProductDetails } from './ProductDetails';
 export { OrderHistory } from './OrderHistory';
 export { CategoryPage } from './CategoryPage';
 export { AuthPage } from './AuthPage';
+export { OrderManagement } from './OrderManagement';
+export { AdminAuthPage } from './AdminAuthPage';
+
 export { CartPage } from './CartPage';

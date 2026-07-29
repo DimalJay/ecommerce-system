@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -29,6 +29,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWishlist
 }) => {
   const { user, logout } = useCart();
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
     <>
       {/* Top Announcement Ticker */}
@@ -46,9 +49,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4 sm:gap-6">
           {/* Left Brand Logo & Mobile Menu */}
           <div className="flex items-center gap-3">
-            <button 
+            <button
               type="button"
-              className="lg:hidden p-2 hover:bg-luxury-sand/60 rounded-xl text-slate-700 transition-colors cursor-pointer" 
+              className="lg:hidden p-2 hover:bg-luxury-sand/60 rounded-xl text-slate-700 transition-colors cursor-pointer"
               title="Menu"
               aria-label="Toggle navigation menu"
             >
@@ -82,15 +85,40 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Search Bar & Actions */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Search Input Bar */}
-            <div className="relative hidden sm:flex items-center max-w-xs">
-              <input
-                type="text"
-                placeholder="Search Atelier..."
-                className="w-full pl-9 pr-4 py-2 bg-white/90 border border-luxury-gold-light/40 rounded-full text-xs text-luxury-charcoal placeholder-slate-400 focus:outline-none focus:border-luxury-gold focus:ring-2 focus:ring-luxury-gold/30 transition-all duration-200 shadow-2xs"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-3 text-slate-400 pointer-events-none" size={14} />
+            <div className="relative flex items-center">
+              {isSearchOpen ? (
+                <div className="flex items-center gap-2 bg-white border border-luxury-gold-light/40 rounded-full px-3 py-1.5 w-44 sm:w-60 transition-all duration-300 animate-fade-in shadow-2xs">
+                  <Search size={14} className="text-slate-400 shrink-0" />
+                  <input
+                    type="text"
+                    placeholder="Search Atelier..."
+                    className="w-full bg-transparent text-xs text-luxury-charcoal placeholder-slate-400 focus:outline-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchQuery('');
+                    }}
+                    className="text-[9px] text-slate-400 hover:text-luxury-charcoal uppercase tracking-widest font-black cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-luxury-gold transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
+                  title="Search Shop"
+                  aria-label="Search Shop"
+                >
+                  <Search size={18} />
+                </button>
+              )}
             </div>
 
             {/* Wishlist Button */}
@@ -125,25 +153,55 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Profile Account Button */}
+            {/* Profile Account Button with Dropdown */}
             {user ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/order-history"
-                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/40 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all duration-200 cursor-pointer font-bold flex items-center gap-1.5 text-xs"
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/40 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all duration-200 cursor-pointer font-bold flex items-center justify-center"
                   title={`Signed in as ${user.name}`}
                 >
                   <User size={16} />
-                  <span className="hidden md:inline font-extrabold uppercase text-[9px] tracking-widest">{user.name}</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="px-3 py-2 bg-white hover:bg-luxury-gold text-slate-700 hover:text-white border border-luxury-gold-light/40 rounded-xl transition-all duration-200 cursor-pointer text-[9px] font-extrabold uppercase tracking-widest shadow-2xs"
-                  title="Sign Out"
-                >
-                  Sign Out
                 </button>
+
+                {isProfileDropdownOpen && (
+                  <>
+                    {/* Invisible Backdrop to close dropdown on click outside */}
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    />
+
+                    {/* Dropdown Menu */}
+                    <div className="absolute right-0 mt-2.5 w-48 bg-white border border-luxury-gold-light/30 rounded-2xl shadow-2xl p-4 z-20 space-y-3 text-left animate-fade-in">
+                      <div className="border-b border-luxury-sand pb-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Signed in as</p>
+                        <p className="text-xs font-bold text-luxury-charcoal truncate">{user.name}</p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <Link
+                          to="/order-history"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 hover:bg-luxury-sand/40 rounded-xl text-xs font-bold text-slate-600 hover:text-luxury-gold transition-colors"
+                        >
+                          Order History
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            logout();
+                          }}
+                          className="block w-full text-left px-3 py-2 hover:bg-rose-50 rounded-xl text-xs font-bold text-rose-600 transition-colors cursor-pointer"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <Link

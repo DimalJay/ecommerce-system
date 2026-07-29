@@ -85,7 +85,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => navigate('/category/outerwear')}
+          onShopMore={() => navigate('/category/new-arrivals')}
         />
 
         <OffersGrid onClaimOffer={triggerToast} />

@@ -58,9 +58,40 @@ const mockItems: AdminItem[] = [
 interface ItemTableProps {
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
+  searchQuery: string;
+  categoryFilter: string;
+  sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
+export const ItemTable: React.FC<ItemTableProps> = ({
+  onEdit,
+  onDelete,
+  searchQuery,
+  categoryFilter,
+  sortBy
+}) => {
+  const filteredItems = mockItems
+    .filter((item) => {
+      // Category Filter
+      if (categoryFilter !== 'All' && item.category.toLowerCase() !== categoryFilter.toLowerCase()) {
+        return false;
+      }
+      // Search query
+      const query = searchQuery.toLowerCase().trim();
+      if (!query) return true;
+      return (
+        item.name.toLowerCase().includes(query) ||
+        item.sku.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-low') return a.price - b.price;
+      if (sortBy === 'price-high') return b.price - a.price;
+      if (sortBy === 'name-az') return a.name.localeCompare(b.name);
+      return 0; // Default (mock order)
+    });
+
   return (
     <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 overflow-hidden">
       <div className="overflow-x-auto">
@@ -76,13 +107,13 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-luxury-gold-light/20">
-            {mockItems.map((item) => (
+            {filteredItems.map((item) => (
               <tr key={item.id} className="hover:bg-luxury-cream/50 transition-colors duration-150 group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
+                    <img
+                      src={item.image}
+                      alt={item.name}
                       className="w-12 h-12 rounded-xl object-cover border border-luxury-gold-light/30 shadow-2xs"
                     />
                     <div>
@@ -101,19 +132,18 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
                   <span className="text-xs font-medium text-slate-600">{item.stock} units</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${
-                    item.status === 'In Stock' 
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.status === 'In Stock'
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
                       : item.status === 'Low Stock'
-                      ? 'bg-amber-50 text-amber-700 border-amber-200/80'
-                      : 'bg-rose-50 text-rose-700 border-rose-200/80'
-                  }`}>
+                        ? 'bg-amber-50 text-amber-700 border-amber-200/80'
+                        : 'bg-rose-50 text-rose-700 border-rose-200/80'
+                    }`}>
                     {item.status}
                   </span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-1.5">
-                    <button 
+                    <button
                       type="button"
                       onClick={() => onEdit(item)}
                       className="p-2 text-slate-400 hover:text-luxury-gold hover:bg-luxury-sand/60 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
@@ -122,7 +152,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
                     >
                       <Edit2 size={16} />
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => onDelete(item)}
                       className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
@@ -131,7 +161,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
                     >
                       <Trash2 size={16} />
                     </button>
-                    <button 
+                    <button
                       type="button"
                       className="p-2 text-slate-400 hover:text-luxury-charcoal hover:bg-slate-100 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="More Options"
@@ -146,11 +176,11 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
           </tbody>
         </table>
       </div>
-      
+
       {/* Pagination Footer */}
       <div className="px-6 py-4 bg-white border-t border-luxury-gold-light/20 flex items-center justify-between">
         <p className="text-xs text-slate-500 font-medium">
-          Showing <span className="font-bold text-luxury-charcoal">1</span> to <span className="font-bold text-luxury-charcoal">4</span> of <span className="font-bold text-luxury-charcoal">4</span> items
+          Showing <span className="font-bold text-luxury-charcoal">{filteredItems.length > 0 ? 1 : 0}</span> to <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> of <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> items
         </p>
         <div className="flex gap-2">
           <button type="button" className="px-3 py-1.5 text-xs font-bold border border-luxury-gold-light/30 text-slate-400 rounded-xl cursor-not-allowed opacity-60">
