@@ -30,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const { user, logout } = useCart();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <>
@@ -62,32 +63,54 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-slate-600">
-            <a href="/" className="text-luxury-gold border-b-2 border-luxury-gold pb-1 font-black">
-              New Arrivals
+            <a href="/" className="hover:text-luxury-gold transition-colors">
+              Shop All
             </a>
-            <a href="#collections" className="hover:text-luxury-gold transition-colors">
-              Collections
+            <a href="/category/Women" className="hover:text-luxury-gold transition-colors">
+              Women
             </a>
-            <a href="#products" className="hover:text-luxury-gold transition-colors">
-              Shop
+            <a href="/category/Men" className="hover:text-luxury-gold transition-colors">
+              Men
             </a>
-            <a href="#deals" className="hover:text-luxury-gold transition-colors">
-              Deals
+            <a href="/category/Accessories" className="hover:text-luxury-gold transition-colors">
+              Accessories
             </a>
           </nav>
 
           {/* Right Search Bar & Actions */}
           <div className="flex items-center gap-3">
-            {/* Search Input Bar */}
-            <div className="relative hidden sm:flex items-center max-w-xs">
-              <input
-                type="text"
-                placeholder="Search Atelier..."
-                className="w-full pl-9 pr-4 py-2 bg-white border border-luxury-gold-light/30 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-3 text-slate-400 pointer-events-none" size={14} />
+            {/* Expandable Search Input Bar */}
+            <div className="relative flex items-center">
+              {isSearchOpen ? (
+                <div className="flex items-center gap-2 bg-white border border-luxury-gold-light/30 rounded-full px-3 py-1.5 w-44 sm:w-60 transition-all duration-300 animate-fade-in">
+                  <Search size={14} className="text-slate-400 shrink-0" />
+                  <input
+                    type="text"
+                    placeholder="Search Atelier..."
+                    className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                  />
+                  <button 
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchQuery('');
+                    }}
+                    className="text-[9px] text-slate-400 hover:text-luxury-charcoal uppercase tracking-widest font-black cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2.5 bg-white hover:bg-luxury-sand border border-luxury-gold-light/30 rounded-full text-slate-700 hover:text-luxury-gold transition-all cursor-pointer"
+                  title="Search Shop"
+                >
+                  <Search size={18} />
+                </button>
+              )}
             </div>
 
             {/* Wishlist Button */}
