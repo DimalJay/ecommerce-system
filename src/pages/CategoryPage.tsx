@@ -53,7 +53,7 @@ export const CategoryPage: React.FC = () => {
     { key: 'women', title: "Women's Collection", image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80' },
     { key: 'men', title: "Men's Collection", image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80' },
     { key: 'kids', title: "Kids' Collection", image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80' },
-    { key: 'outerwear', title: 'Technical Outerwear', image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80' },
+    { key: 'new-arrivals', title: 'New Arrivals', image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80' },
   ].filter((cat) => cat.key !== categoryName?.toLowerCase());
 
   return (

@@ -68,17 +68,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[11px] font-extrabold uppercase tracking-[0.15em] text-slate-600">
-            <Link to="/" className="text-luxury-gold border-b-2 border-luxury-gold pb-0.5 font-extrabold">
+            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
+              Shop All
+            </Link>
+            <Link to="/category/women" className="hover:text-luxury-gold transition-colors duration-200">
+              Women
+            </Link>
+            <Link to="/category/men" className="hover:text-luxury-gold transition-colors duration-200">
+              Men
+            </Link>
+            <Link to="/category/new-arrivals" className="hover:text-luxury-gold transition-colors duration-200">
               New Arrivals
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Collections
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Shop
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Deals
             </Link>
           </nav>
 
