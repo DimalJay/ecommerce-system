@@ -1,0 +1,120 @@
+import React from 'react';
+import { Minus, Plus, Trash2, Check } from 'lucide-react';
+import type { CartItem } from '../CartDrawer';
+
+interface CartItemCardProps {
+  item: CartItem;
+  isSelected: boolean;
+  onToggleSelect: () => void;
+  onUpdateQuantity: (newQty: number) => void;
+  onRemove: () => void;
+}
+
+export const CartItemCard: React.FC<CartItemCardProps> = ({
+  item,
+  isSelected,
+  onToggleSelect,
+  onUpdateQuantity,
+  onRemove
+}) => {
+  const rowTotal = item.product.price * item.quantity;
+
+  return (
+    <div
+      className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-white border transition-all duration-300 ${
+        isSelected
+          ? 'border-luxury-gold shadow-md shadow-luxury-gold/5'
+          : 'border-luxury-gold-light/30 hover:border-luxury-gold-light/60'
+      }`}
+    >
+      {/* Checkbox + Image + Details */}
+      <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full sm:w-auto">
+        {/* Selection Checkbox */}
+        <button
+          type="button"
+          onClick={onToggleSelect}
+          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+            isSelected
+              ? 'bg-luxury-gold border-luxury-gold text-white'
+              : 'border-slate-300 hover:border-luxury-gold bg-white'
+          }`}
+          aria-label={isSelected ? 'Deselect item' : 'Select item'}
+        >
+          {isSelected && <Check size={13} strokeWidth={3} />}
+        </button>
+
+        {/* Product Image */}
+        <div className="w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden bg-luxury-sand shrink-0 border border-luxury-gold-light/20 relative">
+          <img
+            src={item.product.image}
+            alt={item.product.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Details */}
+        <div className="flex-1 min-w-0 space-y-1">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-luxury-gold block">
+            {item.product.category}
+          </span>
+          <h3 className="text-sm sm:text-base font-bold text-luxury-charcoal truncate">
+            {item.product.title}
+          </h3>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium">
+            <span>Color: <strong className="text-luxury-charcoal font-semibold">{item.selectedColor}</strong></span>
+            <span>&bull;</span>
+            <span>Size: <strong className="text-luxury-charcoal font-semibold">{item.selectedSize}</strong></span>
+          </div>
+          <div className="text-xs text-slate-400 font-semibold pt-1">
+            Unit Price: <span className="text-luxury-charcoal font-bold">Rs. {item.product.price.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Controls & Price (Mobile & Desktop layout) */}
+      <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-luxury-sand">
+        {/* Quantity Controls */}
+        <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-3 py-1 bg-luxury-cream">
+          <button
+            type="button"
+            onClick={() => onUpdateQuantity(item.quantity - 1)}
+            className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
+            aria-label="Decrease quantity"
+          >
+            <Minus size={12} />
+          </button>
+          <span className="px-3 text-xs font-bold text-luxury-charcoal min-w-[20px] text-center">
+            {item.quantity}
+          </span>
+          <button
+            type="button"
+            onClick={() => onUpdateQuantity(item.quantity + 1)}
+            className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
+            aria-label="Increase quantity"
+          >
+            <Plus size={12} />
+          </button>
+        </div>
+
+        {/* Row Subtotal */}
+        <div className="text-right min-w-[80px]">
+          <span className="text-xs text-slate-400 block font-medium sm:hidden">Total</span>
+          <span className="text-sm sm:text-base font-black text-luxury-gold">
+            Rs. {rowTotal.toFixed(2)}
+          </span>
+        </div>
+
+        {/* Remove Button */}
+        <button
+          type="button"
+          onClick={onRemove}
+          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors cursor-pointer"
+          title="Remove item"
+          aria-label="Remove item"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
+  );
+};

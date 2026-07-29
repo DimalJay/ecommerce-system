@@ -1,17 +1,20 @@
 export { Navbar } from './Navbar';
-export { HeroSection } from './HeroSection';
 export { ProductCard, type Product } from './ProductCard';
 export { CategoryCard, type Category } from './CategoryCard';
-export { PromoBanner } from './PromoBanner';
 export { Footer } from './Footer';
 export { CartDrawer, type CartItem } from './CartDrawer';
 export { WishlistDrawer } from './WishlistDrawer';
 export { QuickViewModal } from './QuickViewModal';
 export { SizeGuideModal } from './SizeGuideModal';
-export { TestimonialGrid } from './TestimonialGrid';
-export { InstagramGrid } from './InstagramGrid';
-export { BrandTicker } from './BrandTicker';
-export { ProductSpotlightSection } from './ProductSpotlightSection';
-export { OffersGrid } from './OffersGrid';
-export { ExperienceDifference } from './ExperienceDifference';
+export { AppLayout } from './AppLayout';
 
+// Home Page Specific Components
+export { HeroSection } from './home/HeroSection';
+export { BrandTicker } from './home/BrandTicker';
+export { ProductSpotlightSection } from './home/ProductSpotlightSection';
+export { OffersGrid } from './home/OffersGrid';
+export { ExperienceDifference } from './home/ExperienceDifference';
+export { InstagramGrid } from './home/InstagramGrid';
+export { Newsletter } from './home/Newsletter';
+export { PromoBanner } from './home/PromoBanner';
+export { TestimonialGrid } from './home/TestimonialGrid';

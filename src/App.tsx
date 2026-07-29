@@ -1,22 +1,27 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Checkout } from './pages';
+import Home from './pages/Home';
+import ItemManagement from './pages/ItemManagement';
+import { Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage } from './pages';
+import { CartPage } from './pages/CartPage';
+import { CartProvider } from './context/CartContext';
+
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/checkout"
-          element={
-            <Checkout
-              cartItems={[]}
-              onPlaceOrder={(order) => console.log('Order placed:', order)}
-            />
-          }
-        />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin/items" element={<ItemManagement />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/category/:categoryName" element={<CategoryPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 

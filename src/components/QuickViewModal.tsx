@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { X, Star, ShoppingBag, Ruler, Check } from 'lucide-react';
 import type { Product } from './ProductCard';
 
@@ -102,11 +103,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             {/* Price tag */}
             <div className="flex items-baseline gap-3 pt-2">
               <span className="text-2xl font-black text-luxury-gold">
-                ${product.price.toFixed(2)}
+                Rs. {product.price.toFixed(2)}
               </span>
               {product.oldPrice && (
                 <span className="text-sm text-slate-400 line-through font-bold">
-                  ${product.oldPrice.toFixed(2)}
+                  Rs. {product.oldPrice.toFixed(2)}
                 </span>
               )}
             </div>
@@ -172,34 +173,45 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
 
           {/* Add actions */}
-          <div className="flex gap-4 pt-4 border-t border-luxury-sand">
-            {/* Quantity */}
-            <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-4 py-2 bg-white">
+          <div className="flex flex-col gap-3 pt-4 border-t border-luxury-sand">
+            <div className="flex gap-4">
+              {/* Quantity */}
+              <div className="flex items-center border border-luxury-gold-light/40 rounded-full px-4 py-2 bg-white">
+                <button 
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
+                >
+                  -
+                </button>
+                <span className="px-4 text-xs font-bold text-luxury-charcoal min-w-[24px] text-center">
+                  {quantity}
+                </span>
+                <button 
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Add to Bag */}
               <button 
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
+                onClick={handleAddToCart}
+                className="flex-1 bg-luxury-gold hover:bg-luxury-gold-dark text-white font-bold py-3 px-6 rounded-full shadow-lg shadow-luxury-gold/15 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
               >
-                -
-              </button>
-              <span className="px-4 text-xs font-bold text-luxury-charcoal min-w-[24px] text-center">
-                {quantity}
-              </span>
-              <button 
-                onClick={() => setQuantity(quantity + 1)}
-                className="text-slate-500 hover:text-luxury-charcoal text-sm cursor-pointer"
-              >
-                +
+                <ShoppingBag size={14} />
+                Add to Bag
               </button>
             </div>
 
-            {/* Add to Bag */}
-            <button 
-              onClick={handleAddToCart}
-              className="flex-1 bg-luxury-gold hover:bg-luxury-gold-dark text-white font-bold py-3 px-6 rounded-full shadow-lg shadow-luxury-gold/15 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+            {/* View Details Link */}
+            <Link
+              to={`/product/${product.id}`}
+              onClick={onClose}
+              className="w-full text-center py-2.5 border border-luxury-gold-light/40 hover:border-luxury-gold text-luxury-charcoal rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-luxury-sand/50"
             >
-              <ShoppingBag size={14} />
-              Add to Bag
-            </button>
+              View Full Details
+            </Link>
           </div>
 
         </div>

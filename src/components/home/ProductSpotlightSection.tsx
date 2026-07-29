@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProductCard, type Product } from './ProductCard';
+import { ProductCard, type Product } from '../ProductCard';
 
 interface ProductSpotlightSectionProps {
   title: string;

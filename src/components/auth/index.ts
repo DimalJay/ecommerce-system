@@ -1,0 +1,1 @@
+export { AuthFormCard } from './AuthFormCard';
