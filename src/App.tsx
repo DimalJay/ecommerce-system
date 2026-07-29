@@ -4,11 +4,13 @@ import ItemManagement from './pages/ItemManagement';
 import { Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage, OrderManagement, AdminAuthPage } from './pages';
 import { CartPage } from './pages/CartPage';
 import { CartProvider } from './context/CartContext';
+import { ScrollToTop } from './components/ui/ScrollToTop';
 
 function App() {
   return (
     <CartProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin/items" element={<ItemManagement />} />
