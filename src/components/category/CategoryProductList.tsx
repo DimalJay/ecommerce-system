@@ -34,7 +34,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
 
   if (viewMode === 'grid') {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8">
         {products.map((p) => (
           <ProductCard
             key={p.id}

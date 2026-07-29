@@ -102,7 +102,7 @@ export const ProductDetails: React.FC = () => {
               <span className="text-[10px] font-black text-luxury-gold uppercase tracking-widest block mb-2">Atelier Recommendations</span>
               <h2 className="text-3xl font-black text-luxury-charcoal tracking-tight font-sans">You May Also Like</h2>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
               {relatedProducts.map((p) => (
                 <ProductCard key={p.id} product={p} isWishlisted={wishlist.includes(p.id)}
                   onToggleWishlist={toggleWishlist} onAddToCart={handleAddToCart} onOpenQuickView={setActiveQuickViewProduct}
