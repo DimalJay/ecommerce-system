@@ -79,12 +79,12 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             {product.swatches.map((sw, idx) => (
               <button
                 key={idx}
-                onClick={() => setSelectedColor(product.colorName)}
+                onClick={() => setSelectedColor(sw)}
                 className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer hover:scale-105 ${
-                  selectedColor === product.colorName ? 'border-luxury-gold ring-1 ring-luxury-gold/30' : 'border-slate-300'
+                  selectedColor === sw ? 'border-luxury-gold ring-1 ring-luxury-gold/30' : 'border-slate-300'
                 }`}
                 style={{ backgroundColor: sw }}
-                title={product.colorName}
+                title={sw}
               />
             ))}
           </div>

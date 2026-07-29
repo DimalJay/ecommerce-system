@@ -25,7 +25,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   // Initialize selected color once product loads
   React.useEffect(() => {
     if (product) {
-      setSelectedColor(product.colorName);
+      setSelectedColor(product.swatches?.[0] ?? product.colorName);
       setSelectedSize('M');
       setQuantity(1);
     }
@@ -155,16 +155,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   {product.swatches.map((colorVal, idx) => (
                     <button
                       key={idx}
-                      onClick={() => setSelectedColor(product.colorName)}
+                      onClick={() => setSelectedColor(colorVal)}
                       className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
-                        selectedColor === product.colorName
+                        selectedColor === colorVal
                           ? 'ring-2 ring-luxury-gold border-white'
                           : 'border-slate-300'
                       }`}
                       style={{ backgroundColor: colorVal }}
-                      title={product.colorName}
+                      title={colorVal}
                     >
-                      {selectedColor === product.colorName && <Check size={10} className="text-white drop-shadow-xs" />}
+                      {selectedColor === colorVal && <Check size={10} className="text-white drop-shadow-xs" />}
                     </button>
                   ))}
                 </div>

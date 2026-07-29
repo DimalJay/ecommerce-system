@@ -27,7 +27,6 @@ export const ProductDetails: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
-  const [wishlisted, setWishlisted] = useState<boolean>(false);
 
   // Images Gallery State
   const [activeImage, setActiveImage] = useState<string>('');
@@ -44,7 +43,7 @@ export const ProductDetails: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (product) {
-      setSelectedColor(product.colorName);
+      setSelectedColor(product.swatches?.[0] ?? product.colorName);
       setActiveImage(product.image);
       setImageThumbnails([
         product.image,
@@ -77,8 +76,7 @@ export const ProductDetails: React.FC = () => {
 
   const handleToggleWishlist = () => {
     toggleWishlist(product.id);
-    setWishlisted((prev) => !prev);
-    triggerToast(wishlisted ? 'Removed from saved collection' : 'Added to saved collection');
+    triggerToast(wishlist.includes(product.id) ? 'Removed from saved collection' : 'Added to saved collection');
   };
 
   const handleAddToCart = (p: Product, size: string = 'M', color: string = 'Default') => {

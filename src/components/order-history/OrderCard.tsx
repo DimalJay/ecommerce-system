@@ -14,8 +14,9 @@ interface Order {
   date: string;
   items: OrderItem[];
   shippingInfo: {
-    firstName: string;
-    lastName: string;
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
     phone: string;
     address: string;
@@ -23,6 +24,7 @@ interface Order {
     city: string;
     state: string;
     postalCode: string;
+    country?: string;
   };
   paymentMethod: string;
   total: number;
@@ -162,7 +164,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isExpanded, onToggl
               </h4>
               <div className="text-xs text-slate-500 space-y-1 bg-white p-4 border border-luxury-gold-light/15 rounded-2xl">
                 <p className="font-bold text-luxury-charcoal">
-                  {order.shippingInfo.firstName} {order.shippingInfo.lastName}
+                  {order.shippingInfo.fullName || `${order.shippingInfo.firstName ?? ''} ${order.shippingInfo.lastName ?? ''}`.trim()}
                 </p>
                 <p>{order.shippingInfo.address}</p>
                 {order.shippingInfo.apartment && <p>{order.shippingInfo.apartment}</p>}

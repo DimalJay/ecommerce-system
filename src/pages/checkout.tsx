@@ -24,6 +24,7 @@ export const Checkout: React.FC = () => {
     handleApplyPromo
   } = useCart();
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState(globalPromoCode || '');
@@ -60,10 +61,7 @@ export const Checkout: React.FC = () => {
 
   const applyPromo = () => {
     if (promoCode.trim().length === 0) return;
-    const success = handleApplyPromo(promoCode.trim());
-    if (!success) {
-      alert(promoError || 'Invalid promo code. Try "AURA20"');
-    }
+    handleApplyPromo(promoCode.trim());
   };
 
   const handlePlaceOrder = (e: React.FormEvent) => {
@@ -210,84 +208,5 @@ export const Checkout: React.FC = () => {
     </div>
   );
 };
-
-const inputClass =
-  'w-full px-4 py-2.5 bg-white border border-luxury-gold-light/30 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all';
-
-const Field: React.FC<{
-  label: string;
-  required?: boolean;
-  className?: string;
-  children: React.ReactNode;
-}> = ({ label, required, className = '', children }) => (
-  <div className={className}>
-    {label && (
-      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-        {label} {required && <span className="text-rose-500">*</span>}
-      </label>
-    )}
-    {children}
-  </div>
-);
-
-const PaymentOption: React.FC<{
-  id: string;
-  label: string;
-  subLabel?: string;
-  selected: boolean;
-  onSelect: () => void;
-  right?: React.ReactNode;
-  children?: React.ReactNode;
-}> = ({ label, subLabel, selected, onSelect, right, children }) => (
-  <div
-    role="radio"
-    aria-checked={selected}
-    tabIndex={0}
-    className={`border rounded-2xl p-4 transition-all cursor-pointer ${selected
-        ? 'border-luxury-gold bg-luxury-sand/40'
-        : 'border-luxury-gold-light/30 hover:border-luxury-gold-light/60'
-      }`}
-    onClick={onSelect}
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onSelect();
-      }
-    }}
-  >
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <span
-          className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selected ? 'border-luxury-gold' : 'border-slate-300'
-            }`}
-        >
-          {selected && <span className="w-2 h-2 rounded-full bg-luxury-gold" />}
-        </span>
-        <div>
-          <p className="text-sm font-bold text-luxury-charcoal">{label}</p>
-          {subLabel && <p className="text-[11px] text-slate-500">{subLabel}</p>}
-        </div>
-      </div>
-      {right}
-    </div>
-    {selected && children && (
-      <div onClick={(e) => e.stopPropagation()}>{children}</div>
-    )}
-  </div>
-);
-
-const Assurance: React.FC<{ icon: React.ReactNode; title: string; desc: string }> = ({
-  icon,
-  title,
-  desc,
-}) => (
-  <div className="flex items-start gap-3">
-    <div className="mt-0.5">{icon}</div>
-    <div>
-      <p className="text-sm font-bold text-luxury-charcoal">{title}</p>
-      <p className="text-xs text-slate-500">{desc}</p>
-    </div>
-  </div>
-);
 
 export default Checkout;
