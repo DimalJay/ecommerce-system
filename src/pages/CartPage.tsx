@@ -9,6 +9,7 @@ import { CartSummary } from '../components/cart/CartSummary';
 import { CartItemCard } from '../components/cart/CartItemCard';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { PROMO_CODE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const CartPage: React.FC = () => {
   const {
@@ -55,8 +56,8 @@ export const CartPage: React.FC = () => {
 
   const selectedCartItems = cartItems.filter((item) => selectedKeys.has(getItemKey(item)));
   const selectedSubtotal = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const discount = promoApplied ? selectedSubtotal * 0.2 : 0;
-  const shipping = selectedSubtotal >= 300 || selectedSubtotal === 0 ? 0 : 25;
+  const discount = promoApplied ? selectedSubtotal * PROMO_DISCOUNT_RATE : 0;
+  const shipping = selectedSubtotal >= FREE_SHIPPING_THRESHOLD || selectedSubtotal === 0 ? 0 : SHIPPING_COST;
   const total = selectedSubtotal - discount + shipping;
 
   const handleRemoveSelected = () => {
@@ -68,7 +69,7 @@ export const CartPage: React.FC = () => {
   const handleFormSubmitPromo = (e: React.FormEvent) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-    if (handleApplyPromo(promoCode)) triggerToast('Promo code AURA20 applied (-20%)');
+    if (handleApplyPromo(promoCode)) triggerToast(`Promo code ${PROMO_CODE} applied (-${PROMO_DISCOUNT_RATE * 100}%)`);
   };
 
   const handleCheckout = () => {
@@ -102,10 +103,10 @@ export const CartPage: React.FC = () => {
               <div className="bg-white border border-luxury-gold-light/30 rounded-2xl p-4 sm:p-5 flex items-center gap-3 shadow-xs">
                 <Sparkles className="text-luxury-gold shrink-0 animate-pulse" size={20} />
                 <div className="text-xs text-slate-600 flex-1">
-                  {selectedSubtotal >= 300 ? (
+                  {selectedSubtotal >= FREE_SHIPPING_THRESHOLD ? (
                     <span className="font-bold text-emerald-800">You qualify for Complimentary Worldwide Express Shipping on your selected items!</span>
                   ) : (
-                    <span>Add <strong className="text-luxury-charcoal">Rs. {(300 - selectedSubtotal).toFixed(2)}</strong> more of selected items for <strong className="text-luxury-gold">Complimentary Express Shipping</strong>.</span>
+                    <span>Add <strong className="text-luxury-charcoal">Rs. {(FREE_SHIPPING_THRESHOLD - selectedSubtotal).toFixed(2)}</strong> more of selected items for <strong className="text-luxury-gold">Complimentary Express Shipping</strong>.</span>
                   )}
                 </div>
               </div>

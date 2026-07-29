@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { StarRating } from './ui';
@@ -33,54 +34,66 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onOpenQuickView
 }) => {
   return (
-    <div className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 flex flex-col transition-all duration-500 hover:shadow-xl hover:border-luxury-gold-light/60 hover:-translate-y-1.5 group">
+    <div className="group bg-white border border-luxury-gold-light/25 hover:border-luxury-gold-light/70 rounded-3xl p-4 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-luxury-gold/5 hover:-translate-y-1.5 relative overflow-hidden">
       
-      {/* Product Image Box with Hover Quick Add Overlay */}
-      <div className="relative bg-luxury-sand h-80 w-full rounded-2xl overflow-hidden mb-4 border border-luxury-gold-light/10">
+      {/* Product Image Box with Overlay */}
+      <div className="relative bg-luxury-sand h-72 w-full rounded-2xl overflow-hidden mb-3.5 border border-luxury-gold-light/15">
         <Link to={`/product/${product.id}`} className="block h-full w-full">
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-1000"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           />
         </Link>
 
-        {/* Discount / Category Badge */}
-        {product.discount && (
-          <span className="absolute top-3 left-3 bg-luxury-gold text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-2xs">
-            {product.discount}
-          </span>
-        )}
+        {/* Discount / New Badge */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
+          {product.discount && (
+            <span className="bg-luxury-gold text-white text-[9px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm backdrop-blur-xs">
+              {product.discount}
+            </span>
+          )}
+          {product.isNew && (
+            <span className="bg-luxury-charcoal text-luxury-cream text-[9px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+              New
+            </span>
+          )}
+        </div>
 
         {/* Wishlist Button */}
         <button
+          type="button"
           onClick={() => onToggleWishlist(product.id)}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs border border-luxury-gold-light/10 flex items-center justify-center text-slate-600 hover:text-rose-500 hover:bg-white transition-all cursor-pointer z-10"
-          title="Wishlist"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-md shadow-sm border border-luxury-gold-light/20 flex items-center justify-center text-slate-600 hover:text-rose-500 transition-all duration-200 cursor-pointer z-10 active:scale-90"
+          title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-label="Wishlist"
         >
           <Heart 
             size={16} 
             fill={isWishlisted ? '#f43f5e' : 'none'} 
-            className={isWishlisted ? 'text-rose-500' : 'text-slate-500 group-hover:scale-110 transition-transform'} 
+            className={isWishlisted ? 'text-rose-500' : 'text-slate-600 transition-transform group-hover:scale-110'} 
           />
         </button>
 
-        {/* Quick Add / Quick View Hover slide-up overlay */}
-        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-350 flex gap-2">
+        {/* Quick View & Quick Add Hover Slide-up Overlay */}
+        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 ease-out flex gap-2 z-10">
           {/* Quick View */}
           <button
+            type="button"
             onClick={() => onOpenQuickView(product)}
-            className="flex-1 bg-white/90 hover:bg-white text-luxury-charcoal text-[10px] font-bold py-3 rounded-xl backdrop-blur-xs shadow-md border border-luxury-gold-light/40 flex items-center justify-center gap-1.5 cursor-pointer transition-all uppercase tracking-wider"
+            className="flex-1 bg-white/95 hover:bg-white text-luxury-charcoal text-[10px] font-bold py-2.5 px-3 rounded-xl backdrop-blur-md shadow-md border border-luxury-gold-light/40 flex items-center justify-center gap-1.5 cursor-pointer transition-all uppercase tracking-wider active:scale-[0.98]"
           >
-            <Eye size={12} />
+            <Eye size={13} />
             Quick View
           </button>
           
           {/* Direct Add */}
           <button
+            type="button"
             onClick={() => onAddToCart(product, 'M', product.colorName)}
-            className="p-3 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-xl shadow-md flex items-center justify-center cursor-pointer transition-all"
+            className="p-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-xl shadow-md flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-[0.98]"
             title="Quick Add to Bag"
+            aria-label="Quick Add to Bag"
           >
             <ShoppingBag size={14} />
           </button>
@@ -88,9 +101,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Details Section */}
-      <div className="flex flex-col flex-1 gap-2.5">
+      <div className="flex flex-col flex-1 gap-2">
         {/* Rating & Color Swatches Row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-h-[20px]">
           <StarRating rating={product.rating} size={12} />
 
           {product.swatches && (
@@ -98,30 +111,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {product.swatches.map((sw, idx) => (
                 <span
                   key={idx}
-                  className="w-2.5 h-2.5 rounded-full border border-slate-250 shadow-3xs"
+                  className="w-2.5 h-2.5 rounded-full border border-slate-300 shadow-2xs"
                   style={{ backgroundColor: sw }}
+                  title={`Color swatch ${idx + 1}`}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Brand/Color Name Subtitle */}
-        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">
+        {/* Color / Brand Subtitle */}
+        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest block">
           {product.colorName}
         </span>
 
         {/* Product Title */}
-        <Link to={`/product/${product.id}`} className="block">
-          <h3 className="text-xs sm:text-sm font-bold text-luxury-charcoal group-hover:text-luxury-gold transition-colors leading-snug line-clamp-1">
+        <Link to={`/product/${product.id}`} className="block group/title">
+          <h3 className="text-xs sm:text-sm font-bold text-luxury-charcoal group-hover/title:text-luxury-gold transition-colors leading-snug line-clamp-1">
             {product.title}
           </h3>
         </Link>
 
         {/* Bottom Price & Add Button */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-luxury-sand">
-          <div className="flex items-baseline gap-2">
-            <span className="text-base font-bold text-luxury-gold">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-luxury-sand/80">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-sm sm:text-base font-extrabold text-luxury-gold">
               Rs. {product.price.toFixed(2)}
             </span>
             {product.oldPrice && (
@@ -132,8 +146,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={() => onAddToCart(product, 'M', product.colorName)}
-            className="bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/40 hover:border-luxury-gold px-3.5 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all flex items-center gap-1.5 cursor-pointer"
+            className="bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/50 hover:border-luxury-gold px-3 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase transition-all duration-200 flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
           >
             <ShoppingBag size={11} />
             + Add

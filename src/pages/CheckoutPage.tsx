@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
-import { Navbar, Footer } from '../components';
+import { AppLayout } from '../components';
 import { useCart, getItemKey } from '../context/CartContext';
-import { ShippingForm } from '../components/checkout/ShippingForm';
-import { PaymentMethods } from '../components/checkout/PaymentMethods';
-import { CheckoutSummary } from '../components/checkout/CheckoutSummary';
-
-type PaymentMethod = 'card' | 'paypal' | 'cod' | 'bank';
-
-const TAX_RATE = 0.06;
-const inputClass =
-  'w-full px-4 py-2.5 bg-white border border-luxury-gold-light/30 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold/25 transition-all';
+import { ShippingForm, PaymentMethods, CheckoutSummary } from '../components/checkout';
+import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/checkout';
+import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -23,12 +17,11 @@ export const Checkout: React.FC = () => {
     handleApplyPromo
   } = useCart();
 
-  const [searchQuery, setSearchQuery] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState(globalPromoCode || '');
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<CheckoutForm>({
     fullName: '',
     email: '',
     phone: '',
@@ -45,18 +38,15 @@ export const Checkout: React.FC = () => {
     notes: '',
   });
 
-  const handleChange =
-    (field: keyof typeof form) =>
-      (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      };
+  const handleChange = (field: keyof CheckoutForm): FieldChangeHandler => (e) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const discount = promoApplied ? subtotal * 0.2 : 0;
+  const discount = promoApplied ? subtotal * PROMO_DISCOUNT_RATE : 0;
   const tax = (subtotal - discount) * TAX_RATE;
-  const shipping = subtotal >= 300 || subtotal === 0 ? 0 : 25;
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_COST;
   const total = subtotal - discount + tax + shipping;
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const applyPromo = () => {
     if (promoCode.trim().length === 0) return;
@@ -140,16 +130,7 @@ export const Checkout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-luxury-cream text-luxury-charcoal font-sans selection:bg-luxury-gold selection:text-white">
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        wishlistCount={0}
-        cartCount={itemCount}
-        onOpenCart={() => { }}
-        onOpenWishlist={() => { }}
-      />
-
+    <AppLayout>
       <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal">
@@ -175,13 +156,12 @@ export const Checkout: React.FC = () => {
 
         <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 space-y-8">
-            <ShippingForm form={form} onChange={handleChange} inputClass={inputClass} />
+            <ShippingForm form={form} onChange={handleChange as any} />
             <PaymentMethods
               paymentMethod={paymentMethod}
               setPaymentMethod={setPaymentMethod}
               form={form}
-              onChange={handleChange}
-              inputClass={inputClass}
+              onChange={handleChange as any}
             />
           </div>
 
@@ -198,13 +178,10 @@ export const Checkout: React.FC = () => {
             promoCode={promoCode}
             setPromoCode={setPromoCode}
             applyPromo={applyPromo}
-            inputClass={inputClass}
           />
         </form>
       </main>
-
-      <Footer />
-    </div>
+    </AppLayout>
   );
 };
 
