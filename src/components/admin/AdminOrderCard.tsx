@@ -1,0 +1,178 @@
+import React from 'react';
+import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
+import type { Order } from '../order-history';
+
+interface AdminOrderCardProps {
+  order: Order;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+  onStatusChange: (id: string, newStatus: Order['status']) => void;
+}
+
+export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
+  order,
+  isExpanded,
+  onToggleExpand,
+  onStatusChange,
+}) => {
+  const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const getStatusBadgeClass = (status: Order['status']) => {
+    switch (status) {
+      case 'Processing':
+        return 'bg-amber-50 text-amber-800 border-amber-200/50';
+      case 'Shipped':
+        return 'bg-blue-50 text-blue-800 border-blue-200/50';
+      case 'Delivered':
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200/50';
+      default:
+        return 'bg-slate-50 text-slate-800 border-slate-200/50';
+    }
+  };
+
+  return (
+    <div className="bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden shadow-xs hover:border-luxury-gold-light/50 transition-all text-left">
+      {/* Order summary header */}
+      <div className="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:flex lg:items-center gap-y-3 gap-x-8">
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Order ID</span>
+            <span className="text-xs font-black text-luxury-charcoal uppercase">{order.id}</span>
+          </div>
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Client Name</span>
+            <span className="text-xs font-bold text-slate-700">
+              {order.shippingInfo?.firstName} {order.shippingInfo?.lastName}
+            </span>
+          </div>
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Date Placed</span>
+            <span className="text-xs font-bold text-slate-600">{order.date}</span>
+          </div>
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Total Value</span>
+            <span className="text-xs font-black text-luxury-gold">Rs. {order.total.toFixed(2)}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between lg:justify-end gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-luxury-sand">
+          {/* Action: Status Selector Dropdown */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment:</span>
+            <select
+              value={order.status}
+              onChange={(e) => onStatusChange(order.id, e.target.value as Order['status'])}
+              className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusBadgeClass(
+                order.status
+              )} focus:outline-none`}
+            >
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+
+          {/* Expand Toggle */}
+          <button
+            onClick={onToggleExpand}
+            className="p-2 bg-luxury-cream hover:bg-luxury-sand text-slate-600 rounded-full transition-colors cursor-pointer"
+            title="View Details"
+          >
+            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Expandable Order Detail Accordion panel */}
+      {isExpanded && (
+        <div className="p-6 border-t border-luxury-sand bg-luxury-sand/10 space-y-8 animate-fade-in">
+          {/* Products Summary list */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest border-b border-luxury-gold-light/10 pb-2 flex items-center justify-between">
+              <span>Items Ordered ({itemsCount})</span>
+              <span className="text-[10px] font-medium text-slate-400 uppercase">Unit Prices Shown</span>
+            </h3>
+            <div className="divide-y divide-luxury-sand">
+              {order.items.map((item, idx) => (
+                <div key={idx} className="py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.product.image}
+                      alt={item.product.title}
+                      className="w-12 h-16 object-cover bg-luxury-sand rounded-lg border border-luxury-gold-light/10"
+                    />
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-bold text-luxury-charcoal line-clamp-1">
+                        {item.product.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                        <span>Size: {item.selectedSize}</span>
+                        <span>&bull;</span>
+                        <span>Color: {item.selectedColor}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right space-y-0.5">
+                    <span className="text-xs font-bold text-luxury-gold block">
+                      Rs. {item.product.price.toFixed(2)}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block font-medium">
+                      Quantity: {item.quantity}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Details Split column grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-luxury-gold-light/10">
+            {/* Shipping Destination */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest">
+                Shipping Details
+              </h4>
+              <div className="text-xs text-slate-500 space-y-1 bg-white p-4 border border-luxury-gold-light/15 rounded-2xl">
+                <p className="font-bold text-luxury-charcoal">
+                  {order.shippingInfo?.firstName} {order.shippingInfo?.lastName}
+                </p>
+                <p>{order.shippingInfo?.address}</p>
+                {order.shippingInfo?.apartment && <p>{order.shippingInfo?.apartment}</p>}
+                <p>
+                  {order.shippingInfo?.city}, {order.shippingInfo?.state} {order.shippingInfo?.postalCode}
+                </p>
+                <p className="pt-2 text-slate-600 font-medium">Phone: {order.shippingInfo?.phone}</p>
+                <p className="text-slate-600 font-medium">Email: {order.shippingInfo?.email}</p>
+              </div>
+            </div>
+
+            {/* Order billing summary receipt */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest">
+                Billing Receipt
+              </h4>
+              <div className="bg-white p-4 border border-luxury-gold-light/15 rounded-2xl text-xs space-y-2">
+                <div className="flex justify-between text-slate-400">
+                  <span>Payment Method</span>
+                  <span className="font-bold text-luxury-charcoal uppercase">
+                    {order.paymentMethod === 'card' ? 'Credit / Debit Card' : order.paymentMethod}
+                  </span>
+                </div>
+                <div className="flex justify-between text-slate-400 pt-2 border-t border-luxury-sand">
+                  <span>Grand Total</span>
+                  <span className="font-black text-luxury-gold">Rs. {order.total.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-50 px-2 py-1 rounded-md font-bold w-fit mt-3">
+                  <ShieldCheck size={12} />
+                  <span>Paid &amp; Secured Transaction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminOrderCard;

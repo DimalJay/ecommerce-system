@@ -103,8 +103,8 @@ export const CategoryPage: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80',
     },
     {
-      key: 'outerwear',
-      title: 'Technical Outerwear',
+      key: 'new-arrivals',
+      title: 'New Arrivals',
       image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80',
     },
   ].filter((cat) => cat.key !== categoryName?.toLowerCase());

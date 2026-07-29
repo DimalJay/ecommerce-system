@@ -2,8 +2,8 @@ import type { Category } from '../components/CategoryCard';
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'outerwear',
-    name: 'Technical Outerwear',
+    id: 'new-arrivals',
+    name: 'New Arrivals',
     subtitle: 'Anoraks, Parkas & Shells',
     count: '48 Items',
     image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80'

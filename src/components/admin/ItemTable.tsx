@@ -58,9 +58,40 @@ const mockItems: AdminItem[] = [
 interface ItemTableProps {
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
+  searchQuery: string;
+  categoryFilter: string;
+  sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
+export const ItemTable: React.FC<ItemTableProps> = ({ 
+  onEdit, 
+  onDelete, 
+  searchQuery, 
+  categoryFilter, 
+  sortBy 
+}) => {
+  const filteredItems = mockItems
+    .filter((item) => {
+      // Category Filter
+      if (categoryFilter !== 'All' && item.category !== categoryFilter) {
+        return false;
+      }
+      // Search query
+      const query = searchQuery.toLowerCase().trim();
+      if (!query) return true;
+      return (
+        item.name.toLowerCase().includes(query) ||
+        item.sku.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-low') return a.price - b.price;
+      if (sortBy === 'price-high') return b.price - a.price;
+      if (sortBy === 'name-az') return a.name.localeCompare(b.name);
+      return 0; // Default (mock order)
+    });
+
   return (
     <div className="w-full bg-white rounded-3xl shadow-sm border border-[#f5f0e6] overflow-hidden">
       <div className="overflow-x-auto">
@@ -76,7 +107,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f5f0e6]">
-            {mockItems.map((item) => (
+            {filteredItems.map((item) => (
               <tr key={item.id} className="hover:bg-[#fbf9f6] transition-colors group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
