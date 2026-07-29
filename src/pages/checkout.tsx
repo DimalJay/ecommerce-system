@@ -86,8 +86,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, onPlaceOrder }) =
   return (
     <div className="min-h-screen bg-luxury-cream text-luxury-charcoal font-sans selection:bg-luxury-gold selection:text-white">
       <Navbar
-        searchQuery=""
-        setSearchQuery={() => {}}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
         wishlistCount={0}
         cartCount={itemCount}
         onOpenCart={() => {}}
@@ -514,12 +514,21 @@ const PaymentOption: React.FC<{
   children?: React.ReactNode;
 }> = ({ label, subLabel, selected, onSelect, right, children }) => (
   <div
+    role="radio"
+    aria-checked={selected}
+    tabIndex={0}
     className={`border rounded-2xl p-4 transition-all cursor-pointer ${
       selected
         ? 'border-luxury-gold bg-luxury-sand/40'
         : 'border-luxury-gold-light/30 hover:border-luxury-gold-light/60'
     }`}
     onClick={onSelect}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onSelect();
+      }
+    }}
   >
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
