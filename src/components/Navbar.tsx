@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -29,6 +29,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWishlist
 }) => {
   const { user, logout } = useCart();
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
   return (
     <>
       {/* Top Announcement Ticker */}
@@ -116,24 +118,54 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Profile Account Button */}
+            {/* Profile Account Button with Dropdown */}
             {user ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/order-history"
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                   className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/35 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all cursor-pointer font-bold flex items-center gap-1.5 text-xs"
                   title={`Signed in as ${user.name}`}
                 >
                   <User size={16} />
                   <span className="hidden md:inline font-black uppercase text-[9px] tracking-widest">{user.name}</span>
-                </Link>
-                <button
-                  onClick={logout}
-                  className="px-3 py-2 bg-white hover:bg-luxury-gold text-slate-700 hover:text-white border border-luxury-gold-light/35 rounded-xl transition-all cursor-pointer text-[9px] font-bold uppercase tracking-widest"
-                  title="Sign Out"
-                >
-                  Sign Out
                 </button>
+
+                {isProfileDropdownOpen && (
+                  <>
+                    {/* Invisible Backdrop to close dropdown on click outside */}
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    />
+                    
+                    {/* Dropdown Menu */}
+                    <div className="absolute right-0 mt-2.5 w-48 bg-white border border-luxury-gold-light/20 rounded-2xl shadow-2xl p-4 z-20 space-y-3 text-left animate-fade-in">
+                      <div className="border-b border-luxury-sand pb-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Signed in as</p>
+                        <p className="text-xs font-bold text-luxury-charcoal truncate">{user.name}</p>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <Link
+                          to="/order-history"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 hover:bg-luxury-sand/40 rounded-xl text-xs font-bold text-slate-600 hover:text-luxury-gold transition-colors"
+                        >
+                          Order History
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            logout();
+                          }}
+                          className="block w-full text-left px-3 py-2 hover:bg-rose-50 rounded-xl text-xs font-bold text-rose-600 transition-colors cursor-pointer"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <Link
