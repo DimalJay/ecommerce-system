@@ -1,0 +1,213 @@
+import React from 'react';
+import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
+import type { Product } from '../ProductCard';
+
+interface OrderItem {
+  product: Product;
+  quantity: number;
+  selectedSize: string;
+  selectedColor: string;
+}
+
+interface Order {
+  id: string;
+  date: string;
+  items: OrderItem[];
+  shippingInfo: {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    phone: string;
+    address: string;
+    apartment: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country?: string;
+  };
+  paymentMethod: string;
+  total: number;
+  status: 'Processing' | 'Shipped' | 'Delivered';
+}
+
+interface OrderCardProps {
+  order: Order;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+}
+
+export const OrderCard: React.FC<OrderCardProps> = ({ order, isExpanded, onToggleExpand }) => {
+  const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const getStatusColor = (status: Order['status']) => {
+    switch (status) {
+      case 'Processing':
+        return 'bg-amber-50 text-amber-800 border-amber-200/50';
+      case 'Shipped':
+        return 'bg-blue-50 text-blue-800 border-blue-200/50';
+      case 'Delivered':
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200/50';
+      default:
+        return 'bg-slate-50 text-slate-800 border-slate-200/50';
+    }
+  };
+
+  return (
+    <div className="bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden shadow-xs hover:border-luxury-gold-light/50 transition-all">
+      {/* Order Card Header Summary row */}
+      <div
+        onClick={onToggleExpand}
+        className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-luxury-sand/20 transition-colors"
+      >
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-y-2 sm:gap-8 text-left">
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+              Order Number
+            </span>
+            <span className="text-xs font-black text-luxury-charcoal uppercase">
+              {order.id}
+            </span>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+              Date Placed
+            </span>
+            <span className="text-xs font-bold text-slate-600">
+              {order.date}
+            </span>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+              Total Paid
+            </span>
+            <span className="text-xs font-black text-luxury-gold">
+              Rs. {order.total.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+              Items Count
+            </span>
+            <span className="text-xs font-bold text-slate-600">
+              {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between sm:justify-end gap-4 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-luxury-sand">
+          <span
+            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusColor(
+              order.status
+            )}`}
+          >
+            {order.status}
+          </span>
+          {isExpanded ? (
+            <ChevronUp size={16} className="text-slate-400" />
+          ) : (
+            <ChevronDown size={16} className="text-slate-400" />
+          )}
+        </div>
+      </div>
+
+      {/* Expandable Order Detail Accordion panel */}
+      {isExpanded && (
+        <div className="p-6 border-t border-luxury-sand bg-luxury-sand/10 space-y-8 animate-fade-in">
+          {/* Products Summary list */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest border-b border-luxury-gold-light/10 pb-2">
+              Ordered Items
+            </h3>
+            <div className="divide-y divide-luxury-sand">
+              {order.items.map((item, idx) => (
+                <div key={idx} className="py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.product.image}
+                      alt={item.product.title}
+                      className="w-12 h-16 object-cover bg-luxury-sand rounded-lg border border-luxury-gold-light/10"
+                    />
+                    <div className="text-left space-y-1">
+                      <h4 className="text-xs font-bold text-luxury-charcoal line-clamp-1">
+                        {item.product.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                        <span>Size: {item.selectedSize}</span>
+                        <span>&bull;</span>
+                        <span>Color: {item.selectedColor}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right space-y-0.5">
+                    <span className="text-xs font-bold text-luxury-gold block">
+                      Rs. {item.product.price.toFixed(2)}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block font-medium">
+                      Qty: {item.quantity}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Details Split column grid (Shipping Address vs Summary details) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-luxury-gold-light/10">
+            {/* Shipping Destination */}
+            <div className="space-y-3 text-left">
+              <h4 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest">
+                Shipping Details
+              </h4>
+              <div className="text-xs text-slate-500 space-y-1 bg-white p-4 border border-luxury-gold-light/15 rounded-2xl">
+                <p className="font-bold text-luxury-charcoal">
+                  {order.shippingInfo.fullName || `${order.shippingInfo.firstName ?? ''} ${order.shippingInfo.lastName ?? ''}`.trim()}
+                </p>
+                <p>{order.shippingInfo.address}</p>
+                {order.shippingInfo.apartment && <p>{order.shippingInfo.apartment}</p>}
+                <p>
+                  {order.shippingInfo.city}, {order.shippingInfo.state}{' '}
+                  {order.shippingInfo.postalCode}
+                </p>
+                <p className="pt-2">Phone: {order.shippingInfo.phone}</p>
+                <p>Email: {order.shippingInfo.email}</p>
+              </div>
+            </div>
+
+            {/* Order billing summary receipt */}
+            <div className="space-y-3 text-left">
+              <h4 className="text-xs font-black text-luxury-charcoal uppercase tracking-widest">
+                Billing Receipt
+              </h4>
+              <div className="bg-white p-4 border border-luxury-gold-light/15 rounded-2xl text-xs space-y-2">
+                <div className="flex justify-between text-slate-400">
+                  <span>Payment Method</span>
+                  <span className="font-bold text-luxury-charcoal uppercase">
+                    {order.paymentMethod === 'card'
+                      ? 'Credit / Debit Card'
+                      : order.paymentMethod}
+                  </span>
+                </div>
+                <div className="flex justify-between text-slate-400 pt-2 border-t border-luxury-sand">
+                  <span>Estimated Total</span>
+                  <span className="font-black text-luxury-gold">
+                    Rs. {order.total.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-50 px-2 py-1 rounded-md font-bold w-fit mt-3">
+                  <ShieldCheck size={12} />
+                  <span>Paid &amp; Secured Transaction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+export default OrderCard;
+export type { Order, OrderItem };
