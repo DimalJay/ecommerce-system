@@ -88,12 +88,15 @@ export const HeroSection: React.FC = () => {
           <p className="text-[9px] md:text-[11px] font-bold uppercase tracking-widest text-slate-500 max-w-[150px] md:max-w-none">
             {active.subText}
           </p>
-          <a 
-            href="#products" 
-            className="inline-block mt-4 px-6 py-2 border-2 border-luxury-charcoal hover:bg-luxury-charcoal hover:text-white text-luxury-charcoal text-[9px] md:text-[10px] font-bold uppercase tracking-widest rounded-md transition-all"
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-block mt-4 px-6 py-2 border-2 border-luxury-charcoal hover:bg-luxury-charcoal hover:text-white text-luxury-charcoal text-[9px] md:text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
           >
             SHOP NOW
-          </a>
+          </button>
         </div>
 
         {/* Right Model */}

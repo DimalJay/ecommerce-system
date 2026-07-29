@@ -37,6 +37,7 @@ export const Home: React.FC = () => {
         <BrandTicker />
 
         <ProductSpotlightSection
+          id="products"
           title="SHOP FOR WOMEN"
           description="Indulge in technical precision and clean cuts. Our outerwear shells, active trousers, and core performance base layers set the gold standard."
           spotlightImage={womenProducts[0]?.image ?? ''}

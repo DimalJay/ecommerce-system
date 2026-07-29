@@ -2,6 +2,7 @@ import React from 'react';
 import { ProductCard, type Product } from '../ProductCard';
 
 interface ProductSpotlightSectionProps {
+  id?: string;
   title: string;
   description: string;
   spotlightImage: string;
@@ -15,6 +16,7 @@ interface ProductSpotlightSectionProps {
 }
 
 export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = ({
+  id,
   title,
   description,
   spotlightImage,
@@ -27,7 +29,7 @@ export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = (
   onShopMore
 }) => {
   return (
-    <section className="space-y-6">
+    <section id={id} className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
           {title}
