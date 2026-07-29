@@ -95,7 +95,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({ onEdit, onDelete }) => {
                   <span className="text-slate-600">{item.category}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="font-medium text-slate-900">${item.price.toFixed(2)}</span>
+                  <span className="font-medium text-slate-900">Rs. {item.price.toFixed(2)}</span>
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-slate-600">{item.stock} units</span>

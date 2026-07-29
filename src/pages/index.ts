@@ -1,3 +1,7 @@
-export { Home } from './Home';
-export { CartPage } from './CartPage';
-export { default } from './Home';
+export { Home, default as HomeDefault } from './Home';
+export { ItemManagement, default as ItemManagementDefault } from './ItemManagement';
+export { Checkout } from './checkout';
+export { ProductDetails } from './ProductDetails';
+export { OrderHistory } from './OrderHistory';
+export { CategoryPage } from './CategoryPage';
+export { AuthPage } from './AuthPage';

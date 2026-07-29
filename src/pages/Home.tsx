@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import {
-  Navbar,
+  AppLayout,
   HeroSection,
-  Footer,
-  CartDrawer,
-  WishlistDrawer,
-  QuickViewModal,
-  SizeGuideModal,
   BrandTicker,
   ProductSpotlightSection,
   OffersGrid,
@@ -18,23 +14,14 @@ import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 
 export const Home: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [wishlist, setWishlist] = useState<number[]>([2]);
-  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const {
-    cartItems,
-    isCartOpen,
-    setIsCartOpen,
     addToCart,
-    addToCartWithQty,
-    updateCartQty,
-    removeCartItem
+    wishlist,
+    toggleWishlist,
+    setActiveQuickViewProduct
   } = useCart();
-
-  // Modals
-  const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
-  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
 
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -51,125 +38,68 @@ export const Home: React.FC = () => {
     triggerToast(`Added ${product.title} to your bag`);
   };
 
-  const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    addToCartWithQty(product, size, color, qty);
-    triggerToast(`Added ${qty}x ${product.title} to your bag`);
-  };
-
-  const handleUpdateCartQty = (productId: number, size: string, color: string, newQty: number) => {
-    updateCartQty(productId, size, color, newQty);
-  };
-
-  const handleRemoveCartItem = (productId: number, size: string, color: string) => {
-    removeCartItem(productId, size, color);
-    triggerToast('Removed item from your bag');
-  };
-
-  const toggleWishlist = (productId: number) => {
-    setWishlist((prev) => {
-      const exists = prev.includes(productId);
-      if (exists) {
-        triggerToast('Removed item from saved collection');
-        return prev.filter((id) => id !== productId);
-      } else {
-        triggerToast('Added item to saved collection');
-        return [...prev, productId];
-      }
-    });
-  };
-
-  const handleMoveToCart = (product: Product, size: string, color: string) => {
-    handleAddToCart(product, size, color);
-    setIsCartOpen(true);
-  };
-
-  const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-  // Filter products for categories
-  const womenSpotlightImage = 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80';
   const womenProducts = PRODUCTS.slice(0, 3);
-
-  const menSpotlightImage = 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=700&q=80';
   const menProducts = PRODUCTS.slice(3, 6);
-
-  const kidsSpotlightImage = 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=700&q=80';
-  const kidsProducts = PRODUCTS.slice(1, 4).map(p => ({
-    ...p,
-    id: p.id + 10,
-    title: p.title.replace('Stratus Technical Cargo Pant', 'Junior Chino Pant').replace('Core Base Layer', 'Junior Cotton Layer').replace('Glacier Expedition Daypack', 'Junior Explorer Bag')
-  }));
-
-  const newArrivals = PRODUCTS.filter(p => p.isNew);
+  const kidsProducts = PRODUCTS.filter((p) => p.category === 'kids');
+  const newArrivals = PRODUCTS.filter((p) => p.isNew);
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-slate-900 flex flex-col font-sans">
-      {/* Navbar */}
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        wishlistCount={wishlist.length}
-        cartCount={cartTotalCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-      />
-
+    <AppLayout>
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 bg-slate-950 text-white border border-slate-800 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-[200] animate-bounce text-xs">
-          <CheckCircle2 size={16} className="text-emerald-500" />
+        <div className="fixed bottom-6 right-6 z-120 bg-luxury-charcoal text-white px-5 py-3 rounded-2xl shadow-2xl border border-luxury-gold/30 flex items-center gap-3 text-xs font-bold animate-slide-over">
+          <CheckCircle2 size={16} className="text-luxury-gold" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Main Home Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 w-full flex-1 py-6 space-y-16">
-        
-        {/* Hero Section Banner */}
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10 w-full flex-1 space-y-16">
+        {/* Hero Section */}
         <HeroSection />
 
-        {/* Brand Logos Ticker (Infinite Marquee) */}
+        {/* Brand Ticker Banner */}
         <BrandTicker />
 
         {/* SHOP FOR WOMEN Section */}
         <ProductSpotlightSection
           title="SHOP FOR WOMEN"
-          description="Discover the latest in women's fashion in our exclusive collection. From chic dresses to stylish accessories, find everything you need to elevate your wardrobe."
-          spotlightImage={womenSpotlightImage}
-          spotlightTitle="ESSENTIAL FEMININE SILHOUETTES"
+          description="Indulge in technical precision and clean cuts. Our outerwear shells, active trousers, and core performance base layers set the gold standard."
+          spotlightImage={womenProducts[0].image}
+          spotlightTitle="STRATUS ANORAK SHELLS"
           products={womenProducts}
           wishlist={wishlist}
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Women collection...')}
+          onShopMore={() => navigate('/category/women')}
         />
 
         {/* SHOP FOR MEN Section */}
         <ProductSpotlightSection
           title="SHOP FOR MEN"
           description="Explore our premium collection of men's fashion. From classic essentials to the latest trends, find everything you need to elevate your style."
-          spotlightImage={menSpotlightImage}
+          spotlightImage={menProducts[2].image}
           spotlightTitle="ELEVATED TAILORINGS & CARGOS"
           products={menProducts}
           wishlist={wishlist}
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Men collection...')}
+          onShopMore={() => navigate('/category/men')}
         />
 
         {/* SHOP FOR KIDS Section */}
         <ProductSpotlightSection
           title="SHOP FOR KIDS"
           description="Explore vibrant, durable, and comfortable clothing collections for children. Designed for everyday adventures and playground comfort."
-          spotlightImage={kidsSpotlightImage}
+          spotlightImage={kidsProducts[0].image}
           spotlightTitle="PLAYFUL VIBRANT ESSENTIALS"
           products={kidsProducts}
           wishlist={wishlist}
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to full Kids collection...')}
+          onShopMore={() => navigate('/category/kids')}
         />
 
         {/* OUR NEW ARRIVALS Section */}
@@ -183,7 +113,7 @@ export const Home: React.FC = () => {
           onToggleWishlist={toggleWishlist}
           onAddToCart={handleAddToCart}
           onOpenQuickView={setActiveQuickViewProduct}
-          onShopMore={() => triggerToast('Redirecting to all New Arrivals...')}
+          onShopMore={() => navigate('/category/outerwear')}
         />
 
         {/* OUR OFFERS Section */}
@@ -191,45 +121,8 @@ export const Home: React.FC = () => {
 
         {/* EXPERIENCE THE DIFFERENCE Section */}
         <ExperienceDifference />
-
       </main>
-
-      {/* Footer */}
-      <Footer />
-
-      {/* Interactive Cart Drawer */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateCartQty}
-        onRemoveItem={handleRemoveCartItem}
-      />
-
-      {/* Interactive Wishlist Drawer */}
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistIds={wishlist}
-        onRemoveFromWishlist={toggleWishlist}
-        onMoveToCart={handleMoveToCart}
-      />
-
-      {/* Interactive Quick View Modal */}
-      <QuickViewModal
-        product={activeQuickViewProduct}
-        isOpen={activeQuickViewProduct !== null}
-        onClose={() => setActiveQuickViewProduct(null)}
-        onAddToCart={handleAddToCartWithQty}
-        onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
-      />
-
-      {/* Size Guide Modal */}
-      <SizeGuideModal
-        isOpen={isSizeGuideOpen}
-        onClose={() => setIsSizeGuideOpen(false)}
-      />
-    </div>
+    </AppLayout>
   );
 };
 

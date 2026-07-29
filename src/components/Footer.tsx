@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-slate-950 border-t border-slate-900 pt-16 pb-12 px-6 sm:px-12 mt-20 text-slate-400">
-      <div className="max-w-7xl mx-auto space-y-16">
+      <div className="max-w-[1440px] mx-auto space-y-16">
 
 
 

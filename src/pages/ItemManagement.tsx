@@ -30,7 +30,7 @@ export const ItemManagement: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-luxury-cream text-slate-900 flex flex-col font-sans">
       <Navbar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -40,7 +40,7 @@ export const ItemManagement: React.FC = () => {
         onOpenWishlist={() => {}}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
         
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -51,7 +51,7 @@ export const ItemManagement: React.FC = () => {
           
           <button 
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 bg-[#c5a880] hover:bg-[#aa8c65] text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <Plus size={20} />
             <span>Add New Item</span>
@@ -59,16 +59,16 @@ export const ItemManagement: React.FC = () => {
         </div>
 
         {/* Controls Bar */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-[#f5f0e6]">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-luxury-sand">
           <div className="relative w-full sm:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
             <input 
               type="text" 
               placeholder="Search items..." 
-              className="w-full pl-10 pr-4 py-2 bg-[#fbf9f6] border border-[#f5f0e6] rounded-xl focus:outline-none focus:border-[#c5a880] transition-colors"
+              className="w-full pl-10 pr-4 py-2 bg-luxury-cream border border-luxury-sand rounded-xl focus:outline-none focus:border-luxury-gold transition-colors"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 text-slate-600 bg-[#fbf9f6] border border-[#f5f0e6] rounded-xl hover:bg-[#f5f0e6] transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 text-slate-600 bg-luxury-cream border border-luxury-sand rounded-xl hover:bg-luxury-sand transition-colors">
             <Filter size={20} />
             <span>Filter</span>
           </button>

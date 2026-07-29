@@ -1,6 +1,6 @@
 import React from 'react';
 import { Minus, Plus, Trash2, Check } from 'lucide-react';
-import type { CartItem } from './CartDrawer';
+import type { CartItem } from '../CartDrawer';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -66,7 +66,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
             <span>Size: <strong className="text-luxury-charcoal font-semibold">{item.selectedSize}</strong></span>
           </div>
           <div className="text-xs text-slate-400 font-semibold pt-1">
-            Unit Price: <span className="text-luxury-charcoal font-bold">${item.product.price.toFixed(2)}</span>
+            Unit Price: <span className="text-luxury-charcoal font-bold">Rs. {item.product.price.toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
         <div className="text-right min-w-[80px]">
           <span className="text-xs text-slate-400 block font-medium sm:hidden">Total</span>
           <span className="text-sm sm:text-base font-black text-luxury-gold">
-            ${rowTotal.toFixed(2)}
+            Rs. {rowTotal.toFixed(2)}
           </span>
         </div>
 

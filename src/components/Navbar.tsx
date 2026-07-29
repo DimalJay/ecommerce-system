@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
@@ -8,6 +9,7 @@ import {
   Menu
 } from 'lucide-react';
 import webLogo from '../assets/Web Logo.png';
+import { useCart } from '../context/CartContext';
 
 interface NavbarProps {
   searchQuery: string;
@@ -26,12 +28,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCart,
   onOpenWishlist
 }) => {
+  const { user, logout } = useCart();
   return (
     <>
       {/* Top Announcement Ticker */}
       <div className="bg-luxury-charcoal text-luxury-cream text-center py-2.5 px-4 text-[10px] font-black tracking-widest flex items-center justify-center gap-2 uppercase border-b border-luxury-gold/20">
         <Sparkles size={12} className="text-luxury-gold animate-pulse" />
-        <span>COMPLIMENTARY WORLDWIDE EXPRESS SHIPPING ON ORDERS OVER $300</span>
+        <span>COMPLIMENTARY WORLDWIDE EXPRESS SHIPPING ON ORDERS OVER Rs. 300</span>
         <span className="hidden sm:inline-block text-luxury-gold-light/40">|</span>
         <span className="hidden sm:inline-block bg-luxury-gold/25 text-luxury-gold-light border border-luxury-gold/30 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest">
           AURA20
@@ -40,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Header Navigation Bar */}
       <header className="sticky top-0 z-50 bg-luxury-cream/90 backdrop-blur-md border-b border-luxury-gold-light/20 px-4 sm:px-10 py-4 shadow-xs">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-6">
           {/* Left Brand Logo & Mobile Menu */}
           <div className="flex items-center gap-3">
             <button className="lg:hidden p-2 hover:bg-luxury-sand rounded-xl text-slate-700 transition-colors cursor-pointer" title="Menu">
@@ -48,16 +51,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <a href="/" className="flex items-center gap-2.5 cursor-pointer group">
-              {/* OLD LOGO PRESERVED BELOW
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 bg-luxury-charcoal text-luxury-gold rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                  <ShoppingBag size={18} />
-                </div>
-                <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-luxury-charcoal font-sans">
-                  Aura<span className="text-luxury-gold">Atelier</span>
-                </span>
-              </div>
-              */}
               <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-9 w-auto object-contain" />
               <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-luxury-charcoal font-sans">
                 Aura<span className="text-luxury-gold">Fashion</span>
@@ -124,12 +117,33 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Profile Account Button */}
-            <button
-              className="hidden sm:flex p-2.5 bg-white hover:bg-luxury-sand border border-luxury-gold-light/30 rounded-full text-slate-700 hover:text-luxury-gold transition-all cursor-pointer"
-              title="Account"
-            >
-              <User size={18} />
-            </button>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/order-history"
+                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/35 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all cursor-pointer font-bold flex items-center gap-1.5 text-xs"
+                  title={`Signed in as ${user.name}`}
+                >
+                  <User size={16} />
+                  <span className="hidden md:inline font-black uppercase text-[9px] tracking-widest">{user.name}</span>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="px-3 py-2 bg-white hover:bg-luxury-gold text-slate-700 hover:text-white border border-luxury-gold-light/35 rounded-xl transition-all cursor-pointer text-[9px] font-bold uppercase tracking-widest"
+                  title="Sign Out"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/auth"
+                className="p-2.5 bg-white hover:bg-luxury-sand border border-luxury-gold-light/30 rounded-full text-slate-700 hover:text-luxury-gold transition-all cursor-pointer"
+                title="Sign In / Register"
+              >
+                <User size={18} />
+              </Link>
+            )}
           </div>
         </div>
       </header>

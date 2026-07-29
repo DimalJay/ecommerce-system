@@ -21,6 +21,17 @@ interface CartContextType {
   promoError: string;
   setPromoError: (error: string) => void;
   handleApplyPromo: (code: string) => boolean;
+  wishlist: number[];
+  isWishlistOpen: boolean;
+  setIsWishlistOpen: (open: boolean) => void;
+  toggleWishlist: (productId: number) => void;
+  activeQuickViewProduct: Product | null;
+  setActiveQuickViewProduct: (product: Product | null) => void;
+  isSizeGuideOpen: boolean;
+  setIsSizeGuideOpen: (open: boolean) => void;
+  user: { name: string; email: string } | null;
+  login: (email: string, name: string) => void;
+  logout: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -40,6 +51,42 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [promoApplied, setPromoApplied] = useState<boolean>(false);
   const [promoError, setPromoError] = useState<string>('');
 
+  const [wishlist, setWishlist] = useState<number[]>([2]);
+  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
+
+  const [user, setUser] = useState<{ name: string; email: string } | null>(() => {
+    try {
+      const savedUser = localStorage.getItem('auth_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const login = (email: string, name: string) => {
+    const newUser = { email, name };
+    setUser(newUser);
+    localStorage.setItem('auth_user', JSON.stringify(newUser));
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('auth_user');
+  };
+
+  const toggleWishlist = (productId: number) => {
+    setWishlist((prev) => {
+      const exists = prev.includes(productId);
+      if (exists) {
+        return prev.filter((id) => id !== productId);
+      } else {
+        return [...prev, productId];
+      }
+    });
+  };
+
   const addToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     const targetColor = color === 'Default' ? product.colorName : color;
     setCartItems((prev) => {
@@ -51,12 +98,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
 
       if (existingIndex > -1) {
-        const next = [...prev];
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: next[existingIndex].quantity + 1
-        };
-        return next;
+        return prev;
       }
 
       return [...prev, { product, quantity: 1, selectedSize: size, selectedColor: targetColor }];
@@ -148,7 +190,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         promoApplied,
         promoError,
         setPromoError,
-        handleApplyPromo
+        handleApplyPromo,
+        wishlist,
+        isWishlistOpen,
+        setIsWishlistOpen,
+        toggleWishlist,
+        activeQuickViewProduct,
+        setActiveQuickViewProduct,
+        isSizeGuideOpen,
+        setIsSizeGuideOpen,
+        user,
+        login,
+        logout
       }}
     >
       {children}
