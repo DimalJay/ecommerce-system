@@ -31,8 +31,8 @@ interface CartContextType {
   setActiveQuickViewProduct: (product: Product | null) => void;
   isSizeGuideOpen: boolean;
   setIsSizeGuideOpen: (open: boolean) => void;
-  user: { name: string; email: string } | null;
-  login: (email: string, name: string) => void;
+  user: { name: string; email: string; id?: string; first_name?: string; last_name?: string } | null;
+  login: (email: string, name: string, extra?: { id?: string; first_name?: string; last_name?: string }) => void;
   logout: () => void;
 }
 
@@ -58,7 +58,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
 
-  const [user, setUser] = useState<{ name: string; email: string } | null>(() => {
+  const [user, setUser] = useState<{ name: string; email: string; id?: string; first_name?: string; last_name?: string } | null>(() => {
     try {
       const savedUser = localStorage.getItem('auth_user');
       return savedUser ? JSON.parse(savedUser) : null;
@@ -67,8 +67,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
-  const login = (email: string, name: string) => {
-    const newUser = { email, name };
+  const login = (email: string, name: string, extra?: { id?: string; first_name?: string; last_name?: string }) => {
+    const newUser = { email, name, ...extra };
     setUser(newUser);
     localStorage.setItem('auth_user', JSON.stringify(newUser));
   };

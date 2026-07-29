@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
-import type { Order } from '../order-history';
+import type { Order } from '../../types';
 
 interface AdminOrderCardProps {
   order: Order;

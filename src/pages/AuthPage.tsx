@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { AppLayout } from '../components';
@@ -12,44 +12,22 @@ export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const { toastMessage, triggerToast } = useToast();
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      triggerToast('Please enter both email and password.');
-      return;
-    }
-
-    let accounts: { email: string; name: string }[] = [];
-    try {
-      const stored = localStorage.getItem('registered_accounts');
-      if (stored) accounts = JSON.parse(stored);
-    } catch (err) { console.error(err); }
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const existing = accounts.find((acc) => acc.email.toLowerCase() === normalizedEmail);
-
-    if (existing) {
-      login(existing.email, existing.name);
-      triggerToast(`Welcome back, ${existing.name}!`);
-    } else {
-      const finalName = name.trim() || email.split('@')[0];
-      accounts.push({ email: normalizedEmail, name: finalName });
-      localStorage.setItem('registered_accounts', JSON.stringify(accounts));
-      login(normalizedEmail, finalName);
-      triggerToast(`Account created successfully! Welcome ${finalName}`);
-    }
-
+  const handleLoginSuccess = (userData: { email: string; name: string; id?: string; first_name?: string; last_name?: string }) => {
+    login(userData.email, userData.name, {
+      id: userData.id,
+      first_name: userData.first_name,
+      last_name: userData.last_name,
+    });
+    triggerToast(`Welcome back, ${userData.name}!`);
     setTimeout(() => navigate('/order-history'), 1000);
   };
 
-  const handleGoogleLogin = () => {
-    login('user.google@gmail.com', 'Google User');
-    triggerToast('Logged in successfully via Google');
-    setTimeout(() => navigate('/order-history'), 1000);
+  const handleRegisterSuccess = (message: string) => {
+    triggerToast(message || 'Account created successfully!');
+  };
+
+  const handleError = (errorMsg: string) => {
+    triggerToast(errorMsg);
   };
 
   return (
@@ -58,13 +36,18 @@ export const AuthPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-10 py-16 w-full flex-1 flex flex-col items-center justify-center min-h-[650px]">
         <div className="w-full max-w-md text-left mb-6">
-          <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer"
+          >
             <ArrowLeft size={14} /> Back to Atelier Shop
           </Link>
         </div>
 
-        <AuthFormCard email={email} setEmail={setEmail} password={password} setPassword={setPassword}
-          name={name} setName={setName} onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin}
+        <AuthFormCard
+          onLoginSuccess={handleLoginSuccess}
+          onRegisterSuccess={handleRegisterSuccess}
+          onError={handleError}
         />
       </main>
     </AppLayout>

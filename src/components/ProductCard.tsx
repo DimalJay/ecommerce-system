@@ -2,21 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { StarRating } from './ui';
+import type { Product } from '../types';
 
-export interface Product {
-  id: number;
-  title: string;
-  category: string;
-  colorName: string;
-  price: number;
-  oldPrice?: number;
-  rating: number;
-  reviewsCount: number;
-  discount?: string;
-  image: string;
-  isNew?: boolean;
-  swatches?: string[];
-}
+export type { Product };
 
 interface ProductCardProps {
   product: Product;

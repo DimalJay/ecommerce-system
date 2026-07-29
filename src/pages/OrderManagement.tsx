@@ -4,7 +4,7 @@ import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
-import type { Order } from '../components/order-history';
+import type { Order } from '../types';
 
 export const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);

@@ -1,35 +1,6 @@
 import React from 'react';
 import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
-import type { Product } from '../ProductCard';
-
-interface OrderItem {
-  product: Product;
-  quantity: number;
-  selectedSize: string;
-  selectedColor: string;
-}
-
-interface Order {
-  id: string;
-  date: string;
-  items: OrderItem[];
-  shippingInfo: {
-    fullName?: string;
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    phone: string;
-    address: string;
-    apartment: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country?: string;
-  };
-  paymentMethod: string;
-  total: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
-}
+import type { Order, OrderItem } from '../../types';
 
 interface OrderCardProps {
   order: Order;

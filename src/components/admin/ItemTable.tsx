@@ -1,16 +1,9 @@
 import React from 'react';
 import { Edit2, Trash2, MoreVertical } from 'lucide-react';
 
-export interface AdminItem {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: number;
-  stock: number;
-  image: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
+import type { AdminItem } from '../../types';
+
+export type { AdminItem };
 
 const mockItems: AdminItem[] = [
   {

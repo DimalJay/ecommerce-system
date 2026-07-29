@@ -2,45 +2,46 @@ import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } f
 
 export class HTTPError extends Error {
   response?: AxiosResponse;
+  status?: number;
+  
   constructor(response?: AxiosResponse) {
-    super(
-      response?.data?.message ?? `Failed to Fetch. Status: ${response?.status}`,
-    );
+    const apiMessage = response?.data?.message || response?.data?.error;
+    super(apiMessage ?? `Request failed with status: ${response?.status ?? 'Unknown'}`);
+    this.name = "HTTPError";
     this.response = response;
+    this.status = response?.status;
   }
 }
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/ecomm/api/v1";
 
 export const backend = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
   withCredentials: true,
 });
 
 backend.interceptors.response.use(
   (response: AxiosResponse) => {
-    if (response.data?.error) {
-      throw new Error(response.data.error);
+    // If API response explicitly returns success: false, throw HTTPError with the server message
+    if (response.data && response.data.success === false) {
+      throw new HTTPError(response);
     }
     return response;
   },
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== "undefined") {
-        const currentPath = window.location.pathname;
-        if (!currentPath.startsWith("/login")) {
-          // Redirect to login or dispatch event
-          window.location.href = "/login";
-        }
-      }
+    if (error.response) {
+      return Promise.reject(new HTTPError(error.response));
     }
-    return Promise.reject(new HTTPError(error.response));
+    return Promise.reject(error);
   }
 );
 
 export const request = async <T = any>(
   url: string,
-  config: AxiosRequestConfig = {},
+  config: AxiosRequestConfig = {}
 ): Promise<T> => {
   const res = await backend({ url, ...config });
   return res.data;
