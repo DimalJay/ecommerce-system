@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { ItemTable, type AdminItem } from '../components/admin/ItemTable';
 import { AddItemModal } from '../components/admin/AddItemModal';
