@@ -26,19 +26,18 @@ export const OrderHistory: React.FC = () => {
 
   return (
     <AppLayout>
-      <main className="max-w-4xl mx-auto px-4 sm:px-8 py-12 w-full flex-1 space-y-10">
-        {/* Header Breadcrumbs & Title */}
-        <div className="space-y-4">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1 space-y-8">
+        <div className="space-y-3">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer"
+            className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover transition-colors"
           >
-            <ArrowLeft size={14} /> Back to Atelier Shop
+            <ArrowLeft size={14} /> Back to Shop
           </Link>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
             Order History
           </h1>
-          <p className="text-xs text-slate-500 font-medium">
+          <p className="text-sm text-text-muted">
             Manage, review, and track all your previous purchases.
           </p>
         </div>

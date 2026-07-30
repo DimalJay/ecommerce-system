@@ -27,42 +27,42 @@ export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = (
   onShopMore
 }) => {
   return (
-    <section className="space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-extrabold uppercase tracking-wider text-slate-950">
-          {title}
-        </h2>
-        <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
-          {description}
-        </p>
-        <button 
+    <section className="space-y-5">
+      <div className="flex items-end justify-between gap-4">
+        <div className="space-y-2">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+            {title}
+          </h2>
+          <p className="text-sm text-text-muted max-w-xl leading-relaxed">
+            {description}
+          </p>
+        </div>
+        <button
           onClick={onShopMore}
-          className="bg-[#1e293b] hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded shadow-xs transition-colors cursor-pointer"
+          className="hidden sm:inline-flex px-5 py-2 bg-text-primary hover:bg-accent text-elevated text-xs font-semibold uppercase tracking-wider rounded-lg transition-all cursor-pointer shrink-0"
         >
-          Shop Now
+          Shop All
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Spotlight Large Banner */}
-        <div className="lg:col-span-4 relative rounded-2xl overflow-hidden bg-slate-100 min-h-[360px] group border border-slate-200/50">
-          <img 
-            src={spotlightImage} 
-            alt={spotlightTitle} 
-            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-102"
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <div className="lg:col-span-4 relative rounded-xl overflow-hidden bg-secondary min-h-[360px] group border border-border">
+          <img
+            src={spotlightImage}
+            alt={spotlightTitle}
+            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-slate-950/20 flex flex-col justify-end p-6">
-            <span className="text-[10px] font-bold tracking-widest text-white uppercase bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full self-start mb-2">
-              Featured Looks
+          <div className="absolute inset-0 bg-gradient-to-t from-text-primary/50 via-transparent to-transparent flex flex-col justify-end p-5">
+            <span className="text-[10px] font-semibold tracking-wider text-elevated uppercase bg-elevated/20 backdrop-blur-sm px-3 py-1 rounded-full self-start mb-2">
+              Featured
             </span>
-            <h3 className="text-xl font-extrabold text-white leading-tight uppercase font-sans">
+            <h3 className="text-lg font-bold text-elevated leading-tight">
               {spotlightTitle}
             </h3>
           </div>
         </div>
 
-        {/* Right 3 items */}
-        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
           {products.map((product) => (
             <ProductCard
               key={product.id}
@@ -75,13 +75,13 @@ export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = (
           ))}
         </div>
       </div>
-      
-      <div className="flex justify-center pt-4">
-        <button 
+
+      <div className="flex sm:hidden justify-center pt-2">
+        <button
           onClick={onShopMore}
-          className="px-8 py-3 border-2 border-[#1e293b] hover:bg-[#1e293b] text-[#1e293b] hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-md transition-all cursor-pointer"
+          className="px-8 py-3 border-2 border-text-primary hover:bg-text-primary hover:text-elevated text-text-primary text-xs font-semibold uppercase tracking-wider rounded-lg transition-all cursor-pointer"
         >
-          Shop More
+          Shop All
         </button>
       </div>
     </section>

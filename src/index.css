@@ -1,113 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --color-luxury-cream: #fbf9f6;
-  --color-luxury-sand: #f5f0e6;
-  --color-luxury-gold: #c5a880;
-  --color-luxury-gold-dark: #aa8c65;
-  --color-luxury-gold-light: #dfd3c3;
-  --color-luxury-charcoal: #0f172a;
-  --color-luxury-bronze: #8c6f4f;
-  --color-luxury-clay: #b85c38;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* Surface colors */
+  --color-bg-primary: #faf8f5;
+  --color-bg-secondary: #f5f2ed;
+  --color-bg-tertiary: #eeebe6;
+  --color-elevated: #ffffff;
+  --color-bg-elevated: #ffffff;
+
+  /* Accent / Brand */
+  --color-accent: #b8956a;
+  --color-accent-hover: #a07d52;
+  --color-accent-light: #e8ddcf;
+  --color-accent-subtle: #f5f0e8;
+  --color-accent-ghost: #faf6f0;
+
+  /* Text */
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #6b6560;
+  --color-text-muted: #7a736e;
+  --color-text-disabled: #c4bdb8;
+
+  /* Borders */
+  --color-border: #e8e2d9;
+  --color-border-strong: #d4cdc2;
+
+  /* Footer dark */
+  --color-footer-bg: #1c1917;
+  --color-footer-border: #292524;
+  --color-footer-text: #a8a29e;
+
+  /* Semantic */
+  --color-success: #059669;
+  --color-success-bg: #ecfdf5;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fef2f2;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+
+  /* Legacy aliases (keep for backward compat during migration) */
+  --color-luxury-cream: var(--color-bg-primary);
+  --color-luxury-sand: var(--color-bg-secondary);
+  --color-luxury-gold: var(--color-accent);
+  --color-luxury-gold-dark: var(--color-accent-hover);
+  --color-luxury-gold-light: var(--color-accent-light);
+  --color-luxury-charcoal: #1c1917;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-luxury-cream);
-  color: var(--color-luxury-charcoal);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
   min-height: 100vh;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 0.9375rem;
+  line-height: 1.6;
 }
 
 /* Custom premium scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f5f0e6;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
 ::-webkit-scrollbar-thumb {
-  background: #c5a880;
-  border-radius: 4px;
+  background: var(--color-accent-light);
+  border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #aa8c65;
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* Glass utilities */
+.glass-nav {
+  background: rgba(250, 248, 245, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
 }
 
-/* Custom UI Utilities for Glassmorphism & Micro-interactions */
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(223, 211, 195, 0.35);
+  border: 1px solid var(--color-border);
 }
 
-.glass-nav {
-  background: rgba(251, 249, 246, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(223, 211, 195, 0.3);
-}
-
-/* Custom animations with smooth easing */
+/* Animations */
 @keyframes slideOver {
-  from {
-    transform: translateX(100%);
-    opacity: 0.8;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(100%); opacity: 0.9; }
+  to { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
 @keyframes scaleUp {
-  from {
-    transform: scale(0.96);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.97); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
-
-.animate-slide-over {
-  animation: slideOver 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.25s ease-out forwards;
-}
-
-.animate-scale-up {
-  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
 @keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes slideUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-.animate-marquee {
-  animation: marquee 25s linear infinite;
+.animate-slide-over { animation: slideOver 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+.animate-scale-up { animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+
+/* Focus ring utility */
+.focus-ring-custom {
+  outline: none;
+  transition: all 0.15s ease;
+}
+.focus-ring-custom:focus-visible {
+  box-shadow: 0 0 0 2px rgba(184, 149, 106, 0.25);
+  border-color: var(--color-accent);
 }

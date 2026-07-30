@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { Product } from '../components/ProductCard';
-import type { CartItem } from '../components/CartDrawer';
+import type { Product, CartItem } from '../types';
 import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
 

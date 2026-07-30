@@ -45,20 +45,20 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
           </span>
           <h2 className="font-extrabold text-lg sm:text-xl text-luxury-charcoal tracking-tight">Payment Method</h2>
         </div>
-        <p className="text-xs text-slate-500 ml-11">All transactions are 256-bit SSL encrypted &amp; secure.</p>
+        <p className="text-xs text-text-secondary ml-11">All transactions are 256-bit SSL encrypted &amp; secure.</p>
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-4">
         <PaymentOption
           id="card"
           label="Credit / Debit Card"
           selected={paymentMethod === 'card'}
           onSelect={() => setPaymentMethod('card')}
           right={
-            <div className="flex items-center gap-1.5">
-              <span className="px-2 py-1 rounded-md bg-blue-600 text-white text-[10px] font-black tracking-wide shadow-2xs">VISA</span>
-              <span className="px-2 py-1 rounded-md bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-black tracking-wide shadow-2xs">MC</span>
-              <span className="px-2 py-1 rounded-md bg-slate-700 text-white text-[10px] font-black tracking-wide shadow-2xs">AMEX</span>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-black tracking-wide shadow-xs">VISA</span>
+              <span className="px-2 py-1 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-black tracking-wide shadow-xs">MC</span>
+              <span className="px-2 py-1 rounded-lg bg-slate-700 text-white text-[10px] font-black tracking-wide shadow-xs">AMEX</span>
             </div>
           }
         >
@@ -88,7 +88,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       </div>
 
       <div className="pt-2">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Order Notes (Optional)</label>
+        <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-2">Order Notes (Optional)</label>
         <textarea
           placeholder="Add any special notes about your order..."
           value={form.notes}

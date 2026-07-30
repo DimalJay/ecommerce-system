@@ -19,32 +19,32 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
     <div className="space-y-4">
       <Link
         to="/"
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-bold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer"
       >
-        <ArrowLeft size={14} /> Back to Atelier Shop
+        <ArrowLeft size={14} /> Back to Shop
       </Link>
       
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-luxury-gold-light/20 pb-6">
         <div className="space-y-2 max-w-2xl text-left">
           <span className="text-[10px] font-black text-luxury-gold uppercase tracking-widest block">
-            Atelier Catalog
+            Catalog
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal uppercase">
             {title}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed font-medium">
             {desc}
           </p>
         </div>
 
         <div className="flex items-center gap-3 self-start md:self-end">
-          <button className="flex items-center gap-1.5 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer">
+          <button className="flex items-center gap-2 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer">
             <Filter size={12} />
             Filter
           </button>
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="flex items-center gap-1.5 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer"
           >
             {viewMode === 'grid' ? <List size={12} /> : <Grid size={12} />}
             <span>{viewMode === 'grid' ? 'List View' : 'Grid View'}</span>

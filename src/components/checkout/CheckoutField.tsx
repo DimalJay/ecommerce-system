@@ -15,7 +15,7 @@ export const CheckoutField: React.FC<CheckoutFieldProps> = ({
 }) => (
   <div className={className}>
     {label && (
-      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+      <label className="block text-xs font-semibold text-text-secondary mb-2">
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
     )}

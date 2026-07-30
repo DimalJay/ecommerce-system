@@ -37,7 +37,7 @@ export const PaymentOption: React.FC<PaymentOptionProps> = ({
         </span>
         <div>
           <p className="text-sm font-bold text-luxury-charcoal">{label}</p>
-          {subLabel && <p className="text-[11px] text-slate-500">{subLabel}</p>}
+          {subLabel && <p className="text-[11px] text-text-secondary">{subLabel}</p>}
         </div>
       </div>
       {right}

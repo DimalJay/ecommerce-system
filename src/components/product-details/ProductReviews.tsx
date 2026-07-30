@@ -26,10 +26,10 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
           <div className="flex justify-center">
             <StarRating rating={product.rating} size={18} />
           </div>
-          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+          <p className="text-xs text-text-secondary font-semibold uppercase tracking-wider">
             Overall score based on {product.reviewsCount} reviews
           </p>
-          <div className="flex items-center justify-center gap-1.5 text-xs text-emerald-800 font-bold bg-emerald-50 px-3 py-1.5 rounded-full mt-2">
+          <div className="flex items-center justify-center gap-2 text-xs text-emerald-800 font-bold bg-emerald-50 px-3 py-2 rounded-full mt-2">
             <ShieldCheck size={14} />
             <span>100% Verified Purchases</span>
           </div>
@@ -57,13 +57,13 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-bold text-luxury-charcoal">{rev.name}</h4>
-                  <p className="text-[10px] text-slate-400 font-medium">{rev.date}</p>
+                  <p className="text-[10px] text-text-muted font-medium">{rev.date}</p>
                 </div>
                 <StarRating rating={rev.rating} size={12} />
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-luxury-charcoal">{rev.title}</p>
-                <p className="text-xs text-slate-500 leading-relaxed">{rev.comment}</p>
+                <p className="text-xs text-text-secondary leading-relaxed">{rev.comment}</p>
               </div>
             </div>
           ))}

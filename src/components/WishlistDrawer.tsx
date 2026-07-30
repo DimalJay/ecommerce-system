@@ -37,13 +37,13 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
           </div>
           <div>
             <h3 className="font-bold text-luxury-charcoal">Your wishlist is empty</h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-[240px]">
+            <p className="text-xs text-text-muted mt-1 max-w-[240px]">
               Browse our catalog and tap the heart icon on designs you love.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="px-6 py-2.5 border border-luxury-gold hover:bg-luxury-gold hover:text-white text-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            className="px-6 py-3 border border-luxury-gold hover:bg-luxury-gold hover:text-white text-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
           >
             Explore Catalog
           </button>
@@ -68,13 +68,13 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                   </h4>
                   <button
                     onClick={() => onRemoveFromWishlist(product.id)}
-                    className="text-slate-300 hover:text-rose-500 transition-colors p-0.5 cursor-pointer"
+                    className="text-text-disabled hover:text-rose-500 transition-colors p-1 cursor-pointer"
                     title="Remove"
                   >
                     <Trash2 size={14} />
                   </button>
                 </div>
-                <span className="text-[10px] text-slate-400 font-extrabold uppercase mt-0.5 block">
+                <span className="text-[10px] text-text-muted font-extrabold uppercase mt-1 block">
                   {product.colorName}
                 </span>
                 <span className="text-xs font-extrabold text-luxury-gold mt-1 block">
@@ -88,7 +88,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                   onMoveToCart(product, 'M', product.swatches ? product.colorName : 'Default');
                   onRemoveFromWishlist(product.id);
                 }}
-                className="mt-2 w-full bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/50 hover:border-luxury-gold py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="mt-2 w-full bg-luxury-sand hover:bg-luxury-gold text-luxury-charcoal hover:text-white border border-luxury-gold-light/50 hover:border-luxury-gold py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 <ShoppingBag size={12} />
                 Add to Bag

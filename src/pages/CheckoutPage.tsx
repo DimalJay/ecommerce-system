@@ -131,25 +131,25 @@ export const Checkout: React.FC = () => {
 
   return (
     <AppLayout>
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
             Checkout
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Complete your details and place your order</p>
+          <p className="text-text-muted text-sm mt-1">Complete your details and place your order</p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-16 py-4 mb-10 border-y border-luxury-gold-light/20 text-xs font-medium text-slate-600">
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 py-4 mb-8 border-y border-border text-sm text-text-secondary">
           <span className="flex items-center gap-2">
-            <ShieldCheck size={16} className="text-luxury-gold" />
+            <ShieldCheck size={16} className="text-accent" />
             Secure Checkout
           </span>
           <span className="flex items-center gap-2">
-            <PackageCheck size={16} className="text-luxury-gold" />
+            <PackageCheck size={16} className="text-accent" />
             Easy Returns
           </span>
           <span className="flex items-center gap-2">
-            <Truck size={16} className="text-luxury-gold" />
+            <Truck size={16} className="text-accent" />
             Fast Delivery
           </span>
         </div>
