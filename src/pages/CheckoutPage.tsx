@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
@@ -10,17 +11,20 @@ import {
   OrderSuccessModal,
 } from '../components/checkout';
 import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/checkout';
-import type { OrderRecord } from '../types';
+import type { OrderRecord, CartItem } from '../types';
 import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const Checkout: React.FC = () => {
+  const location = useLocation();
   const {
-    cartItems,
+    cartItems: fullCartItems,
     removeCheckedOutItems,
     promoCode: globalPromoCode,
     promoApplied,
-    handleApplyPromo,
   } = useCart();
+
+  const checkoutItems: CartItem[] =
+    (location.state as { selectedItems?: CartItem[] })?.selectedItems || fullCartItems;
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [promoOpen, setPromoOpen] = useState(false);
@@ -59,7 +63,7 @@ export const Checkout: React.FC = () => {
     }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = checkoutItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const discount = promoApplied ? subtotal * PROMO_DISCOUNT_RATE : 0;
   const tax = (subtotal - discount) * TAX_RATE;
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_COST;
@@ -74,7 +78,6 @@ export const Checkout: React.FC = () => {
     }
 
     if (trimmed === 'AURA20') {
-      handleApplyPromo(trimmed);
       setPromoError('');
     } else {
       setPromoError('Invalid promo code. Use code AURA20 for 20% off');
@@ -145,7 +148,7 @@ export const Checkout: React.FC = () => {
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (cartItems.length === 0) {
+    if (checkoutItems.length === 0) {
       return;
     }
 
@@ -162,7 +165,7 @@ export const Checkout: React.FC = () => {
         month: 'long',
         day: 'numeric',
       }),
-      items: cartItems.map((item) => ({
+      items: checkoutItems.map((item) => ({
         product: item.product,
         quantity: item.quantity,
         selectedSize: item.selectedSize,
@@ -195,8 +198,8 @@ export const Checkout: React.FC = () => {
     // Set completed order to trigger modal
     setCompletedOrder(newOrder);
 
-    // Clear cart items
-    const keysToRemove = cartItems.map(getItemKey);
+    // Clear only checked-out items from cart
+    const keysToRemove = checkoutItems.map(getItemKey);
     removeCheckedOutItems(keysToRemove);
   };
 
@@ -239,7 +242,7 @@ export const Checkout: React.FC = () => {
               </div>
 
               <CheckoutSummary
-                cartItems={cartItems}
+                cartItems={checkoutItems}
                 subtotal={subtotal}
                 shipping={shipping}
                 promoApplied={promoApplied}
