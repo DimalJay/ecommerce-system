@@ -34,7 +34,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
 
   if (viewMode === 'grid') {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8">
         {products.map((p) => (
           <ProductCard
             key={p.id}
@@ -110,9 +110,8 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => toggleWishlist(p.id)}
-                  className={`p-2 rounded-full border transition-all cursor-pointer ${
-                    wishlist.includes(p.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-slate-200 text-slate-400 hover:text-rose-500'
-                  }`}
+                  className={`p-2 rounded-full border transition-all cursor-pointer ${wishlist.includes(p.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-slate-200 text-slate-400 hover:text-rose-500'
+                    }`}
                 >
                   <Heart size={14} fill={wishlist.includes(p.id) ? '#f43f5e' : 'none'} />
                 </button>

@@ -59,7 +59,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         {/* Product Image Section */}
-        <div className="relative bg-luxury-sand h-72 md:h-full min-h-[350px]">
+        <div className="relative bg-luxury-sand h-56 md:h-full min-h-[224px] md:min-h-[350px]">
           <img 
             src={product.image} 
             alt={product.title} 

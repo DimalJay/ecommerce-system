@@ -5,11 +5,12 @@ import {
   ShoppingCart,
   Heart,
   User,
-  Sparkles,
   Menu
 } from 'lucide-react';
 import webLogo from '../assets/Web Logo.png';
 import { useCart } from '../context/CartContext';
+import { AnnouncementBar } from './navbar/AnnouncementBar';
+import { MobileMenuDrawer } from './navbar/MobileMenuDrawer';
 
 interface NavbarProps {
   searchQuery: string;
@@ -19,6 +20,13 @@ interface NavbarProps {
   onOpenCart: () => void;
   onOpenWishlist: () => void;
 }
+
+const NAV_ITEMS = [
+  { label: 'Shop All', path: '/' },
+  { label: 'Women', path: '/category/women' },
+  { label: 'Men', path: '/category/men' },
+  { label: 'New Arrivals', path: '/category/new-arrivals' },
+];
 
 export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
@@ -31,31 +39,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { user, logout } = useCart();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <>
-      {/* Top Announcement Ticker */}
-      <div className="bg-luxury-charcoal text-luxury-cream text-center py-2 px-4 text-[10px] font-extrabold tracking-[0.15em] flex items-center justify-center gap-2 uppercase border-b border-luxury-gold/20 select-none">
-        <Sparkles size={13} className="text-luxury-gold animate-pulse shrink-0" />
-        <span>COMPLIMENTARY WORLDWIDE EXPRESS SHIPPING ON ORDERS OVER Rs. 300</span>
-        <span className="hidden sm:inline-block text-luxury-gold-light/40">|</span>
-        <span className="hidden sm:inline-block bg-luxury-gold/25 text-luxury-gold-light border border-luxury-gold/30 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest">
-          AURA20
-        </span>
-      </div>
+      <AnnouncementBar />
 
       {/* Main Header Navigation Bar */}
-      <header className="sticky top-0 z-50 glass-nav px-4 sm:px-8 lg:px-10 py-3.5 shadow-xs">
+      <header className="sticky top-0 z-50 glass-nav px-4 sm:px-8 lg:px-10 py-3.5 shadow-xs relative">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4 sm:gap-6">
           {/* Left Brand Logo & Mobile Menu */}
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="lg:hidden p-2 hover:bg-luxury-sand/60 rounded-xl text-slate-700 transition-colors cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-1.5 sm:p-2 hover:bg-luxury-sand/60 rounded-xl text-slate-700 transition-colors cursor-pointer"
               title="Menu"
               aria-label="Toggle navigation menu"
             >
-              <Menu size={20} />
+              <Menu size={16} className="sm:w-5 sm:h-5" />
             </button>
 
             <Link to="/" className="flex items-center gap-2.5 cursor-pointer group">
@@ -68,18 +70,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[11px] font-extrabold uppercase tracking-[0.15em] text-slate-600">
-            <Link to="/" className="text-luxury-gold border-b-2 border-luxury-gold pb-0.5 font-extrabold">
-              New Arrivals
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Collections
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Shop
-            </Link>
-            <Link to="/" className="hover:text-luxury-gold transition-colors duration-200">
-              Deals
-            </Link>
+            {NAV_ITEMS.map((item, idx) => (
+              <Link key={idx} to={item.path} className="hover:text-luxury-gold transition-colors duration-200">
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Right Search Bar & Actions */}
@@ -112,11 +107,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsSearchOpen(true)}
-                  className="p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-luxury-gold transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
+                  className="p-1.5 sm:p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-luxury-gold transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
                   title="Search Shop"
                   aria-label="Search Shop"
                 >
-                  <Search size={18} />
+                  <Search size={15} className="sm:w-[18px] sm:h-[18px]" />
                 </button>
               )}
             </div>
@@ -125,11 +120,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={onOpenWishlist}
-              className="relative p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-rose-500 hover:border-rose-300 transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
+              className="relative p-1.5 sm:p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-rose-500 hover:border-rose-300 transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
               title="Wishlist"
               aria-label="Wishlist"
             >
-              <Heart size={18} />
+              <Heart size={15} className="sm:w-[18px] sm:h-[18px]" />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs border-2 border-white">
                   {wishlistCount}
@@ -141,11 +136,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal border border-luxury-charcoal hover:border-luxury-gold rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 active:scale-95 flex items-center justify-center"
+              className="relative p-1.5 sm:p-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal border border-luxury-charcoal hover:border-luxury-gold rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 active:scale-95 flex items-center justify-center"
               title="Shopping Cart"
               aria-label="Shopping Cart"
             >
-              <ShoppingCart size={18} />
+              <ShoppingCart size={15} className="sm:w-[18px] sm:h-[18px]" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-luxury-gold text-luxury-charcoal text-[9px] font-black rounded-full flex items-center justify-center shadow-xs border-2 border-luxury-charcoal">
                   {cartCount}
@@ -159,10 +154,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/40 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all duration-200 cursor-pointer font-bold flex items-center justify-center"
+                  className="p-1.5 sm:p-2.5 bg-luxury-sand/50 hover:bg-luxury-sand border border-luxury-gold-light/40 rounded-full text-luxury-gold hover:text-luxury-gold-dark transition-all duration-200 cursor-pointer font-bold flex items-center justify-center"
                   title={`Signed in as ${user.name}`}
                 >
-                  <User size={16} />
+                  <User size={14} className="sm:w-4 sm:h-4" />
                 </button>
 
                 {isProfileDropdownOpen && (
@@ -206,16 +201,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <Link
                 to="/auth"
-                className="p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-luxury-gold transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
+                className="p-1.5 sm:p-2.5 bg-white hover:bg-luxury-sand/60 border border-luxury-gold-light/40 rounded-full text-slate-700 hover:text-luxury-gold transition-all duration-200 cursor-pointer shadow-2xs active:scale-95"
                 title="Sign In / Register"
                 aria-label="Sign In"
               >
-                <User size={18} />
+                <User size={15} className="sm:w-[18px] sm:h-[18px]" />
               </Link>
             )}
           </div>
         </div>
       </header>
+
+      <MobileMenuDrawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        user={user}
+        logout={logout}
+        navItems={NAV_ITEMS}
+      />
     </>
   );
 };
