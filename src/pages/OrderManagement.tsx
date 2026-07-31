@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { RefreshCw, ShoppingBag } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
@@ -94,8 +93,6 @@ export const OrderManagement: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
-      <AdminNavbar />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8 sm:py-10 space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-border pb-6 gap-4 text-left">
           <div>

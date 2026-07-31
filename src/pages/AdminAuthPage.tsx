@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, ShieldAlert } from 'lucide-react';
 import { Toast } from '../components/ui';
 import { useToast } from '../hooks/useToast';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { useCart } from '../context/CartContext';
 
 export const AdminAuthPage: React.FC = () => {
@@ -39,8 +38,6 @@ export const AdminAuthPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
-      <AdminNavbar />
-
       {toastMessage && <Toast message={toastMessage} />}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1">

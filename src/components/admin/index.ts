@@ -7,3 +7,6 @@ export { SizeToggleGrid } from './SizeToggleGrid';
 export { OrderStats } from './OrderStats';
 export { OrderControls } from './OrderControls';
 export { AdminOrderCard } from './AdminOrderCard';
+export { AdminSidebar } from './AdminSidebar';
+export { ADMIN_NAV_ITEMS } from './adminNavItems';
+export type { AdminTab } from './adminNavItems';
