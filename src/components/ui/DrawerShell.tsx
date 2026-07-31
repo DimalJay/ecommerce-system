@@ -38,19 +38,16 @@ export const DrawerShell: React.FC<DrawerShellProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex justify-end">
-      {/* Glass Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/45 backdrop-blur-md transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-text-primary/40 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
-      {/* Drawer Panel */}
-      <div className="relative w-full max-w-md bg-luxury-cream border-l border-luxury-gold-light/40 shadow-2xl shadow-slate-950/20 flex flex-col h-full z-10 animate-slide-over">
-        {/* Header */}
-        <div className="p-6 border-b border-luxury-gold-light/30 flex items-center justify-between bg-white shrink-0">
-          <div className="flex items-center gap-2.5">
+      <div className="relative w-full max-w-md bg-bg-primary border-l border-border shadow-xl flex flex-col h-full z-10 animate-slide-over">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-elevated shrink-0">
+          <div className="flex items-center gap-3">
             {headerIcon}
-            <h2 className="text-base sm:text-lg font-black text-luxury-charcoal uppercase tracking-wider">
+            <h2 className="text-base font-bold text-text-primary">
               {title}
               {itemCount !== undefined && ` (${itemCount})`}
             </h2>
@@ -58,24 +55,21 @@ export const DrawerShell: React.FC<DrawerShellProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 hover:bg-luxury-sand/60 text-slate-500 hover:text-luxury-charcoal rounded-full transition-colors duration-200 cursor-pointer active:scale-95"
+            className="p-2 hover:bg-secondary text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
             aria-label="Close drawer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Optional Banner (e.g. free-shipping progress) */}
         {banner}
 
-        {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
           {children}
         </div>
 
-        {/* Optional Sticky Footer */}
         {footer && (
-          <div className="p-6 bg-white border-t border-luxury-gold-light/30 space-y-4 shrink-0 shadow-lg">
+          <div className="px-6 py-5 bg-elevated border-t border-border space-y-4 shrink-0 shadow-md">
             {footer}
           </div>
         )}

@@ -21,7 +21,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   errors,
 }) => {
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+    const value = e.target.value.replace(/\D/g, '').substring(0, 16);
     const matches = value.match(/\d{1,4}/g);
     const formatted = matches ? matches.join(' ') : '';
     onChange('cardNumber')({ target: { value: formatted } } as React.ChangeEvent<HTMLInputElement>);
@@ -38,12 +38,6 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
     onChange('cvv')({ target: { value } } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  // Card Brand Detection
-  const cleanCardNumber = form.cardNumber.replace(/\s+/g, '');
-  const isVisa = cleanCardNumber.startsWith('4');
-  const isMastercard = /^5[1-5]/.test(cleanCardNumber);
-  const isAmex = /^3[47]/.test(cleanCardNumber);
-
   return (
     <section className="bg-white border border-luxury-gold-light/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
       {/* Section Header */}
@@ -54,41 +48,20 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
           </span>
           <h2 className="font-extrabold text-lg sm:text-xl text-luxury-charcoal tracking-tight">Payment Method</h2>
         </div>
-        <p className="text-xs text-slate-500 ml-11">All transactions are 256-bit SSL encrypted &amp; secure.</p>
+        <p className="text-xs text-text-secondary ml-11">All transactions are 256-bit SSL encrypted &amp; secure.</p>
       </div>
 
-      <div className="space-y-3.5">
-        {/* Credit / Debit Card Option */}
+      <div className="space-y-4">
         <PaymentOption
           id="card"
           label="Credit / Debit Card"
           selected={paymentMethod === 'card'}
           onSelect={() => setPaymentMethod('card')}
           right={
-            <div className="flex items-center gap-1.5">
-              <span
-                className={`px-2 py-1 rounded-md text-[10px] font-black tracking-wide transition-all ${
-                  isVisa ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-400' : 'bg-slate-200 text-slate-500 opacity-60'
-                }`}
-              >
-                VISA
-              </span>
-              <span
-                className={`px-2 py-1 rounded-md text-[10px] font-black tracking-wide transition-all ${
-                  isMastercard
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xs ring-2 ring-orange-400'
-                    : 'bg-slate-200 text-slate-500 opacity-60'
-                }`}
-              >
-                MC
-              </span>
-              <span
-                className={`px-2 py-1 rounded-md text-[10px] font-black tracking-wide transition-all ${
-                  isAmex ? 'bg-slate-700 text-white shadow-xs ring-2 ring-slate-400' : 'bg-slate-200 text-slate-500 opacity-60'
-                }`}
-              >
-                AMEX
-              </span>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-black tracking-wide shadow-xs">VISA</span>
+              <span className="px-2 py-1 rounded-lg bg-linear-to-r from-orange-500 to-red-500 text-white text-[10px] font-black tracking-wide shadow-xs">MC</span>
+              <span className="px-2 py-1 rounded-lg bg-slate-700 text-white text-[10px] font-black tracking-wide shadow-xs">AMEX</span>
             </div>
           }
         >
@@ -225,7 +198,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       </div>
 
       <div className="pt-2">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Order Notes (Optional)</label>
+        <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-2">Order Notes (Optional)</label>
         <textarea
           placeholder="Add any special instructions (e.g. delivery time preferences, gate code)..."
           value={form.notes}

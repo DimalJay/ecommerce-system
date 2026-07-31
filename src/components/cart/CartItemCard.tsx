@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Trash2, Check } from 'lucide-react';
-import type { CartItem } from '../CartDrawer';
+import type { CartItem } from '../../types';
 import { QuantitySelector } from '../ui';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +41,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
         <button
           type="button"
           onClick={onToggleSelect}
-          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+          className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
             isSelected
               ? 'bg-luxury-gold border-luxury-gold text-white'
               : 'border-slate-300 hover:border-luxury-gold bg-white'
@@ -69,16 +69,34 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-luxury-gold block">
               {item.product.category}
             </span>
+
             <h3 className="text-sm sm:text-base font-bold text-luxury-charcoal truncate group-hover:text-luxury-gold transition-colors">
               {item.product.title}
             </h3>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium">
-              <span>Color: <strong className="text-luxury-charcoal font-semibold">{item.selectedColor}</strong></span>
+
+            <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary font-medium">
+              <span>
+                Color:{' '}
+                <strong className="text-luxury-charcoal font-semibold">
+                  {item.selectedColor}
+                </strong>
+              </span>
+
               <span>&bull;</span>
-              <span>Size: <strong className="text-luxury-charcoal font-semibold">{item.selectedSize}</strong></span>
+
+              <span>
+                Size:{' '}
+                <strong className="text-luxury-charcoal font-semibold">
+                  {item.selectedSize}
+                </strong>
+              </span>
             </div>
-            <div className="text-xs text-slate-400 font-semibold pt-1">
-              Unit Price: <span className="text-luxury-charcoal font-bold">Rs. {item.product.price.toFixed(2)}</span>
+
+            <div className="text-xs text-text-muted font-semibold pt-1">
+              Unit Price:{' '}
+              <span className="text-luxury-charcoal font-bold">
+                Rs. {item.product.price.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
@@ -95,7 +113,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
 
         {/* Row Subtotal */}
         <div className="text-right min-w-[80px]">
-          <span className="text-xs text-slate-400 block font-medium sm:hidden">Total</span>
+          <span className="text-xs text-text-muted block font-medium sm:hidden">Total</span>
           <span className="text-sm sm:text-base font-black text-luxury-gold">
             Rs. {rowTotal.toFixed(2)}
           </span>
@@ -105,7 +123,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
         <button
           type="button"
           onClick={onRemove}
-          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors cursor-pointer"
+          className="p-2 text-text-muted hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors cursor-pointer"
           title="Remove item"
           aria-label="Remove item"
         >

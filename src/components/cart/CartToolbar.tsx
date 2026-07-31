@@ -19,16 +19,16 @@ export const CartToolbar: React.FC<CartToolbarProps> = ({
   onRemoveSelected,
 }) => {
   return (
-    <div className="flex items-center justify-between bg-white border border-luxury-gold-light/30 rounded-2xl px-5 py-3.5 shadow-xs">
+    <div className="flex items-center justify-between bg-white border border-luxury-gold-light/30 rounded-2xl px-5 py-4 shadow-xs">
       <button
         type="button"
         onClick={onToggleSelectAll}
-        className="flex items-center gap-2.5 text-xs font-bold text-luxury-charcoal hover:text-luxury-gold transition-colors cursor-pointer select-none"
+        className="flex items-center gap-3 text-xs font-bold text-luxury-charcoal hover:text-luxury-gold transition-colors cursor-pointer select-none"
       >
         {allSelected ? (
           <CheckSquare size={18} className="text-luxury-gold" />
         ) : (
-          <Square size={18} className="text-slate-400" />
+          <Square size={18} className="text-text-muted" />
         )}
         <span>
           Select All ({selectedCount}/{totalCount})
@@ -39,7 +39,7 @@ export const CartToolbar: React.FC<CartToolbarProps> = ({
         <button
           type="button"
           onClick={onRemoveSelected}
-          className="flex items-center gap-1.5 text-xs font-semibold text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
+          className="flex items-center gap-2 text-xs font-semibold text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
         >
           <Trash2 size={14} />
           <span>Remove Selected</span>

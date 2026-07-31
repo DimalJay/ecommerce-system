@@ -24,8 +24,8 @@ export const SizeToggleGrid: React.FC<SizeToggleGridProps> = ({
         onClick={() => onToggle(size)}
         className={`w-12 h-12 rounded-xl text-sm font-semibold transition-all flex items-center justify-center cursor-pointer ${
           selectedSizes.includes(size)
-            ? 'bg-[#c5a880] text-white shadow-md'
-            : 'bg-white border border-[#f5f0e6] text-slate-600 hover:border-[#c5a880] hover:text-[#c5a880]'
+            ? 'bg-accent text-white shadow-md'
+            : 'bg-white border border-border text-text-secondary hover:border-accent hover:text-accent'
         }`}
       >
         {size}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Ruler } from 'lucide-react';
 import type { Product } from './ProductCard';
@@ -20,16 +20,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   onOpenSizeGuide
 }) => {
   const [selectedSize, setSelectedSize] = useState('M');
-  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedColor, setSelectedColor] = useState(() => product?.swatches?.[0] ?? product?.colorName ?? '');
   const [quantity, setQuantity] = useState(1);
-
-  useEffect(() => {
-    if (product) {
-      setSelectedColor(product.swatches?.[0] ?? product.colorName);
-      setSelectedSize('M');
-      setQuantity(1);
-    }
-  }, [product]);
 
   if (!isOpen || !product) return null;
 
@@ -39,7 +31,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-fade-in"
@@ -52,21 +44,21 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 bg-white/80 hover:bg-white text-slate-500 hover:text-luxury-charcoal rounded-full transition-all border border-luxury-gold-light/20 cursor-pointer"
+          className="absolute top-4 right-4 z-20 p-2 bg-white/80 hover:bg-white text-text-secondary hover:text-luxury-charcoal rounded-full transition-all border border-luxury-gold-light/20 cursor-pointer"
           title="Close modal"
         >
           <X size={18} />
         </button>
 
         {/* Product Image Section */}
-        <div className="relative bg-luxury-sand h-56 md:h-full min-h-[224px] md:min-h-[350px]">
+        <div className="relative bg-luxury-sand h-56 md:h-full min-h-56 md:min-h-87.5">
           <img 
             src={product.image} 
             alt={product.title} 
             className="w-full h-full object-cover"
           />
           {product.discount && (
-            <span className="absolute top-4 left-4 bg-luxury-gold text-white text-[10px] font-black px-3.5 py-1.5 rounded-full tracking-wider uppercase shadow-xs">
+            <span className="absolute top-4 left-4 bg-luxury-gold text-white text-[10px] font-black px-4 py-2 rounded-full tracking-wider uppercase shadow-xs">
               {product.discount}
             </span>
           )}
@@ -84,7 +76,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
             {/* Ratings and Reviews */}
             <StarRating rating={product.rating} showValue>
-              <span className="text-slate-400">({product.reviewsCount} customer reviews)</span>
+              <span className="text-text-muted">({product.reviewsCount} customer reviews)</span>
             </StarRating>
 
             {/* Price tag */}
@@ -93,14 +85,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 Rs. {product.price.toFixed(2)}
               </span>
               {product.oldPrice && (
-                <span className="text-sm text-slate-400 line-through font-bold">
+                <span className="text-sm text-text-muted line-through font-bold">
                   Rs. {product.oldPrice.toFixed(2)}
                 </span>
               )}
             </div>
 
-            <p className="text-xs text-slate-600 leading-relaxed pt-2">
-              Designed with performance technical fabrication and modern aesthetics, the {product.title} offers lightweight insulation, elevated draping, and functional luxury suited for every environment.
+            <p className="text-xs text-text-secondary leading-relaxed pt-2">
+              Crafted from premium materials with attention to detail. {product.title} combines comfort, durability, and effortless style for everyday wear.
             </p>
 
             {/* Size Selector */}
@@ -122,7 +114,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             {product.swatches && (
               <div className="space-y-2">
                 <span className="text-xs font-bold text-luxury-charcoal uppercase tracking-wider block">
-                  Color: <span className="font-medium text-slate-500">{selectedColor}</span>
+                  Color: <span className="font-medium text-text-secondary">{selectedColor}</span>
                 </span>
                 <ColorSwatches swatches={product.swatches} selectedColor={selectedColor} onSelect={setSelectedColor} />
               </div>
@@ -154,7 +146,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             <Link
               to={`/product/${product.id}`}
               onClick={onClose}
-              className="w-full text-center py-2.5 border border-luxury-gold-light/40 hover:border-luxury-gold text-luxury-charcoal rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-luxury-sand/50"
+              className="w-full text-center py-3 border border-luxury-gold-light/40 hover:border-luxury-gold text-luxury-charcoal rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-luxury-sand/50"
             >
               View Full Details
             </Link>

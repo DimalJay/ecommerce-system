@@ -1,25 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ShoppingBag, Clock, MapPin, CreditCard, ArrowRight } from 'lucide-react';
-import type { CartItem } from '../../components';
+import type { OrderRecord } from '../../types';
 
 interface OrderSuccessModalProps {
-  order: {
-    id: string;
-    date: string;
-    items: CartItem[];
-    shippingInfo: {
-      fullName: string;
-      email: string;
-      address: string;
-      city: string;
-      state: string;
-      postalCode: string;
-      country: string;
-    };
-    paymentMethod: string;
-    total: number;
-  };
+  order: OrderRecord;
   onClose: () => void;
 }
 
@@ -77,7 +62,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onC
             <span className="text-slate-500 font-medium flex items-center gap-1.5 shrink-0">
               <MapPin size={14} className="text-luxury-gold" /> Shipping Address
             </span>
-            <span className="font-semibold text-slate-700 text-right max-w-[200px] truncate">
+            <span className="font-semibold text-slate-700 text-right max-w-50 truncate">
               {order.shippingInfo.address}, {order.shippingInfo.city}, {order.shippingInfo.state}
             </span>
           </div>

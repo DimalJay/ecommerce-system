@@ -1,1 +1,2 @@
-export { AuthFormCard } from './AuthFormCard';
+export { AuthFormField } from './AuthFormField';
+export { AuthModal } from './AuthModal';

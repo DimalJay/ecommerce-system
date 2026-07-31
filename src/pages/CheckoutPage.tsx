@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, PackageCheck, Truck, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
-import { useCart, getItemKey } from '../context/CartContext';
+import { useCart } from '../context/CartContext';
+import { getItemKey } from '../lib/cartKey';
 import {
   ShippingForm,
   PaymentMethods,
   CheckoutSummary,
-  CheckoutStepper,
   OrderSuccessModal,
 } from '../components/checkout';
 import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/checkout';
+import type { OrderRecord } from '../types';
 import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const Checkout: React.FC = () => {
-  const navigate = useNavigate();
   const {
     cartItems,
     removeCheckedOutItems,
@@ -27,7 +26,7 @@ export const Checkout: React.FC = () => {
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState(globalPromoCode || '');
   const [promoError, setPromoError] = useState('');
-  const [completedOrder, setCompletedOrder] = useState<any | null>(null);
+  const [completedOrder, setCompletedOrder] = useState<OrderRecord | null>(null);
 
   const [form, setForm] = useState<CheckoutForm>({
     fullName: '',
@@ -156,9 +155,7 @@ export const Checkout: React.FC = () => {
       return;
     }
 
-    const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
-
-    const newOrder = {
+    const newOrder: OrderRecord = {
       id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
       date: new Date().toLocaleDateString('en-US', {
         year: 'numeric',
@@ -171,7 +168,17 @@ export const Checkout: React.FC = () => {
         selectedSize: item.selectedSize,
         selectedColor: item.selectedColor,
       })),
-      shippingInfo,
+      shippingInfo: {
+        fullName: form.fullName,
+        email: form.email,
+        phone: form.phone,
+        address: form.address,
+        apartment: form.apartment,
+        city: form.city,
+        state: form.state,
+        postalCode: form.postalCode,
+        country: form.country,
+      },
       paymentMethod,
       total,
       status: 'Processing',
@@ -195,64 +202,38 @@ export const Checkout: React.FC = () => {
 
   return (
     <AppLayout>
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-10 py-10">
-        {/* Top Progress Stepper */}
-        <CheckoutStepper currentStep={completedOrder ? 3 : 2} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
+            Checkout
+          </h1>
+          <p className="text-text-muted text-sm mt-1">Complete your details and place your order</p>
+        </div>
 
-        {/* Empty Cart State View */}
-        {cartItems.length === 0 && !completedOrder ? (
-          <div className="bg-white border border-luxury-gold-light/30 rounded-3xl p-10 sm:p-16 text-center max-w-xl mx-auto shadow-sm space-y-6 my-10 animate-fade-in">
-            <div className="w-20 h-20 bg-luxury-sand/50 rounded-full flex items-center justify-center mx-auto text-luxury-gold border border-luxury-gold-light/40">
-              <ShoppingBag size={40} />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-luxury-charcoal">Your Cart is Empty</h2>
-              <p className="text-sm text-slate-500 max-w-md mx-auto">
-                Looks like you haven't added any items to your cart yet. Explore our luxury collection to find your perfect style.
-              </p>
-            </div>
-            <button
-              onClick={() => navigate('/')}
-              className="px-8 py-3.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-full text-xs font-extrabold uppercase tracking-widest transition-all duration-200 shadow-md inline-flex items-center gap-2 cursor-pointer active:scale-95"
-            >
-              <ArrowLeft size={16} /> Continue Shopping
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Main Header */}
-            <div className="mb-8 text-center sm:text-left">
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-luxury-charcoal">
-                Checkout
-              </h1>
-              <p className="text-slate-500 text-sm mt-1">Complete your shipping &amp; payment details to place your order</p>
-            </div>
-
-            {/* Trust Assurance Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-16 py-4 mb-10 border-y border-luxury-gold-light/20 text-xs font-medium text-slate-600 bg-luxury-cream/20 rounded-2xl">
-              <span className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-luxury-gold shrink-0" />
-                256-bit Encrypted SSL
-              </span>
-              <span className="flex items-center gap-2">
-                <PackageCheck size={16} className="text-luxury-gold shrink-0" />
-                30-Day Easy Returns
-              </span>
-              <span className="flex items-center gap-2">
-                <Truck size={16} className="text-luxury-gold shrink-0" />
-                Express Worldwide Delivery
-              </span>
-            </div>
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 py-4 mb-8 border-y border-border text-sm text-text-secondary">
+          <span className="flex items-center gap-2">
+            <ShieldCheck size={16} className="text-accent" />
+            Secure Checkout
+          </span>
+          <span className="flex items-center gap-2">
+            <PackageCheck size={16} className="text-accent" />
+            Easy Returns
+          </span>
+          <span className="flex items-center gap-2">
+            <Truck size={16} className="text-accent" />
+            Fast Delivery
+          </span>
+        </div>
 
             {/* Form & Summary Layout Grid */}
             <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2 space-y-8">
-                <ShippingForm form={form} onChange={handleChange as any} errors={errors} />
+                <ShippingForm form={form} onChange={handleChange} errors={errors} />
                 <PaymentMethods
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
                   form={form}
-                  onChange={handleChange as any}
+                  onChange={handleChange}
                   errors={errors}
                 />
               </div>
@@ -273,8 +254,6 @@ export const Checkout: React.FC = () => {
                 promoError={promoError}
               />
             </form>
-          </>
-        )}
 
         {/* Interactive Order Confirmation Modal */}
         {completedOrder && (
