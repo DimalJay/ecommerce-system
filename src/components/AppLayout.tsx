@@ -78,6 +78,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       />
 
       <QuickViewModal
+        key={activeQuickViewProduct?.id ?? 'closed'}
         product={activeQuickViewProduct}
         isOpen={activeQuickViewProduct !== null}
         onClose={() => setActiveQuickViewProduct(null)}

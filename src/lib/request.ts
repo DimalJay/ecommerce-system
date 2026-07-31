@@ -38,7 +38,7 @@ backend.interceptors.response.use(
   }
 );
 
-export const request = async <T = any>(
+export const request = async <T = unknown>(
   url: string,
   config: AxiosRequestConfig = {},
 ): Promise<T> => {

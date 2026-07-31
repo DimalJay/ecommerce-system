@@ -5,7 +5,7 @@ import { User } from 'lucide-react';
 interface MobileMenuDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
+  user: { name: string; email: string } | null;
   logout: () => void;
   navItems: Array<{ label: string; path: string }>;
 }

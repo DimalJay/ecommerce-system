@@ -35,7 +35,7 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
 
       <form onSubmit={onSubmit} className="space-y-4 text-left">
         {/* Full Name Option */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
             Full Name (Optional for sign in)
           </label>
@@ -52,7 +52,7 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
         </div>
 
         {/* Email Address */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
             Email Address
           </label>
@@ -70,7 +70,7 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
         </div>
 
         {/* Password */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
             Password
           </label>
@@ -90,7 +90,7 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-3.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-md mt-2 cursor-pointer"
+          className="w-full py-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary rounded-lg text-sm font-semibold transition-all shadow-md mt-2 cursor-pointer"
         >
           Continue
         </button>

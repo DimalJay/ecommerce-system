@@ -56,16 +56,19 @@ export const AuthPage: React.FC = () => {
     <AppLayout>
       {toastMessage && <Toast message={toastMessage} />}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-10 py-16 w-full flex-1 flex flex-col items-center justify-center min-h-[650px]">
-        <div className="w-full max-w-md text-left mb-6">
-          <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-luxury-gold hover:text-luxury-gold-dark transition-colors uppercase tracking-widest cursor-pointer">
-            <ArrowLeft size={14} /> Back to Atelier Shop
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1">
+        <div className="max-w-md mx-auto space-y-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover transition-colors"
+          >
+            <ArrowLeft size={14} /> Back to Shop
           </Link>
-        </div>
 
-        <AuthFormCard email={email} setEmail={setEmail} password={password} setPassword={setPassword}
-          name={name} setName={setName} onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin}
-        />
+          <AuthFormCard email={email} setEmail={setEmail} password={password} setPassword={setPassword}
+            name={name} setName={setName} onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin}
+          />
+        </div>
       </main>
     </AppLayout>
   );

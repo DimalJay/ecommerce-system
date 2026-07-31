@@ -6,20 +6,19 @@ interface SizeSelectorProps {
   sizes?: string[];
   selectedSize: string;
   onSelect: (size: string) => void;
-  columns?: number;
 }
 
 export const SizeSelector: React.FC<SizeSelectorProps> = ({ sizes = DEFAULT_SIZES, selectedSize, onSelect }) => (
-  <div className="flex flex-wrap gap-2">
+  <div className="grid grid-cols-5 gap-2">
     {sizes.map((sz) => (
       <button
         key={sz}
         type="button"
         onClick={() => onSelect(sz)}
-        className={`w-9 h-9 flex items-center justify-center rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+        className={`py-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
           selectedSize === sz
-            ? 'border-luxury-gold bg-luxury-sand text-luxury-charcoal shadow-sm'
-            : 'border-luxury-gold-light/20 bg-white hover:border-luxury-gold text-slate-600'
+            ? 'border-accent bg-accent-subtle text-text-primary'
+            : 'border-border bg-elevated hover:border-accent-light/50 text-text-secondary'
         }`}
       >
         {sz}

@@ -16,12 +16,12 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   min = 1,
   variant = 'default',
 }) => {
-  const baseClass = 'flex items-center border border-luxury-gold-light/40 bg-white';
+  const baseClass = 'flex items-center border border-border bg-elevated';
   const sizeClass = variant === 'compact'
-    ? 'rounded-lg px-2 py-0.5'
+    ? 'rounded-lg px-2 py-1'
     : variant === 'pill'
-    ? 'rounded-full px-2 py-0.5 bg-luxury-cream'
-    : 'rounded-2xl px-4 py-2';
+    ? 'rounded-full px-2 py-1'
+    : 'rounded-xl px-3 py-2';
 
   return (
     <div className={`${baseClass} ${sizeClass}`}>
@@ -29,19 +29,19 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         type="button"
         onClick={onDecrease}
         disabled={quantity <= min}
-        className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+        className="p-1 text-text-muted hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        <Minus size={variant === 'compact' ? 10 : 14} />
+        <Minus size={variant === 'compact' ? 10 : 13} />
       </button>
-      <span className={`${variant === 'compact' ? 'px-2' : 'px-4'} text-xs font-bold text-luxury-charcoal min-w-[20px] text-center`}>
+      <span className={`${variant === 'compact' ? 'px-2' : 'px-3'} text-xs font-semibold text-text-primary min-w-[20px] text-center`}>
         {quantity}
       </span>
       <button
         type="button"
         onClick={onIncrease}
-        className="p-1 text-slate-500 hover:text-luxury-charcoal transition-colors cursor-pointer"
+        className="p-1 text-text-muted hover:text-text-primary transition-colors cursor-pointer"
       >
-        <Plus size={variant === 'compact' ? 10 : 14} />
+        <Plus size={variant === 'compact' ? 10 : 13} />
       </button>
     </div>
   );
