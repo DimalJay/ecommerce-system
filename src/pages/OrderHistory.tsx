@@ -4,20 +4,68 @@ import { ArrowLeft } from 'lucide-react';
 import { AppLayout } from '../components';
 import { OrderCard, OrderHistoryEmptyState } from '../components/order-history';
 import type { Order } from '../components/order-history';
+import { request } from '../lib/request';
 
 export const OrderHistory: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    try {
-      const savedOrders = localStorage.getItem('orders');
-      if (savedOrders) {
-        setOrders(JSON.parse(savedOrders));
-      }
-    } catch (err) {
-      console.error('Failed to load orders from localStorage:', err);
-    }
+    request('/orders')
+      .then((res) => {
+        const apiOrders = res.data || [];
+        const mappedOrders = apiOrders.map((apiOrder: any) => {
+          return {
+            id: apiOrder.order_code,
+            date: new Date(apiOrder.created_at).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }),
+            items: (apiOrder.items || []).map((item: any) => {
+              const productData = item.product || {};
+              const images = productData.images ? (typeof productData.images === 'string' ? JSON.parse(productData.images) : productData.images) : [];
+              return {
+                product: {
+                  id: productData.id || 0,
+                  title: productData.title || 'Unknown Product',
+                  category: productData.category || 'Luxury',
+                  colorName: productData.color || 'Default',
+                  price: parseFloat(item.price || productData.price || 0),
+                  image: images[0] || productData.image || '',
+                  rating: 5,
+                  reviewsCount: 10,
+                },
+                quantity: parseInt(item.quantity || 1),
+                selectedSize: item.selected_size || 'M',
+                selectedColor: item.selected_color || 'Default',
+              };
+            }),
+            shippingInfo: {
+              fullName: apiOrder.full_name,
+              email: apiOrder.email,
+              phone: apiOrder.phone,
+              address: apiOrder.address,
+              apartment: apiOrder.apartment || '',
+              city: apiOrder.city,
+              state: apiOrder.state,
+              postalCode: apiOrder.postal_code,
+              country: apiOrder.country,
+            },
+            paymentMethod: apiOrder.payment_method,
+            total: parseFloat(apiOrder.total),
+            status: apiOrder.status || 'Processing',
+          };
+        });
+        setOrders(mappedOrders);
+      })
+      .catch((err) => {
+        console.error('Failed to load orders from API:', err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const toggleExpandOrder = (id: string) => {
@@ -43,7 +91,11 @@ export const OrderHistory: React.FC = () => {
           </p>
         </div>
 
-        {orders.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-slate-500 font-semibold animate-pulse">
+            Loading your order history...
+          </div>
+        ) : orders.length === 0 ? (
           <OrderHistoryEmptyState />
         ) : (
           <div className="space-y-4">

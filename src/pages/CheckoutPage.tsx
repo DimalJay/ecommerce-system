@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { request } from '../lib/request';
 import { ShieldCheck, PackageCheck, Truck, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart, getItemKey } from '../context/CartContext';
@@ -143,10 +144,12 @@ export const Checkout: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 || isSubmitting) {
       return;
     }
 
@@ -158,39 +161,77 @@ export const Checkout: React.FC = () => {
 
     const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
 
-    const newOrder = {
-      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      date: new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
+    const payload = {
+      full_name: form.fullName,
+      email: form.email,
+      phone: form.phone,
+      address: form.address,
+      apartment: form.apartment || null,
+      city: form.city,
+      state: form.state,
+      postal_code: form.postalCode,
+      country: form.country,
+      payment_method: paymentMethod,
+      total: total,
+      notes: form.notes || null,
       items: cartItems.map((item) => ({
-        product: item.product,
+        product_id: item.product.id,
         quantity: item.quantity,
-        selectedSize: item.selectedSize,
-        selectedColor: item.selectedColor,
-      })),
-      shippingInfo,
-      paymentMethod,
-      total,
-      status: 'Processing',
+        price: item.product.price,
+        selected_size: item.selectedSize || null,
+        selected_color: item.selectedColor || null,
+      }))
     };
 
-    try {
-      const existingOrdersRaw = localStorage.getItem('orders');
-      const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
-      localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
-    } catch (err) {
-      console.error('Failed to save order to localStorage:', err);
-    }
+    setIsSubmitting(true);
+    // Make request to backend api at /orders
+    request('/orders', {
+      method: 'POST',
+      data: payload
+    })
+      .then((res) => {
+        const apiOrder = res.data;
+        const newOrder = {
+          id: apiOrder.order_code,
+          date: new Date(apiOrder.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+          items: cartItems.map((item) => ({
+            product: item.product,
+            quantity: item.quantity,
+            selectedSize: item.selectedSize,
+            selectedColor: item.selectedColor,
+          })),
+          shippingInfo,
+          paymentMethod,
+          total,
+          status: apiOrder.status,
+        };
 
-    // Set completed order to trigger modal
-    setCompletedOrder(newOrder);
+        try {
+          const existingOrdersRaw = localStorage.getItem('orders');
+          const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
+          localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
+        } catch (err) {
+          console.error('Failed to save order to localStorage:', err);
+        }
 
-    // Clear cart items
-    const keysToRemove = cartItems.map(getItemKey);
-    removeCheckedOutItems(keysToRemove);
+        // Set completed order to trigger modal
+        setCompletedOrder(newOrder);
+
+        // Clear cart items
+        const keysToRemove = cartItems.map(getItemKey);
+        removeCheckedOutItems(keysToRemove);
+      })
+      .catch((err) => {
+        console.error('Failed to place order:', err);
+        alert(err.message || 'Failed to place order. Please try again.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (

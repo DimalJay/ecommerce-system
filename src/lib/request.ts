@@ -28,9 +28,9 @@ backend.interceptors.response.use(
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         const currentPath = window.location.pathname;
-        if (!currentPath.startsWith("/login")) {
-          // Redirect to login or dispatch event
-          window.location.href = "/login";
+        if (!currentPath.startsWith("/auth")) {
+          // Redirect to auth or dispatch event
+          window.location.href = "/auth";
         }
       }
     }

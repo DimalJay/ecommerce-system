@@ -6,6 +6,7 @@ import { AuthFormCard } from '../components/auth';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { request } from '../lib/request';
 
 export const AuthPage: React.FC = () => {
   const { login } = useCart();
@@ -23,33 +24,55 @@ export const AuthPage: React.FC = () => {
       return;
     }
 
-    let accounts: { email: string; name: string }[] = [];
-    try {
-      const stored = localStorage.getItem('registered_accounts');
-      if (stored) accounts = JSON.parse(stored);
-    } catch (err) { console.error(err); }
-
     const normalizedEmail = email.toLowerCase().trim();
-    const existing = accounts.find((acc) => acc.email.toLowerCase() === normalizedEmail);
+    const nameParts = name.trim().split(' ');
+    const first_name = nameParts[0] || 'First';
+    const last_name = nameParts.slice(1).join(' ') || 'Last';
 
-    if (existing) {
-      login(existing.email, existing.name);
-      triggerToast(`Welcome back, ${existing.name}!`);
-    } else {
-      const finalName = name.trim() || email.split('@')[0];
-      accounts.push({ email: normalizedEmail, name: finalName });
-      localStorage.setItem('registered_accounts', JSON.stringify(accounts));
-      login(normalizedEmail, finalName);
-      triggerToast(`Account created successfully! Welcome ${finalName}`);
-    }
-
-    setTimeout(() => navigate('/order-history'), 1000);
+    // First try to login
+    request('/auth/login', {
+      method: 'POST',
+      data: { email: normalizedEmail, password }
+    })
+      .then((res) => {
+        const userDetails = res.data;
+        login(userDetails.user.email, `${userDetails.user.firstName} ${userDetails.user.lastName}`);
+        triggerToast(`Welcome back, ${userDetails.user.firstName}!`);
+        setTimeout(() => navigate('/'), 1000);
+      })
+      .catch((err) => {
+        // If login failed, attempt registration if name is provided
+        if (name.trim()) {
+          request('/auth/register', {
+            method: 'POST',
+            data: { email: normalizedEmail, password, first_name, last_name }
+          })
+            .then(() => {
+              // Successfully registered, now login
+              return request('/auth/login', {
+                method: 'POST',
+                data: { email: normalizedEmail, password }
+              });
+            })
+            .then((res) => {
+              const userDetails = res.data;
+              login(userDetails.user.email, `${userDetails.user.firstName} ${userDetails.user.lastName}`);
+              triggerToast(`Account created successfully! Welcome ${userDetails.user.firstName}`);
+              setTimeout(() => navigate('/'), 1000);
+            })
+            .catch((regErr) => {
+              triggerToast(regErr.message || 'Registration failed.');
+            });
+        } else {
+          triggerToast(err.message || 'Login failed. Please fill in your name to register if you are new.');
+        }
+      });
   };
 
   const handleGoogleLogin = () => {
     login('user.google@gmail.com', 'Google User');
     triggerToast('Logged in successfully via Google');
-    setTimeout(() => navigate('/order-history'), 1000);
+    setTimeout(() => navigate('/'), 1000);
   };
 
   return (
