@@ -3,6 +3,7 @@ import React from 'react';
 interface CheckoutFieldProps {
   label: string;
   required?: boolean;
+  error?: string;
   className?: string;
   children: React.ReactNode;
 }
@@ -10,6 +11,7 @@ interface CheckoutFieldProps {
 export const CheckoutField: React.FC<CheckoutFieldProps> = ({
   label,
   required,
+  error,
   className = '',
   children,
 }) => (
@@ -20,5 +22,6 @@ export const CheckoutField: React.FC<CheckoutFieldProps> = ({
       </label>
     )}
     {children}
+    {error && <p className="text-[11px] font-semibold text-rose-500 mt-1 animate-fade-in">{error}</p>}
   </div>
 );
