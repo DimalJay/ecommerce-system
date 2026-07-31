@@ -11,10 +11,10 @@ import {
   OrderSuccessModal,
 } from '../components/checkout';
 import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/checkout';
-import type { OrderRecord, CartItem } from '../types';
+import type { Order, CartItem } from '../types';
 import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
-export const Checkout: React.FC = () => {
+export const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const {
     cartItems: fullCartItems,
@@ -30,7 +30,7 @@ export const Checkout: React.FC = () => {
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState(globalPromoCode || '');
   const [promoError, setPromoError] = useState('');
-  const [completedOrder, setCompletedOrder] = useState<OrderRecord | null>(null);
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
   const [form, setForm] = useState<CheckoutForm>({
     fullName: '',
@@ -158,7 +158,7 @@ export const Checkout: React.FC = () => {
       return;
     }
 
-    const newOrder: OrderRecord = {
+    const newOrder: Order = {
       id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
       date: new Date().toLocaleDateString('en-US', {
         year: 'numeric',
@@ -267,4 +267,4 @@ export const Checkout: React.FC = () => {
   );
 };
 
-export default Checkout;
+export default CheckoutPage;

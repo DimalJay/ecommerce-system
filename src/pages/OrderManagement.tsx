@@ -71,7 +71,7 @@ export const OrderManagement: React.FC = () => {
       const query = searchQuery.toLowerCase().trim();
       if (!query) return true;
 
-      const customerName = `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`.toLowerCase();
+      const customerName = (order.shippingInfo?.fullName || `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`).toLowerCase();
       const email = (order.shippingInfo?.email || '').toLowerCase();
       const city = (order.shippingInfo?.city || '').toLowerCase();
       const orderId = order.id.toLowerCase();

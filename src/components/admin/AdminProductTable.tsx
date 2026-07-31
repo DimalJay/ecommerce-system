@@ -2,7 +2,7 @@ import React from 'react';
 import { Edit2, Trash2, ShoppingBag } from 'lucide-react';
 import type { AdminItem } from '../../types';
 
-interface ItemTableProps {
+export interface AdminProductTableProps {
   items: AdminItem[];
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
@@ -11,7 +11,7 @@ interface ItemTableProps {
   sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({
+export const AdminProductTable: React.FC<AdminProductTableProps> = ({
   items,
   onEdit,
   onDelete,
@@ -140,3 +140,5 @@ export const ItemTable: React.FC<ItemTableProps> = ({
     </div>
   );
 };
+
+export const ItemTable = AdminProductTable;

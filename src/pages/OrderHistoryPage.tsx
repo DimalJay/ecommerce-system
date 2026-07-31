@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { AppLayout } from '../components';
 import { OrderCard, OrderHistoryEmptyState } from '../components/order-history';
 import type { Order } from '../components/order-history';
+import { useCart } from '../context/CartContext';
 
 export type StatusFilter = 'All' | 'Accepted' | 'Processing' | 'Shipped' | 'Delivered' | 'Rejected';
 
@@ -189,6 +190,8 @@ const MOCK_SEED_ORDERS: Order[] = [
 const ITEMS_PER_PAGE = 10;
 
 export const OrderHistoryPage: React.FC = () => {
+  const { user } = useCart();
+
   const [orders] = useState<Order[]>(() => {
     try {
       const savedOrders = localStorage.getItem('orders');
@@ -228,6 +231,10 @@ export const OrderHistoryPage: React.FC = () => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return filteredOrders.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredOrders, currentPage]);
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <AppLayout>

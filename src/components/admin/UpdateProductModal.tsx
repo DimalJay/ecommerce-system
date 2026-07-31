@@ -4,14 +4,14 @@ import { ModalShell } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 import type { AdminItem } from '../../types';
 
-interface UpdateItemModalProps {
+export interface UpdateProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   item: AdminItem | null;
   onSave: (item: AdminItem) => void;
 }
 
-export const UpdateItemModal: React.FC<UpdateItemModalProps> = ({ isOpen, onClose, item, onSave }) => {
+export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, onClose, item, onSave }) => {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(['M', 'L']);
   const [formData, setFormData] = useState<Partial<AdminItem>>(() => item ?? {});
 
@@ -50,11 +50,11 @@ export const UpdateItemModal: React.FC<UpdateItemModalProps> = ({ isOpen, onClos
   );
 
   return (
-    <ModalShell isOpen={isOpen} onClose={onClose} title="Edit Item" footer={footer}>
+    <ModalShell isOpen={isOpen} onClose={onClose} title="Edit Product" footer={footer}>
       <form className="space-y-6">
         {/* Image Preview with Upload Overlay */}
         <div>
-            <label className="block text-sm font-medium text-text-primary mb-2">Item Image</label>
+          <label className="block text-sm font-medium text-text-primary mb-2">Product Image</label>
           <div className="relative w-full h-48 rounded-xl overflow-hidden border-2 border-border group cursor-pointer">
             <img src={formData.image} alt={formData.name} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-sm">
@@ -65,9 +65,9 @@ export const UpdateItemModal: React.FC<UpdateItemModalProps> = ({ isOpen, onClos
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Item Name */}
+          {/* Product Name */}
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-2">Item Name</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">Product Name</label>
             <input
               type="text"
               value={formData.name || ''}
@@ -139,7 +139,7 @@ export const UpdateItemModal: React.FC<UpdateItemModalProps> = ({ isOpen, onClos
             rows={3}
             value={formData.description || ''}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Write a short description about the item..."
+            placeholder="Write a short description about the product..."
             className="w-full px-4 py-3 bg-elevated border border-border rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
           />
         </div>
@@ -147,3 +147,5 @@ export const UpdateItemModal: React.FC<UpdateItemModalProps> = ({ isOpen, onClos
     </ModalShell>
   );
 };
+
+export const UpdateItemModal = UpdateProductModal;

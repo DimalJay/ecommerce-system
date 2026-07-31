@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { ModalShell } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 
-interface AddItemModalProps {
+export interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (item: {
@@ -18,7 +18,7 @@ interface AddItemModalProps {
   }) => void;
 }
 
-export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onSave }) => {
+export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSave }) => {
   const [name, setName] = useState('');
   const [sku, setSku] = useState('');
   const [category, setCategory] = useState('');
@@ -72,16 +72,16 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onS
         className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-elevated px-6 py-3 rounded-lg font-medium transition-all shadow-md hover:shadow-lg cursor-pointer"
       >
         <Plus size={18} />
-        <span>Save Item</span>
+        <span>Save Product</span>
       </button>
     </>
   );
 
   return (
-    <ModalShell isOpen={isOpen} onClose={onClose} title="Add New Item" footer={footer}>
+    <ModalShell isOpen={isOpen} onClose={onClose} title="Add New Product" footer={footer}>
       <form className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-text-primary mb-2">Item Image URL</label>
+          <label className="block text-sm font-medium text-text-primary mb-2">Product Image URL</label>
           <input
             type="text"
             value={image}
@@ -93,7 +93,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onS
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-2">Item Name</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">Product Name</label>
             <input
               type="text"
               value={name}
@@ -164,7 +164,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onS
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Write a short description about the item..."
+            placeholder="Write a short description about the product..."
             className="w-full px-4 py-3 bg-elevated border border-border rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
           />
         </div>
@@ -172,3 +172,5 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onS
     </ModalShell>
   );
 };
+
+export const AddItemModal = AddProductModal;

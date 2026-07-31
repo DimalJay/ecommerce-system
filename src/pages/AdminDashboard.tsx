@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Package, Plus, RefreshCw, Boxes, TrendingUp } from 'lucide-react';
-import { AdminSidebar, ADMIN_NAV_ITEMS, AdminOrderCard, ItemTable, AddItemModal, UpdateItemModal, ConfirmDeleteModal } from '../components/admin';
+import {
+  AdminSidebar,
+  ADMIN_NAV_ITEMS,
+  AdminOrderCard,
+  AdminProductTable,
+  AddProductModal,
+  UpdateProductModal,
+  ConfirmDeleteModal,
+} from '../components/admin';
 import type { AdminTab } from '../components/admin';
 import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
@@ -354,7 +362,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <ItemTable
+            <AdminProductTable
               items={products}
               onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
               onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
@@ -366,12 +374,12 @@ export const AdminDashboard: React.FC = () => {
         )}
       </main>
 
-      <AddItemModal
+      <AddProductModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddProduct}
       />
-      <UpdateItemModal
+      <UpdateProductModal
         key={isUpdateModalOpen ? selectedItem?.sku ?? 'none' : 'closed'}
         isOpen={isUpdateModalOpen}
         onClose={() => { setIsUpdateModalOpen(false); setSelectedItem(null); }}

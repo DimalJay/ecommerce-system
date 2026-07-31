@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PackageCheck, Truck, ShieldCheck, ArrowRight } from 'lucide-react';
 import {
@@ -20,7 +21,7 @@ const CATEGORIES: (Category & { image: string })[] = [
   { id: 'accessories', title: 'Accessories', name: 'Accessories', subtitle: 'Finish the look', count: '9 Items', image: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80' }
 ];
 
-export const Home: React.FC = () => {
+export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, wishlist, toggleWishlist, setActiveQuickViewProduct } = useCart();
   const { toastMessage, triggerToast } = useToast();
@@ -163,4 +164,4 @@ export const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default HomePage;
