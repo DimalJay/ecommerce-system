@@ -3,7 +3,7 @@ import axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } f
 export class HTTPError extends Error {
   response?: AxiosResponse;
   status?: number;
-  
+
   constructor(response?: AxiosResponse) {
     const apiMessage = response?.data?.message || response?.data?.error;
     super(apiMessage ?? `Request failed with status: ${response?.status ?? 'Unknown'}`);
@@ -39,7 +39,7 @@ backend.interceptors.response.use(
   }
 );
 
-export const request = async <T = any>(
+export const request = async <T>(
   url: string,
   config: AxiosRequestConfig = {}
 ): Promise<T> => {
