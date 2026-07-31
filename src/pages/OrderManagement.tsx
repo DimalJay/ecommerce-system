@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RefreshCw, ShoppingBag } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
 import type { Order } from '../types';
 
 export const OrderManagement: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>(() => {
+    try {
+      const savedOrders = localStorage.getItem('orders');
+      return savedOrders ? (JSON.parse(savedOrders) as Order[]) : [];
+    } catch (err) {
+      console.error('Failed to load orders from localStorage:', err);
+      return [];
+    }
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
@@ -24,10 +31,6 @@ export const OrderManagement: React.FC = () => {
       console.error('Failed to load orders from localStorage:', err);
     }
   };
-
-  useEffect(() => {
-    loadOrders();
-  }, []);
 
   // Update order status in state & localStorage
   const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
@@ -89,20 +92,17 @@ export const OrderManagement: React.FC = () => {
     });
 
   return (
-    <div className="min-h-screen bg-luxury-cream text-slate-900 flex flex-col font-sans">
-      <AdminNavbar />
-
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 w-full flex-1 py-10 space-y-8">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-luxury-gold-light/20 pb-6 gap-4 text-left">
+    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8 sm:py-10 space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-border pb-6 gap-4 text-left">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Order Management</h1>
-            <p className="text-slate-500 mt-1">Review, track, and update fulfillment status for client orders.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Order Management</h1>
+            <p className="text-text-muted text-sm mt-1">Review, track, and update fulfillment status for client orders.</p>
           </div>
 
           <button
             onClick={loadOrders}
-            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg"
+            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <RefreshCw size={14} className="mr-1" />
             <span>Refresh Data</span>
@@ -135,7 +135,7 @@ export const OrderManagement: React.FC = () => {
               <ShoppingBag size={28} />
             </div>
             <h3 className="text-lg font-bold text-luxury-charcoal uppercase tracking-wider">No Orders Found</h3>
-            <p className="text-slate-400 text-xs max-w-sm mx-auto">
+            <p className="text-text-muted text-xs max-w-sm mx-auto">
               {orders.length === 0
                 ? 'There are currently no orders placed in the system.'
                 : 'No orders match your current search queries or selected status filters.'}

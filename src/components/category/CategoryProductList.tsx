@@ -24,7 +24,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
   if (products.length === 0) {
     return (
       <div className="text-center py-20 bg-white border border-luxury-gold-light/20 rounded-3xl p-8 max-w-md mx-auto space-y-4">
-        <p className="text-sm text-slate-500 font-semibold">No items available in this category.</p>
+        <p className="text-sm text-text-secondary font-semibold">No items available in this category.</p>
         <Link to="/" className="inline-block px-6 py-2 bg-luxury-gold text-white text-xs font-bold uppercase rounded-full tracking-widest">
           Back to Home
         </Link>
@@ -34,7 +34,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
 
   if (viewMode === 'grid') {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8">
         {products.map((p) => (
           <ProductCard
             key={p.id}
@@ -72,7 +72,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
           <div className="flex-1 text-left space-y-3 w-full">
             <div className="flex justify-between items-start gap-4">
               <div>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">
+                <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest block">
                   {p.colorName}
                 </span>
                 <Link to={`/product/${p.id}`} className="block mt-1">
@@ -87,23 +87,23 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
                   Rs. {p.price.toFixed(2)}
                 </span>
                 {p.oldPrice && (
-                  <span className="text-xs text-slate-400 line-through font-bold">
+                  <span className="text-xs text-text-muted line-through font-bold">
                     Rs. {p.oldPrice.toFixed(2)}
                   </span>
                 )}
               </div>
             </div>
 
-            <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+            <p className="text-xs text-text-secondary leading-relaxed max-w-xl">
               High-performance technical fabrication and modern tailored aesthetics suited for everyday luxury. Features premium craftsmanship and dynamic swatches.
             </p>
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-luxury-sand">
               {/* Rating */}
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <div className="flex items-center gap-2 text-xs text-text-secondary">
                 <span className="text-amber-400">★</span>
                 <span className="font-bold text-luxury-charcoal">{p.rating}</span>
-                <span className="text-slate-400">({p.reviewsCount} reviews)</span>
+                <span className="text-text-muted">({p.reviewsCount} reviews)</span>
               </div>
 
               {/* Actions */}
@@ -111,7 +111,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
                 <button
                   onClick={() => toggleWishlist(p.id)}
                   className={`p-2 rounded-full border transition-all cursor-pointer ${
-                    wishlist.includes(p.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-slate-200 text-slate-400 hover:text-rose-500'
+                    wishlist.includes(p.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-slate-200 text-text-muted hover:text-rose-500'
                   }`}
                 >
                   <Heart size={14} fill={wishlist.includes(p.id) ? '#f43f5e' : 'none'} />
@@ -124,7 +124,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
                 </button>
                 <button
                   onClick={() => handleAddToCart(p)}
-                  className="px-5 py-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-full text-[10px] font-bold tracking-widest uppercase transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="px-5 py-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-full text-[10px] font-bold tracking-widest uppercase transition-all flex items-center gap-2 cursor-pointer shadow-xs"
                 >
                   <ShoppingBag size={12} />
                   Add to Bag

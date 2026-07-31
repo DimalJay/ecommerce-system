@@ -1,12 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { Product } from '../components/ProductCard';
-import type { CartItem } from '../components/CartDrawer';
+import type { Product, CartItem } from '../types';
 import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
-
-
-export const getItemKey = (item: { product: { id: number }; selectedSize: string; selectedColor: string }) =>
-  `${item.product.id}-${item.selectedSize}-${item.selectedColor}`;
+import { getItemKey } from '../lib/cartKey';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -211,6 +207,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
