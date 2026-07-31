@@ -3,6 +3,7 @@ import type { Product, CartItem } from '../types';
 import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
 import { getItemKey } from '../lib/cartKey';
+import { logoutUser } from '../api/authApi';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -70,6 +71,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    logoutUser().catch(() => {});
     setUser(null);
     localStorage.removeItem('auth_user');
   };

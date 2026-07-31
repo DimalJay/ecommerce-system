@@ -1,14 +1,5 @@
 import type { Category } from '../types';
 
-export interface Category {
-  id: string;
-  name: string;
-  title?: string;
-  subtitle: string;
-  count: string;
-  image: string;
-}
-
 interface CategoryCardProps {
   category: Category;
   onSelectCategory: (id: string) => void;

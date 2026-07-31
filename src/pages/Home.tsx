@@ -7,8 +7,7 @@ import {
   ProductCard,
   CategoryCard
 } from '../components';
-import type { Product } from '../components/ProductCard';
-import type { Category } from '../types';
+import type { Product, Category } from '../types';
 import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../hooks/useToast';

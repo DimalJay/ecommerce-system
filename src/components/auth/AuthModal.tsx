@@ -1,22 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { X, Mail, Lock, User, ShoppingBag } from 'lucide-react';
 import { AuthFormField } from './AuthFormField';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../hooks/useToast';
 import { Toast } from '../ui';
-import { loadAccounts, saveAccount } from '../../lib/accounts';
+import { useLoginMutation, useRegisterMutation } from '../../hooks/useAuth';
+import { loginSchema, registerSchema } from '../../lib/validations/auth';
+import type { LoginFormData, RegisterFormData } from '../../lib/validations/auth';
 
 type AuthMode = 'login' | 'register';
-type FieldKey = 'name' | 'email' | 'password';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface FieldConfig {
-  key: FieldKey;
+type LoginFieldKey = 'email' | 'password';
+type RegisterFieldKey = 'first_name' | 'last_name' | 'email' | 'password';
+
+interface FieldConfig<K extends string> {
+  key: K;
   label: string;
   placeholder: string;
   type: string;
@@ -27,7 +33,7 @@ const INPUT_CLASS =
   'w-full pl-11 pr-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold transition-all text-xs font-semibold text-luxury-charcoal';
 
 const SUBMIT_CLASS =
-  'w-full py-3 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-sm font-bold uppercase tracking-wider transition-all shadow-md mt-2 cursor-pointer';
+  'w-full py-3 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-sm font-bold uppercase tracking-wider transition-all shadow-md mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
 const MODE_COPY: Record<AuthMode, { title: string; subtitle: string; submitLabel: string; switchLabel: string }> = {
   login: {
@@ -44,17 +50,17 @@ const MODE_COPY: Record<AuthMode, { title: string; subtitle: string; submitLabel
   },
 };
 
-const FIELD_CONFIG: Record<AuthMode, FieldConfig[]> = {
-  login: [
-    { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
-    { key: 'password', label: 'Password', placeholder: '••••••••', type: 'password', icon: Lock },
-  ],
-  register: [
-    { key: 'name', label: 'Full Name', placeholder: 'John Doe', type: 'text', icon: User },
-    { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
-    { key: 'password', label: 'Password', placeholder: 'Create a password', type: 'password', icon: Lock },
-  ],
-};
+const LOGIN_FIELDS: FieldConfig<LoginFieldKey>[] = [
+  { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
+  { key: 'password', label: 'Password', placeholder: '••••••••', type: 'password', icon: Lock },
+];
+
+const REGISTER_FIELDS: FieldConfig<RegisterFieldKey>[] = [
+  { key: 'first_name', label: 'First Name', placeholder: 'John', type: 'text', icon: User },
+  { key: 'last_name', label: 'Last Name', placeholder: 'Doe', type: 'text', icon: User },
+  { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
+  { key: 'password', label: 'Password', placeholder: 'Create a password', type: 'password', icon: Lock },
+];
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -62,13 +68,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { toastMessage, triggerToast } = useToast();
 
   const [mode, setMode] = useState<AuthMode>('login');
-  const [values, setValues] = useState<Record<FieldKey, string>>({ name: '', email: '', password: '' });
 
-  const setValue = (key: FieldKey) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValues((prev) => ({ ...prev, [key]: e.target.value }));
+  const loginMutation = useLoginMutation();
+  const registerMutation = useRegisterMutation();
+
+  const loginForm = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const registerForm = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
+
+  const isSubmitting = loginMutation.isPending || registerMutation.isPending;
 
   const handleClose = () => {
-    setValues((prev) => ({ ...prev, password: '' }));
+    loginForm.reset();
+    registerForm.reset();
+    loginMutation.reset();
+    registerMutation.reset();
     onClose();
   };
 
@@ -78,45 +96,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setTimeout(() => navigate('/order-history'), 1000);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = values.email.toLowerCase().trim();
-    const account = loadAccounts().find((acc) => acc.email.toLowerCase() === email);
-
-    if (!account) {
-      triggerToast('No account found with this email. Please create an account.');
-      return;
-    }
-
-    login(account.email, account.name);
-    completeAuth(`Welcome back, ${account.name}!`);
+  const handleLogin = (data: LoginFormData) => {
+    loginMutation.mutate(data, {
+      onSuccess: (response) => {
+        const { user } = response.data;
+        login(user.email, `${user.first_name} ${user.last_name}`, {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+        });
+        completeAuth(`Welcome back, ${user.first_name}!`);
+      },
+      onError: (err) => triggerToast(err.message),
+    });
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = values.email.toLowerCase().trim();
-    const name = values.name.trim();
-
-    if (!name || !email || !values.password) {
-      triggerToast('Please fill in all fields.');
-      return;
-    }
-
-    const exists = loadAccounts().some((acc) => acc.email.toLowerCase() === email);
-    if (exists) {
-      triggerToast('An account with this email already exists. Please sign in.');
-      return;
-    }
-
-    saveAccount({ email, name });
-    login(email, name);
-    completeAuth(`Account created successfully! Welcome ${name}`);
+  const handleRegister = (data: RegisterFormData) => {
+    registerMutation.mutate(data, {
+      onSuccess: (response) => {
+        const fullName = `${data.first_name} ${data.last_name}`.trim();
+        login(data.email, fullName, {
+          id: response.data,
+          first_name: data.first_name,
+          last_name: data.last_name,
+        });
+        completeAuth(`Account created successfully! Welcome ${data.first_name}!`);
+      },
+      onError: (err) => triggerToast(err.message),
+    });
   };
 
   if (!isOpen) return null;
 
   const copy = MODE_COPY[mode];
-  const handleSubmit = mode === 'login' ? handleLogin : handleRegister;
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
@@ -164,24 +176,51 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-left">
-            {FIELD_CONFIG[mode].map((field) => (
-              <AuthFormField key={field.key} label={field.label} icon={<field.icon size={16} />}>
-                <input
-                  type={field.type}
-                  value={values[field.key]}
-                  onChange={setValue(field.key)}
-                  placeholder={field.placeholder}
-                  required
-                  className={INPUT_CLASS}
-                />
-              </AuthFormField>
-            ))}
+          {mode === 'login' ? (
+            <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4 text-left">
+              {LOGIN_FIELDS.map((field) => (
+                <AuthFormField
+                  key={field.key}
+                  label={field.label}
+                  icon={<field.icon size={16} />}
+                  error={loginForm.formState.errors[field.key]?.message}
+                >
+                  <input
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    className={INPUT_CLASS}
+                    {...loginForm.register(field.key)}
+                  />
+                </AuthFormField>
+              ))}
 
-            <button type="submit" className={SUBMIT_CLASS}>
-              {copy.submitLabel}
-            </button>
-          </form>
+              <button type="submit" disabled={isSubmitting} className={SUBMIT_CLASS}>
+                {isSubmitting ? 'Please wait...' : copy.submitLabel}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4 text-left">
+              {REGISTER_FIELDS.map((field) => (
+                <AuthFormField
+                  key={field.key}
+                  label={field.label}
+                  icon={<field.icon size={16} />}
+                  error={registerForm.formState.errors[field.key]?.message}
+                >
+                  <input
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    className={INPUT_CLASS}
+                    {...registerForm.register(field.key)}
+                  />
+                </AuthFormField>
+              ))}
+
+              <button type="submit" disabled={isSubmitting} className={SUBMIT_CLASS}>
+                {isSubmitting ? 'Please wait...' : copy.submitLabel}
+              </button>
+            </form>
+          )}
 
           <div className="text-center">
             <button

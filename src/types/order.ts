@@ -2,7 +2,6 @@
  * Shared TypeScript types for Customer Orders.
  */
 import type { Product } from './product';
-import type { ShippingFields } from './checkout';
 
 export interface OrderItem {
   product: Product;
@@ -15,8 +14,20 @@ export interface Order {
   id: string;
   date: string;
   items: OrderItem[];
-  shippingInfo: Partial<ShippingFields>;
+  shippingInfo: {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    phone: string;
+    address: string;
+    apartment: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country?: string;
+  };
   paymentMethod: string;
   total: number;
-  status: 'Delivered' | 'In Transit' | 'Processing' | 'Shipped' | 'Cancelled';
+  status: 'Accepted' | 'Processing' | 'Shipped' | 'Delivered' | 'Rejected';
 }

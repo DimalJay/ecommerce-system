@@ -6,8 +6,6 @@ import { QuantitySelector, DrawerShell } from './ui';
 import { PriceRow } from './shared/PriceRow';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
-export type { CartItem };
-
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;

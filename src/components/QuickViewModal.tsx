@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Ruler } from 'lucide-react';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 import { StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
 
 interface QuickViewModalProps {

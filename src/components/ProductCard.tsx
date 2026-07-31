@@ -4,8 +4,6 @@ import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { StarRating } from './ui';
 import type { Product } from '../types';
 
-export type { Product };
-
 interface ProductCardProps {
   product: Product;
   isWishlisted: boolean;
