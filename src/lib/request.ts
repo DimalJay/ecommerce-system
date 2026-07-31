@@ -15,6 +15,20 @@ export class HTTPError extends Error {
 
 const BASE_URL = `${import.meta.env.VITE_API_URL ?? "http://localhost"}/api/v1`;
 
+/** Base URL for uploaded assets served by the backend (e.g. product images). */
+const ASSET_URL = `${import.meta.env.VITE_API_URL ?? "http://localhost"}`;
+
+/**
+ * Resolves a relative asset path (e.g. "uploads/products/abc_123.jpg")
+ * against the backend asset URL. Absolute URLs are returned as-is.
+ */
+export const getAssetUrl = (path: string): string => {
+  if (!path) return path;
+  const normalized = path.replace(/\\/g, "/");
+  if (/^https?:\/\//i.test(normalized)) return normalized;
+  return `${ASSET_URL}/${normalized.replace(/^\/+/, "")}`;
+};
+
 export const backend = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
