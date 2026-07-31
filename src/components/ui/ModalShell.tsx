@@ -32,37 +32,32 @@ export const ModalShell: React.FC<ModalShellProps> = ({
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
-      {/* Glass Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/45 backdrop-blur-md transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-text-primary/40 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
-      {/* Modal Panel */}
       <div
-        className={`relative w-full ${maxWidth} bg-white rounded-3xl shadow-2xl shadow-slate-950/20 border border-luxury-gold-light/30 overflow-hidden animate-scale-up flex flex-col max-h-[90vh] z-10`}
+        className={`relative w-full ${maxWidth} bg-elevated rounded-2xl shadow-xl border border-border overflow-hidden animate-scale-up flex flex-col max-h-[85vh] z-10`}
       >
-        {/* Sticky Header */}
-        <div className="px-6 py-4 sm:px-8 border-b border-luxury-gold-light/25 flex items-center justify-between bg-luxury-cream/60 backdrop-blur-xs shrink-0">
-          <h2 className="text-lg sm:text-xl font-extrabold text-luxury-charcoal tracking-tight">{title}</h2>
+        <div className="px-6 py-4 sm:px-6 border-b border-border flex items-center justify-between bg-bg-primary/80 shrink-0">
+          <h2 className="text-lg font-bold text-text-primary">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-luxury-charcoal hover:bg-luxury-sand/60 rounded-full transition-colors duration-200 cursor-pointer active:scale-95"
+            className="p-2 text-text-muted hover:text-text-primary hover:bg-secondary rounded-lg transition-colors cursor-pointer"
             aria-label="Close modal"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Scrollable Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto custom-scrollbar flex-1">
+        <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           {children}
         </div>
 
-        {/* Optional Sticky Footer */}
         {footer && (
-          <div className="px-6 py-4 sm:px-8 border-t border-luxury-gold-light/25 bg-luxury-cream/60 backdrop-blur-xs shrink-0 flex items-center justify-end gap-3">
+          <div className="px-6 py-4 border-t border-border bg-bg-primary/80 shrink-0 flex items-center justify-end gap-3">
             {footer}
           </div>
         )}

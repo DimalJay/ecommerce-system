@@ -4,7 +4,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 1,
     title: 'Aether Shell Anorak',
-    category: 'outerwear',
+    category: 'new-arrivals',
     colorName: 'ARCTIC WHITE',
     price: 495.00,
     oldPrice: 580.00,
@@ -29,7 +29,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 3,
     title: 'Glacier Expedition Daypack',
-    category: 'outerwear',
+    category: 'new-arrivals',
     colorName: 'ARCTIC WHITE',
     price: 195.00,
     oldPrice: 230.00,
@@ -67,7 +67,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 6,
     title: 'Sub-Zero Insulated Parka',
-    category: 'outerwear',
+    category: 'new-arrivals',
     colorName: 'GLACIER NAVY',
     price: 650.00,
     oldPrice: 720.00,

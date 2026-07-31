@@ -12,13 +12,13 @@ export const OrderHistoryEmptyState: React.FC = () => {
         <h2 className="text-lg font-black text-luxury-charcoal uppercase tracking-wider">
           No orders placed yet
         </h2>
-        <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">
-          You haven't placed any purchases through Aura Fashion. Start exploring our premium collections to place your first order.
+        <p className="text-xs text-text-muted max-w-xs mx-auto leading-relaxed">
+          You haven't placed any orders yet. Start shopping to place your first order.
         </p>
       </div>
       <Link
         to="/"
-        className="inline-block px-8 py-3.5 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all shadow-md cursor-pointer"
+        className="inline-block px-8 py-4 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all shadow-md cursor-pointer"
       >
         Start Shopping
       </Link>

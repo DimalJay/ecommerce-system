@@ -22,11 +22,11 @@ export const ProductSpecsAccordion: React.FC<ProductSpecsAccordionProps> = ({ pr
           <ChevronDown size={14} className={`transition-transform duration-300 ${openTab === 'details' ? 'rotate-180' : ''}`} />
         </button>
         {openTab === 'details' && (
-          <div className="pb-3 text-xs text-slate-500 leading-relaxed space-y-2 animate-fade-in">
-            <p>Designed with meticulous attention to tailoring, the {product.title} offers an unmatched luxury aesthetic combined with everyday utility.</p>
+          <div className="pb-3 text-xs text-text-secondary leading-relaxed space-y-2 animate-fade-in">
+            <p>Thoughtfully designed for comfort and style. {product.title} is crafted to fit seamlessly into your wardrobe.</p>
             <ul className="list-disc list-inside space-y-1">
-              <li>Premium finish bespoke detailing</li>
-              <li>Fits true to size (intended silhouette)</li>
+              <li>Premium quality materials and construction</li>
+              <li>Fits true to size</li>
               <li>Model is wearing size M</li>
             </ul>
           </div>
@@ -44,7 +44,7 @@ export const ProductSpecsAccordion: React.FC<ProductSpecsAccordionProps> = ({ pr
           <ChevronDown size={14} className={`transition-transform duration-300 ${openTab === 'care' ? 'rotate-180' : ''}`} />
         </button>
         {openTab === 'care' && (
-          <div className="pb-3 text-xs text-slate-500 leading-relaxed space-y-1 animate-fade-in">
+          <div className="pb-3 text-xs text-text-secondary leading-relaxed space-y-1 animate-fade-in">
             <p><strong>Composition:</strong> 85% Organic Cotton, 15% Stratus Poly Blend.</p>
             <p><strong>Care Instructions:</strong> Dry clean recommended or machine wash cold inside out. Lay flat to dry. Cool iron only.</p>
           </div>
@@ -62,7 +62,7 @@ export const ProductSpecsAccordion: React.FC<ProductSpecsAccordionProps> = ({ pr
           <ChevronDown size={14} className={`transition-transform duration-300 ${openTab === 'shipping' ? 'rotate-180' : ''}`} />
         </button>
         {openTab === 'shipping' && (
-          <div className="pb-3 text-xs text-slate-500 leading-relaxed space-y-1 animate-fade-in">
+          <div className="pb-3 text-xs text-text-secondary leading-relaxed space-y-1 animate-fade-in">
             <p>Complimentary worldwide shipping on orders exceeding Rs. 300.</p>
             <p>Standard delivery window is 2-5 business days. Free returns within 30 days of receiving your package.</p>
           </div>
