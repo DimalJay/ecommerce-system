@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { Toast } from '../components/ui';
+import { PasswordInput } from '../components/auth/PasswordInput';
 import { useToast } from '../hooks/useToast';
 import { useCart } from '../context/CartContext';
 import { useAdminLoginMutation } from '../hooks/useAdminAuth';
@@ -13,7 +14,6 @@ export const AdminAuthPage: React.FC = () => {
 
   const adminLoginMutation = useAdminLoginMutation();
 
-  // States
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -47,33 +47,25 @@ export const AdminAuthPage: React.FC = () => {
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
       {toastMessage && <Toast message={toastMessage} />}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1">
-        <div className="max-w-md mx-auto space-y-6">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover transition-colors"
-          >
-            <ArrowLeft size={14} /> Back to Shop
-          </Link>
-
-          <div className="bg-elevated border border-border rounded-xl p-8 sm:p-10 shadow-lg space-y-6">
-            <div className="text-center space-y-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-text-primary">
-                Admin Portal
-              </h1>
-              <p className="text-sm text-text-muted">
-                Access the administrative dashboard panel
-              </p>
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <div className="bg-elevated border border-border rounded-2xl p-8 sm:p-10 shadow-xl space-y-6">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-full bg-accent/15 text-accent flex items-center justify-center mx-auto mb-3">
+                <ShieldCheck size={22} />
+              </div>
+              <h1 className="text-2xl font-bold text-text-primary">Admin Portal</h1>
+              <p className="text-sm text-text-muted">Sign in to access the administrative dashboard</p>
             </div>
 
             {errorMessage && (
               <div className="bg-danger-bg border border-danger/20 text-danger rounded-xl p-4 text-sm font-medium flex items-start gap-3 text-left">
-                <ShieldAlert size={16} className="text-danger shrink-0 mt-1" />
+                <ShieldAlert size={16} className="text-danger shrink-0 mt-0.5" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <form onSubmit={handleSubmit} className="space-y-5 text-left">
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
                   Admin Email Address
@@ -86,7 +78,7 @@ export const AdminAuthPage: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@example.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-bg-secondary border border-border rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-bg-secondary border border-border rounded-xl text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                   />
                 </div>
               </div>
@@ -97,13 +89,12 @@ export const AdminAuthPage: React.FC = () => {
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-bg-secondary border border-border rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-full pl-11 pr-12 py-3 bg-bg-secondary border border-border rounded-xl text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                   />
                 </div>
               </div>
@@ -111,12 +102,19 @@ export const AdminAuthPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={adminLoginMutation.isPending}
-                className="w-full py-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary rounded-lg text-sm font-semibold transition-all shadow-md mt-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary rounded-xl text-sm font-bold uppercase tracking-wider transition-all shadow-md mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {adminLoginMutation.isPending ? 'Signing In...' : 'Sign In to Portal'}
               </button>
             </form>
           </div>
+
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover transition-colors mt-6"
+          >
+            <ArrowLeft size={14} /> Back to Shop
+          </Link>
         </div>
       </main>
     </div>

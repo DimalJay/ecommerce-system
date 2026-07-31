@@ -4,7 +4,9 @@ import { useCart } from '../../context/CartContext';
 import { useToast } from '../../hooks/useToast';
 import { Toast } from '../ui';
 import { useLoginMutation, useRegisterMutation } from '../../hooks/useAuth';
+import { getUserApi } from '../../api/userApi';
 import type { LoginFormData, RegisterFormData } from '../../lib/validations/auth';
+import type { UserSession } from '../../context/AuthContext';
 import { AuthModalHeader } from './AuthModalHeader';
 import { AuthModeTabs, type AuthMode } from './AuthModeTabs';
 import { LoginForm } from './LoginForm';
@@ -52,16 +54,48 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     handleClose();
   };
 
+  const resolveUserSession = async (fallback: {
+    id?: string;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+  }): Promise<UserSession> => {
+    try {
+      const res = await getUserApi();
+      if (res.success && res.data) {
+        const u = res.data;
+        const fullName = `${u.first_name} ${u.last_name}`.trim();
+        return {
+          email: u.email,
+          name: fullName || u.email,
+          id: u.id,
+          first_name: u.first_name,
+          last_name: u.last_name,
+        };
+      }
+    } catch {
+      // Fall back to the mutation response below
+    }
+    const fullName = [fallback.first_name, fallback.last_name].filter(Boolean).join(' ');
+    return {
+      email: fallback.email,
+      name: fullName || fallback.email,
+      id: fallback.id,
+      first_name: fallback.first_name,
+      last_name: fallback.last_name,
+    };
+  };
+
   const handleLogin = (data: LoginFormData) => {
     loginMutation.mutate(data, {
-      onSuccess: (response) => {
-        const { user } = response.data;
-        login(user.email, `${user.first_name} ${user.last_name}`, {
-          id: user.id,
-          first_name: user.first_name,
-          last_name: user.last_name,
+      onSuccess: async (response) => {
+        const session = await resolveUserSession(response.data.user);
+        login(session.email, session.name, {
+          id: session.id,
+          first_name: session.first_name,
+          last_name: session.last_name,
         });
-        completeAuth(`Welcome back, ${user.first_name}!`);
+        completeAuth(`Welcome back, ${session.first_name}!`);
       },
       onError: (err) => triggerToast(err.message),
     });
@@ -71,14 +105,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const { confirm_password, ...payload } = data;
     void confirm_password;
     registerMutation.mutate(payload, {
-      onSuccess: (response) => {
-        const fullName = `${data.first_name} ${data.last_name}`.trim();
-        login(data.email, fullName, {
+      onSuccess: async (response) => {
+        const session = await resolveUserSession({
           id: response.data,
+          email: data.email,
           first_name: data.first_name,
           last_name: data.last_name,
         });
-        completeAuth(`Account created successfully! Welcome ${data.first_name}!`);
+        login(session.email, session.name, {
+          id: session.id,
+          first_name: session.first_name,
+          last_name: session.last_name,
+        });
+        completeAuth(`Account created successfully! Welcome ${session.first_name}!`);
       },
       onError: (err) => triggerToast(err.message),
     });
