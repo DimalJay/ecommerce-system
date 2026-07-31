@@ -29,7 +29,7 @@ export interface Order {
   };
   paymentMethod: string;
   total: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
+  status: 'Accepted' | 'Processing' | 'Shipped' | 'Delivered' | 'Rejected';
 }
 
 interface OrderCardProps {
