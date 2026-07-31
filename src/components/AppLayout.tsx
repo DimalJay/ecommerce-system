@@ -5,6 +5,7 @@ import { CartDrawer } from './CartDrawer';
 import { WishlistDrawer } from './WishlistDrawer';
 import { QuickViewModal } from './QuickViewModal';
 import { SizeGuideModal } from './SizeGuideModal';
+import { AuthModal } from './auth/AuthModal';
 import { useCart } from '../context/CartContext';
 import type { Product } from './ProductCard';
 
@@ -32,6 +33,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);
@@ -54,6 +56,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenWishlist={() => setIsWishlistOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       {children}
@@ -87,6 +90,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       />
 
       <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
+
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
 };

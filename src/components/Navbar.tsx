@@ -19,6 +19,7 @@ interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
   onOpenWishlist: () => void;
+  onOpenAuth: () => void;
 }
 
 const NAV_ITEMS = [
@@ -34,7 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   wishlistCount,
   cartCount,
   onOpenCart,
-  onOpenWishlist
+  onOpenWishlist,
+  onOpenAuth
 }) => {
   const { user, logout } = useCart();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -209,14 +211,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
             ) : (
-              <Link
-                to="/auth"
+              <button
+                type="button"
+                onClick={onOpenAuth}
                 className="p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-accent transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
                 title="Sign In / Register"
                 aria-label="Sign In"
               >
                 <User size={15} className="sm:w-4.5 sm:h-4.5" />
-              </Link>
+              </button>
             )}
           </div>
         </div>
@@ -225,6 +228,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <MobileMenuDrawer
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onOpenAuth={onOpenAuth}
         user={user}
         logout={logout}
         navItems={NAV_ITEMS}

@@ -5,6 +5,7 @@ import { User } from 'lucide-react';
 interface MobileMenuDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenAuth: () => void;
   user: { name: string; email: string } | null;
   logout: () => void;
   navItems: Array<{ label: string; path: string }>;
@@ -13,6 +14,7 @@ interface MobileMenuDrawerProps {
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   isOpen,
   onClose,
+  onOpenAuth,
   user,
   logout,
   navItems
@@ -96,13 +98,16 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </button>
             </div>
           ) : (
-            <Link
-              to="/auth"
-              onClick={onClose}
-              className="block w-full text-center py-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all"
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenAuth();
+              }}
+              className="block w-full text-center py-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer"
             >
               Sign In / Register
-            </Link>
+            </button>
           )}
         </div>
       </div>

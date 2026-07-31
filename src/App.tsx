@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
-import { Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage, AdminAuthPage } from './pages';
+import { Checkout, ProductDetails, OrderHistory, CategoryPage, AdminAuthPage } from './pages';
 import { CartPage } from './pages/CartPage';
 import { CartProvider } from './context/CartContext';
 import { ScrollToTop } from './components/ui/ScrollToTop';
@@ -22,7 +22,6 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
-          <Route path="/auth" element={<AuthPage />} />
         </Routes>
       </Router>
     </CartProvider>
