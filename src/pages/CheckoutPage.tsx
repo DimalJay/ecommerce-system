@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { request } from '../lib/request';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
+import { useAuthContext } from '../context/AuthContext';
 import { getItemKey } from '../lib/cartKey';
 import {
   ShippingForm,
@@ -17,6 +18,7 @@ import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST }
 
 export const CheckoutPage: React.FC = () => {
   const location = useLocation();
+  const { user } = useAuthContext();
   const {
     cartItems: fullCartItems,
     removeCheckedOutItems,
@@ -51,6 +53,16 @@ export const CheckoutPage: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        fullName: prev.fullName || user.name || '',
+        email: user.email || '',
+      }));
+    }
+  }, [user]);
 
   const handleChange = (field: keyof CheckoutForm): FieldChangeHandler => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
