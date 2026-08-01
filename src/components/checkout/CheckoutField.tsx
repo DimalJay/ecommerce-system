@@ -1,7 +1,8 @@
 import React from 'react';
+import { FormField } from '../ui';
 
 interface CheckoutFieldProps {
-  label: string;
+  label?: string;
   required?: boolean;
   error?: string;
   className?: string;
@@ -12,16 +13,16 @@ export const CheckoutField: React.FC<CheckoutFieldProps> = ({
   label,
   required,
   error,
-  className = '',
+  className,
   children,
 }) => (
-  <div className={className}>
-    {label && (
-      <label className="block text-xs font-semibold text-text-secondary mb-2">
-        {label} {required && <span className="text-rose-500">*</span>}
-      </label>
-    )}
+  <FormField
+    label={label}
+    required={required}
+    error={error}
+    className={className}
+    labelClassName="block text-xs font-semibold text-text-secondary mb-2"
+  >
     {children}
-    {error && <p className="text-[11px] font-semibold text-rose-500 mt-1 animate-fade-in">{error}</p>}
-  </div>
+  </FormField>
 );

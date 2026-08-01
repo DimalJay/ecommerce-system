@@ -14,11 +14,11 @@ import { useCart } from '../context/CartContext';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 
-const CATEGORIES: (Category & { image: string })[] = [
-  { id: 'women', title: 'Women', name: 'Women', subtitle: 'Elegant essentials', count: '24 Items', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80' },
-  { id: 'men', title: 'Men', name: 'Men', subtitle: 'Modern classics', count: '18 Items', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80' },
-  { id: 'kids', title: 'Kids', name: 'Kids', subtitle: 'Playful & durable', count: '12 Items', image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80' },
-  { id: 'accessories', title: 'Accessories', name: 'Accessories', subtitle: 'Finish the look', count: '9 Items', image: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80' }
+const CATEGORIES: Category[] = [
+  { id: 'women', name: 'Women', subtitle: 'Elegant essentials', count: '24 Items', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80' },
+  { id: 'men', name: 'Men', subtitle: 'Modern classics', count: '18 Items', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80' },
+  { id: 'kids', name: 'Kids', subtitle: 'Playful & durable', count: '12 Items', image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80' },
+  { id: 'accessories', name: 'Accessories', subtitle: 'Finish the look', count: '9 Items', image: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80' }
 ];
 
 export const HomePage: React.FC = () => {

@@ -11,7 +11,7 @@ import {
 } from './productFormShared';
 import { useAddProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
-import { validateImageFile } from '../../lib/imageFiles';
+import { validateImageFile } from '../../lib/imageUtils';
 
 export interface AddProductModalProps {
   isOpen: boolean;

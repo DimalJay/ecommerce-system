@@ -18,7 +18,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     cartItems,
     isCartOpen,
     setIsCartOpen,
-    updateCartQty,
+    updateCartQuantity,
     removeCartItem,
     wishlist,
     isWishlistOpen,
@@ -29,7 +29,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     isSizeGuideOpen,
     setIsSizeGuideOpen,
     addToCart,
-    addToCartWithQty
+    addToCartWithQuantity
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -51,7 +51,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    addToCartWithQty(product, size, color, qty);
+    addToCartWithQuantity(product, size, color, qty);
     setIsCartOpen(true);
   };
 
@@ -78,7 +78,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
-        onUpdateQuantity={updateCartQty}
+        onUpdateQuantity={updateCartQuantity}
         onRemoveItem={removeCartItem}
       />
 

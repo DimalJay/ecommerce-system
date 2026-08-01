@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  addProductAdminApi,
-  updateProductAdminApi,
-  deleteProductAdminApi,
-  getAllProductsApi,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getAllProducts,
 } from '../api/productApi';
 import type { ProductDetailData } from '../api/productApi';
 import type { AdminItem } from '../types';
@@ -40,7 +40,7 @@ export const useAdminProducts = () =>
   useQuery({
     queryKey: ADMIN_PRODUCTS_QUERY_KEY,
     queryFn: async () => {
-      const res = await getAllProductsApi();
+      const res = await getAllProducts();
       return (res.data ?? []).map(toAdminItem);
     },
     retry: false,
@@ -49,7 +49,7 @@ export const useAdminProducts = () =>
 export const useAddProductMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: addProductAdminApi,
+    mutationFn: createProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
     },
@@ -60,7 +60,7 @@ export const useUpdateProductMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, formData }: { id: string | number; formData: FormData }) =>
-      updateProductAdminApi(id, formData),
+      updateProduct(id, formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ['product-detail'] });
@@ -71,7 +71,7 @@ export const useUpdateProductMutation = () => {
 export const useDeleteProductMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: deleteProductAdminApi,
+    mutationFn: deleteProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
     },

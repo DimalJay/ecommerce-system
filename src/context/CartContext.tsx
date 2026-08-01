@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import type { Product, CartItem } from '../types';
 import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
-import { getItemKey } from '../lib/cartKey';
+import { getItemKey } from '../lib/cartUtils';
 import { AuthProvider, useAuthContext, type UserSession } from './AuthContext';
 
 export interface CartContextType {
@@ -11,9 +11,7 @@ export interface CartContextType {
   setIsCartOpen: (open: boolean) => void;
   addToCart: (product: Product, size?: string, color?: string) => void;
   addToCartWithQuantity: (product: Product, size: string, color: string, quantity: number) => void;
-  addToCartWithQty: (product: Product, size: string, color: string, qty: number) => void;
   updateCartQuantity: (productId: number, size: string, color: string, newQuantity: number) => void;
-  updateCartQty: (productId: number, size: string, color: string, newQty: number) => void;
   removeCartItem: (productId: number, size: string, color: string) => void;
   removeCheckedOutItems: (itemKeysToRemove: string[]) => void;
   promoCode: string;
@@ -165,9 +163,7 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         setIsCartOpen,
         addToCart,
         addToCartWithQuantity,
-        addToCartWithQty: addToCartWithQuantity,
         updateCartQuantity,
-        updateCartQty: updateCartQuantity,
         removeCartItem,
         removeCheckedOutItems,
         promoCode,

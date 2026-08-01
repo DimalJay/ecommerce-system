@@ -31,7 +31,7 @@ const toProduct = (data: ProductDetailData): Product => ({
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { addToCart, addToCartWithQty, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
+  const { addToCart, addToCartWithQuantity, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
 
   const { data, isLoading, isError } = useProductDetail(id);
   const product = data ? toProduct(data.data) : undefined;
@@ -93,7 +93,7 @@ export const ProductDetails: React.FC = () => {
       setQuantity(product.stock);
       return;
     }
-    addToCartWithQty(product, selectedSize, selectedColor, quantity);
+    addToCartWithQuantity(product, selectedSize, selectedColor, quantity);
     triggerToast(`Added ${quantity}x ${product.title} to your bag`);
     setIsCartOpen(true);
   };

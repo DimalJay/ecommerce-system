@@ -11,11 +11,11 @@ import {
   ProductFormAlert,
 } from './productFormShared';
 import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConstants';
-import { productFormSchema, type ProductFormValues } from '../../lib/productFormSchema';
+import { productFormSchema, type ProductFormValues } from '../../lib/validations/product';
 import type { AdminItem } from '../../types';
 import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
-import { validateImageFile } from '../../lib/imageFiles';
+import { validateImageFile } from '../../lib/imageUtils';
 import { toBackendPath } from '../../lib/request';
 import { parseColorNames } from '../../lib/colorUtils';
 

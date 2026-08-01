@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { loginUser, logoutUser, registerUser } from '../api/authApi';
-import { getUserApi } from '../api/userApi';
+import { getCurrentUserApi } from '../api/userApi';
 
 const useInvalidateUserQueries = () => {
   const queryClient = useQueryClient();
@@ -34,6 +34,6 @@ export const useLogoutMutation = () => {
 export const useUserQuery = () =>
   useQuery({
     queryKey: ['user'],
-    queryFn: getUserApi,
+    queryFn: getCurrentUserApi,
     retry: false,
   });

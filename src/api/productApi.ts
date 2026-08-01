@@ -33,14 +33,14 @@ export type DeleteProductResponse = Response<null>;
  * Returns a single product by ID.
  * GET /product/{id}
  */
-export const getProductDetailsApi = (id: string | number): Promise<ProductDetailResponse> =>
+export const getProductById = (id: string | number): Promise<ProductDetailResponse> =>
   request(`/product/${id}`, { method: 'GET' });
 
 /**
  * Creates a new product with multipart/form-data.
  * POST /product
  */
-export const addProductAdminApi = (formData: FormData): Promise<AddProductResponse> =>
+export const createProduct = (formData: FormData): Promise<AddProductResponse> =>
   request('/product', {
     method: 'POST',
     data: formData,
@@ -53,21 +53,21 @@ export type AllProductsResponse = Response<ProductDetailData[]>;
  * Returns products by category.
  * GET /products/category/{category}
  */
-export const getProductsByCategoryApi = (category: string): Promise<ProductsByCategoryResponse> =>
+export const getProductsByCategory = (category: string): Promise<ProductsByCategoryResponse> =>
   request(`/products/category/${category}`, { method: 'GET' });
 
 /**
  * Returns all products. Requires admin authentication.
  * GET /products
  */
-export const getAllProductsApi = (): Promise<AllProductsResponse> =>
+export const getAllProducts = (): Promise<AllProductsResponse> =>
   request('/products', { method: 'GET' });
 
 /**
  * Updates an existing product with multipart/form-data.
  * PUT /product/{id}
  */
-export const updateProductAdminApi = (id: string | number, formData: FormData): Promise<UpdateProductResponse> =>
+export const updateProduct = (id: string | number, formData: FormData): Promise<UpdateProductResponse> =>
   request(`/product/${id}`, {
     method: 'PUT',
     data: formData,
@@ -77,5 +77,13 @@ export const updateProductAdminApi = (id: string | number, formData: FormData): 
  * Deletes a product by ID.
  * DELETE /product/{id}
  */
-export const deleteProductAdminApi = (id: string | number): Promise<DeleteProductResponse> =>
+export const deleteProduct = (id: string | number): Promise<DeleteProductResponse> =>
   request(`/product/${id}`, { method: 'DELETE' });
+
+// Legacy compatibility aliases
+export const getProductDetailsApi = getProductById;
+export const addProductAdminApi = createProduct;
+export const getProductsByCategoryApi = getProductsByCategory;
+export const getAllProductsApi = getAllProducts;
+export const updateProductAdminApi = updateProduct;
+export const deleteProductAdminApi = deleteProduct;

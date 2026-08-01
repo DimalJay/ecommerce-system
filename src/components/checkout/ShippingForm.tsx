@@ -1,15 +1,19 @@
 import React from 'react';
+import { Lock } from 'lucide-react';
 import { CheckoutField } from './CheckoutField';
 import { getInputClass } from './checkoutStyles';
 import type { ShippingFields, FieldChangeHandler } from '../../types/checkout';
+import type { UserSession } from '../../context/AuthContext';
 
 interface ShippingFormProps {
   form: ShippingFields;
   onChange: (field: keyof ShippingFields) => FieldChangeHandler;
   errors?: Record<string, string>;
+  user?: UserSession | null;
 }
 
-export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, errors }) => {
+export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, errors, user }) => {
+  const emailReadonly = !!user?.email;
   return (
     <section className="bg-white border border-luxury-gold-light/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
       {/* Section Header */}
@@ -25,7 +29,7 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
           <input
             type="text"
             placeholder="John Doe"
-            value={form.fullName}
+            value={form.fullName || user?.name || ''}
             onChange={onChange('fullName')}
             className={getInputClass(!!errors?.fullName)}
             required
@@ -36,11 +40,21 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
           <input
             type="email"
             placeholder="john.doe@email.com"
-            value={form.email}
+            value={emailReadonly ? user.email : form.email}
             onChange={onChange('email')}
-            className={getInputClass(!!errors?.email)}
+            disabled={emailReadonly}
+            title={emailReadonly ? 'Email is tied to your account and cannot be changed' : undefined}
+            className={`${getInputClass(!!errors?.email)} ${
+              emailReadonly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''
+            }`}
             required
           />
+          {emailReadonly && (
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold text-text-muted mt-1.5">
+              <Lock size={11} />
+              Tied to your account
+            </p>
+          )}
         </CheckoutField>
 
         <CheckoutField label="Phone Number" required error={errors?.phone}>

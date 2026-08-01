@@ -4,7 +4,7 @@ import { request } from '../lib/request';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
-import { getItemKey } from '../lib/cartKey';
+import { getItemKey } from '../lib/cartUtils';
 import {
   ShippingForm,
   PaymentMethods,
@@ -22,6 +22,7 @@ export const CheckoutPage: React.FC = () => {
     removeCheckedOutItems,
     promoCode: globalPromoCode,
     promoApplied,
+    user,
   } = useCart();
 
   const checkoutItems: CartItem[] =
@@ -51,6 +52,9 @@ export const CheckoutPage: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const accountFullName = user?.name?.trim() || '';
+  const accountEmail = user?.email?.trim() || '';
 
   const handleChange = (field: keyof CheckoutForm): FieldChangeHandler => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -88,10 +92,10 @@ export const CheckoutPage: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!form.fullName.trim()) newErrors.fullName = 'Full Name is required';
-    if (!form.email.trim()) {
+    if (!form.fullName.trim() && !accountFullName) newErrors.fullName = 'Full Name is required';
+    if (!form.email.trim() && !accountEmail) {
       newErrors.email = 'Email address is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    } else if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
 
@@ -164,8 +168,8 @@ export const CheckoutPage: React.FC = () => {
     const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
 
     const payload = {
-      full_name: form.fullName,
-      email: form.email,
+      full_name: form.fullName.trim() || accountFullName,
+      email: form.email.trim() || accountEmail,
       phone: form.phone,
       address: form.address,
       apartment: form.apartment || null,
@@ -264,7 +268,7 @@ export const CheckoutPage: React.FC = () => {
             {/* Form & Summary Layout Grid */}
             <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2 space-y-8">
-                <ShippingForm form={form} onChange={handleChange} errors={errors} />
+                <ShippingForm form={form} onChange={handleChange} errors={errors} user={user} />
                 <PaymentMethods
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}

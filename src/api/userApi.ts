@@ -15,5 +15,12 @@ export interface UserDetails {
 
 export type UserResponse = Response<UserDetails>;
 
-export const getUserApi = async (): Promise<UserResponse> =>
+/**
+ * Returns current authenticated user's profile details.
+ * GET /user
+ */
+export const getCurrentUserApi = async (): Promise<UserResponse> =>
   request('/user', { method: 'GET' });
+
+// Compatibility export
+export const getUserApi = getCurrentUserApi;
