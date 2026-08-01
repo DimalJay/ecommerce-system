@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartDrawer } from './CartDrawer';
 import { WishlistDrawer } from './WishlistDrawer';
 import { QuickViewModal } from './QuickViewModal';
 import { SizeGuideModal } from './SizeGuideModal';
+import { AuthModal } from './auth/AuthModal';
 import { useCart } from '../context/CartContext';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -32,6 +33,17 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthOpen(true);
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
+  }, []);
 
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);
@@ -54,6 +66,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenWishlist={() => setIsWishlistOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       {children}
@@ -78,6 +91,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       />
 
       <QuickViewModal
+        key={activeQuickViewProduct?.id ?? 'closed'}
         product={activeQuickViewProduct}
         isOpen={activeQuickViewProduct !== null}
         onClose={() => setActiveQuickViewProduct(null)}
@@ -86,6 +100,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       />
 
       <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
+
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
 };

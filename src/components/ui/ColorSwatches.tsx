@@ -5,25 +5,23 @@ interface ColorSwatchesProps {
   swatches: string[];
   selectedColor: string;
   onSelect: (color: string) => void;
-  swatchSize?: number;
 }
 
-export const ColorSwatches: React.FC<ColorSwatchesProps> = ({ swatches, selectedColor, onSelect, swatchSize = 6 }) => {
-  const btnSize = `w-${swatchSize} h-${swatchSize}`;
+export const ColorSwatches: React.FC<ColorSwatchesProps> = ({ swatches, selectedColor, onSelect }) => {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2">
       {swatches.map((colorVal, idx) => (
         <button
           key={idx}
           type="button"
           onClick={() => onSelect(colorVal)}
-          className={`${btnSize} rounded-full border flex items-center justify-center transition-all cursor-pointer hover:scale-105 ${
-            selectedColor === colorVal ? 'border-luxury-gold ring-1 ring-luxury-gold/30' : 'border-slate-300'
+          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer hover:scale-105 ${
+            selectedColor === colorVal ? 'border-accent ring-1 ring-accent/30' : 'border-border'
           }`}
           style={{ backgroundColor: colorVal }}
           title={colorVal}
         >
-          {selectedColor === colorVal && <Check size={swatchSize > 5 ? 10 : 8} className="text-white drop-shadow-xs" />}
+          {selectedColor === colorVal && <Check size={10} className="text-elevated drop-shadow-sm" />}
         </button>
       ))}
     </div>

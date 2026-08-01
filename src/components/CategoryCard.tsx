@@ -1,12 +1,4 @@
-import React from 'react';
-
-export interface Category {
-  id: string;
-  name: string;
-  subtitle: string;
-  count: string;
-  image: string;
-}
+import type { Category } from '../types';
 
 interface CategoryCardProps {
   category: Category;
@@ -17,7 +9,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onSelectCa
   return (
     <div
       onClick={() => onSelectCategory(category.id)}
-      className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 cursor-pointer shadow-3xs hover:shadow-md hover:border-luxury-gold-light/60 hover:-translate-y-1 transition-all duration-500 group"
+      className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 cursor-pointer shadow-xs hover:shadow-md hover:border-luxury-gold-light/60 hover:-translate-y-1 transition-all duration-500 group"
     >
       <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-3 bg-luxury-sand">
         <img
@@ -32,7 +24,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onSelectCa
 
       <div className="px-1">
         <h3 className="text-xs sm:text-sm font-extrabold text-luxury-charcoal leading-snug group-hover:text-luxury-gold transition-colors">{category.name}</h3>
-        <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{category.subtitle}</p>
+        <p className="text-[10px] text-text-muted font-semibold mt-1">{category.subtitle}</p>
       </div>
     </div>
   );

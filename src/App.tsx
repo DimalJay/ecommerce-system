@@ -1,20 +1,70 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, ItemManagement, Checkout, ProductDetails, OrderHistory, CategoryPage, AuthPage, CartPage } from './pages';
+import {
+  HomePage,
+  AdminDashboard,
+  CheckoutPage,
+  ProductDetails,
+  OrderHistoryPage,
+  CategoryPage,
+  AdminAuthPage,
+  CartPage,
+} from './pages';
 import { CartProvider } from './context/CartContext';
+import { ScrollToTop } from './components/ui/ScrollToTop';
+import { ProtectedRoute, ProtectedAdminRoute } from './components/auth';
 
 function App() {
   return (
     <CartProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin/items" element={<ItemManagement />} />
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/items"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route path="/admin/login" element={<AdminAuthPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/order-history" element={<OrderHistory />} />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/order-history"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
-          <Route path="/auth" element={<AuthPage />} />
         </Routes>
       </Router>
     </CartProvider>

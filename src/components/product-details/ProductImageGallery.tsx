@@ -42,7 +42,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
           className="w-full h-full object-cover transition-transform duration-700 hover:scale-103"
         />
         {discount && (
-          <span className="absolute top-4 left-4 bg-luxury-gold text-white text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+          <span className="absolute top-4 left-4 bg-luxury-gold text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-md">
             {discount}
           </span>
         )}

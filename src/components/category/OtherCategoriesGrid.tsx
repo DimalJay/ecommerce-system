@@ -20,7 +20,7 @@ export const OtherCategoriesGrid: React.FC<OtherCategoriesGridProps> = ({ catego
           Explore Collections
         </span>
         <h2 className="text-2xl font-black text-luxury-charcoal tracking-tight font-sans">
-          Other Curated Categories
+          Other Categories
         </h2>
       </div>
 
@@ -28,7 +28,7 @@ export const OtherCategoriesGrid: React.FC<OtherCategoriesGridProps> = ({ catego
         {categories.map((cat) => (
           <div
             key={cat.key}
-            className="relative bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden aspect-3/2 group shadow-2xs hover:shadow-md transition-all duration-500 hover:-translate-y-1"
+            className="relative bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden aspect-3/2 group shadow-xs hover:shadow-md transition-all duration-500 hover:-translate-y-1"
           >
             <img
               src={cat.image}
@@ -41,7 +41,7 @@ export const OtherCategoriesGrid: React.FC<OtherCategoriesGridProps> = ({ catego
               </h3>
               <button
                 onClick={() => onNavigate(cat.key)}
-                className="w-fit bg-white/95 hover:bg-luxury-gold text-luxury-charcoal hover:text-white px-5 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                className="w-fit bg-white/95 hover:bg-luxury-gold text-luxury-charcoal hover:text-white px-5 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all shadow-xs flex items-center gap-2 cursor-pointer"
               >
                 <span>Show More</span>
                 <Sparkles size={11} />
