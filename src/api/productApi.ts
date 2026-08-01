@@ -47,6 +47,7 @@ export const addProductAdminApi = (formData: FormData): Promise<AddProductRespon
   });
 
 export type ProductsByCategoryResponse = Response<ProductDetailData[]>;
+export type AllProductsResponse = Response<ProductDetailData[]>;
 
 /**
  * Returns products by category.
@@ -54,6 +55,13 @@ export type ProductsByCategoryResponse = Response<ProductDetailData[]>;
  */
 export const getProductsByCategoryApi = (category: string): Promise<ProductsByCategoryResponse> =>
   request(`/products/category/${category}`, { method: 'GET' });
+
+/**
+ * Returns all products. Requires admin authentication.
+ * GET /products
+ */
+export const getAllProductsApi = (): Promise<AllProductsResponse> =>
+  request('/products', { method: 'GET' });
 
 /**
  * Updates an existing product with multipart/form-data.

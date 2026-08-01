@@ -13,69 +13,9 @@ import type { AdminTab } from '../components/admin';
 import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
+import { useAdminProducts } from '../hooks/useAdminProduct';
 
 const STORAGE_ORDERS_KEY = 'orders';
-const STORAGE_PRODUCTS_KEY = 'admin-products';
-
-const SEED_PRODUCTS: AdminItem[] = [
-  {
-    id: '1',
-    name: 'Midnight Silk Slip Dress',
-    sku: 'DR-SLK-001',
-    category: 'Women',
-    price: 185.00,
-    stock: 45,
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=150&q=80',
-    status: 'In Stock',
-    description: 'Elegant silk slip dress with a subtle sheen, perfect for evening occasions.',
-  },
-  {
-    id: '2',
-    name: 'Tailored Linen Blazer',
-    sku: 'BZ-LIN-023',
-    category: 'Men',
-    price: 240.00,
-    stock: 8,
-    image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=150&q=80',
-    status: 'Low Stock',
-    description: 'Lightweight linen blazer for a sharp yet breathable look.',
-  },
-  {
-    id: '3',
-    name: 'Cashmere Blend Overcoat',
-    sku: 'CT-CSH-005',
-    category: 'Unisex',
-    price: 495.00,
-    stock: 0,
-    image: 'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?auto=format&fit=crop&w=150&q=80',
-    status: 'Out of Stock',
-    description: 'Luxurious cashmere blend overcoat for cold-weather elegance.',
-  },
-  {
-    id: '4',
-    name: 'Pleated Wide-Leg Trousers',
-    sku: 'TR-PLT-012',
-    category: 'Women',
-    price: 125.00,
-    stock: 32,
-    image: 'https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?auto=format&fit=crop&w=150&q=80',
-    status: 'In Stock',
-    description: 'Flowing wide-leg trousers with pleated front detail.',
-  },
-];
-
-function loadProducts(): AdminItem[] {
-  try {
-    const data = localStorage.getItem(STORAGE_PRODUCTS_KEY);
-    if (data) return JSON.parse(data);
-  } catch { /* ignore */ }
-  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(SEED_PRODUCTS));
-  return SEED_PRODUCTS;
-}
-
-function saveProducts(items: AdminItem[]) {
-  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(items));
-}
 
 function loadOrders(): Order[] {
   try {
@@ -92,7 +32,12 @@ function saveOrders(orders: Order[]) {
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
 
-  const [products, setProducts] = useState<AdminItem[]>(loadProducts);
+  const {
+    data: products = [],
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+    refetch: refetchProducts,
+  } = useAdminProducts();
   const [orders, setOrders] = useState<Order[]>(loadOrders);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
@@ -113,35 +58,17 @@ export const AdminDashboard: React.FC = () => {
   const processingCount = orders.filter((o) => o.status === 'Processing').length;
   const lowStockCount = products.filter((p) => p.status === 'Low Stock' || p.status === 'Out of Stock').length;
 
-  const handleAddProduct = (data: { name: string; sku: string; category: string; price: number; stock: number; image: string; description: string }) => {
-    const newItem: AdminItem = {
-      id: Date.now().toString(),
-      name: data.name,
-      sku: data.sku,
-      category: data.category,
-      price: data.price,
-      stock: data.stock,
-      image: data.image,
-      description: data.description,
-      status: data.stock <= 0 ? 'Out of Stock' : data.stock < 10 ? 'Low Stock' : 'In Stock',
-    };
-    const updated = [...products, newItem];
-    setProducts(updated);
-    saveProducts(updated);
+  const handleAddProduct = () => {
+    setIsAddModalOpen(false);
   };
 
-  const handleUpdateProduct = (item: AdminItem) => {
-    const updated = products.map((p) =>
-      p.id === item.id ? { ...p, ...item, status: item.stock <= 0 ? 'Out of Stock' as const : item.stock < 10 ? 'Low Stock' as const : 'In Stock' as const } : p
-    );
-    setProducts(updated);
-    saveProducts(updated);
+  const handleUpdateProduct = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedItem(null);
   };
 
-  const handleDeleteProduct = (item: AdminItem) => {
-    const updated = products.filter((p) => p.id !== item.id);
-    setProducts(updated);
-    saveProducts(updated);
+  const handleDeleteProduct = () => {
+    setIsDeleteModalOpen(false);
     setSelectedItem(null);
   };
 
@@ -173,7 +100,7 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  const categories = ['All', 'Women', 'Men', 'Unisex', 'Kids'];
+  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary font-sans lg:flex">
@@ -187,7 +114,7 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
             </div>
             <button
-              onClick={() => { setOrders(loadOrders()); setProducts(loadProducts()); }}
+              onClick={() => { setOrders(loadOrders()); refetchProducts(); }}
               className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
             >
               <RefreshCw size={14} />
@@ -362,14 +289,39 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <AdminProductTable
-              items={products}
-              onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
-              onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
-              searchQuery={searchQuery}
-              categoryFilter={categoryFilter}
-              sortBy={sortBy}
-            />
+            {isProductsLoading ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center">
+                <div className="w-10 h-10 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-text-muted text-sm mt-4 font-medium">Loading products...</p>
+              </div>
+            ) : isProductsError ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center space-y-4">
+                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                  <ShoppingBag size={28} />
+                </div>
+                <h3 className="text-lg font-bold text-luxury-charcoal uppercase tracking-wider">Failed to Load Products</h3>
+                <p className="text-text-muted text-xs max-w-sm mx-auto">
+                  Could not fetch products from the server. Make sure you are logged in as admin, then try refreshing.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => refetchProducts()}
+                  className="inline-flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  <RefreshCw size={14} />
+                  <span>Retry</span>
+                </button>
+              </div>
+            ) : (
+              <AdminProductTable
+                items={products}
+                onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
+                onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
+                searchQuery={searchQuery}
+                categoryFilter={categoryFilter}
+                sortBy={sortBy}
+              />
+            )}
           </div>
         )}
       </main>
