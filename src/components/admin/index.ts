@@ -2,6 +2,7 @@ export { AddProductModal, AddProductModal as AddItemModal } from './AddProductMo
 export { UpdateProductModal, UpdateProductModal as UpdateItemModal } from './UpdateProductModal';
 export { AdminProductTable, AdminProductTable as ItemTable } from './AdminProductTable';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
+export { ProductPreviewModal } from './ProductPreviewModal';
 export type { AdminItem } from '../../types';
 export { SizeToggleGrid } from './SizeToggleGrid';
 export { OrderStats } from './OrderStats';

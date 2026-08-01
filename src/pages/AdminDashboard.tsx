@@ -8,6 +8,7 @@ import {
   AddProductModal,
   UpdateProductModal,
   ConfirmDeleteModal,
+  ProductPreviewModal,
 } from '../components/admin';
 import type { AdminTab } from '../components/admin';
 import { SearchInput } from '../components/ui';
@@ -50,6 +51,7 @@ export const AdminDashboard: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<AdminItem | null>(null);
 
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
@@ -315,6 +317,7 @@ export const AdminDashboard: React.FC = () => {
             ) : (
               <AdminProductTable
                 items={products}
+                onPreview={(item) => { setSelectedItem(item); setIsPreviewModalOpen(true); }}
                 onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
                 onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
                 searchQuery={searchQuery}
@@ -342,6 +345,11 @@ export const AdminDashboard: React.FC = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => { setIsDeleteModalOpen(false); setSelectedItem(null); }}
         onConfirm={handleDeleteProduct}
+        item={selectedItem}
+      />
+      <ProductPreviewModal
+        isOpen={isPreviewModalOpen}
+        onClose={() => { setIsPreviewModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}
       />
       </div>

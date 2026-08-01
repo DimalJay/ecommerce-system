@@ -28,6 +28,8 @@ export const toAdminItem = (apiProduct: ProductDetailData): AdminItem => {
     stock,
     image: getAssetUrl(apiProduct.images?.[0] ?? ''),
     description: apiProduct.description || '',
+    color: apiProduct.color || '',
+    size: apiProduct.size || '',
     status: getStockStatus(stock),
   };
 };

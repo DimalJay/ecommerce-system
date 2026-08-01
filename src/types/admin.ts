@@ -11,6 +11,8 @@ export interface AdminItem {
   stock: number;
   image: string;
   description?: string;
+  color?: string;
+  size?: string;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
 }
 
