@@ -46,6 +46,15 @@ export const addProductAdminApi = (formData: FormData): Promise<AddProductRespon
     data: formData,
   });
 
+export type ProductsByCategoryResponse = Response<ProductDetailData[]>;
+
+/**
+ * Returns products by category.
+ * GET /products/category/{category}
+ */
+export const getProductsByCategoryApi = (category: string): Promise<ProductsByCategoryResponse> =>
+  request(`/products/category/${category}`, { method: 'GET' });
+
 /**
  * Updates an existing product with multipart/form-data.
  * PUT /product/{id}
