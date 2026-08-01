@@ -5,7 +5,7 @@ import { AppLayout } from '../components';
 import { OrderCard, OrderHistoryEmptyState } from '../components/order-history';
 import type { Order } from '../components/order-history';
 import { useCart } from '../context/CartContext';
-import { request } from '../lib/request';
+import { request, getAssetUrl } from '../lib/request';
 
 export type StatusFilter = 'All' | 'Accepted' | 'Processing' | 'Shipped' | 'Delivered' | 'Rejected';
 
@@ -218,7 +218,7 @@ export const OrderHistoryPage: React.FC = () => {
                   category: productData.category || 'Luxury',
                   colorName: productData.color || 'Default',
                   price: parseFloat(item.price || productData.price || 0),
-                  image: images[0] || productData.image || '',
+                  image: getAssetUrl(images[0] || productData.image || ''),
                   rating: 5,
                   reviewsCount: 10,
                 },

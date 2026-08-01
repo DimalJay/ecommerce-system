@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Ruler } from 'lucide-react';
 import type { Product } from '../types';
-import { StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
+import { ProductImage, StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -52,9 +52,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
         {/* Product Image Section */}
         <div className="relative bg-luxury-sand h-56 md:h-full min-h-56 md:min-h-87.5">
-          <img 
-            src={product.image} 
-            alt={product.title} 
+          <ProductImage
+            src={product.image}
+            alt={product.title}
             className="w-full h-full object-cover"
           />
           {product.discount && (

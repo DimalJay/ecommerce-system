@@ -8,6 +8,7 @@ import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 import { getProductsByCategoryApi } from '../api/productApi';
+import { getAssetUrl } from '../lib/request';
 
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -32,7 +33,7 @@ export const CategoryPage: React.FC = () => {
               price: Number(apiProduct.price),
               rating: 5,
               reviewsCount: 1,
-              image: apiProduct.images?.[0] || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80',
+              image: getAssetUrl(apiProduct.images?.[0] || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80'),
             }));
             setApiProducts(mappedProducts);
           }
