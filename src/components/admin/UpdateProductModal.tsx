@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Save, Upload } from 'lucide-react';
+import { Save, Upload, AlertCircle } from 'lucide-react';
 import { ModalShell } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 import type { AdminItem } from '../../types';
+import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
+import { useToast } from '../../hooks/useToast';
 
 export interface UpdateProductModalProps {
   isOpen: boolean;
@@ -14,6 +16,9 @@ export interface UpdateProductModalProps {
 export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, onClose, item, onSave }) => {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(['M', 'L']);
   const [formData, setFormData] = useState<Partial<AdminItem>>(() => item ?? {});
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { triggerToast } = useToast();
+  const updateProductMutation = useUpdateProductMutation();
 
   if (!isOpen || !item) return null;
 
@@ -25,8 +30,28 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
-    onSave(formData as AdminItem);
-    onClose();
+    setValidationError(null);
+
+    const payload = new FormData();
+    if (formData.name?.trim()) payload.append('title', formData.name.trim());
+    if (formData.category?.trim()) payload.append('category', formData.category.trim());
+    if (formData.price !== undefined && formData.price !== null) payload.append('price', String(formData.price));
+    if (formData.stock !== undefined && formData.stock !== null) payload.append('stock_quantity', String(formData.stock));
+    if (formData.description !== undefined) payload.append('description', formData.description);
+
+    updateProductMutation.mutate(
+      { id: item.id, formData: payload },
+      {
+        onSuccess: (response) => {
+          triggerToast(`Product "${response.data.title}" updated successfully!`);
+          onSave(formData as AdminItem);
+          onClose();
+        },
+        onError: (err) => {
+          setValidationError(err.message || 'Failed to update product.');
+        },
+      },
+    );
   };
 
   const footer = (
@@ -41,10 +66,11 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
       <button
         type="button"
         onClick={handleSave}
-        className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-medium transition-all shadow-md hover:shadow-lg cursor-pointer"
+        disabled={updateProductMutation.isPending}
+        className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-medium transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Save size={18} />
-        <span>Save Changes</span>
+        <span>{updateProductMutation.isPending ? 'Saving...' : 'Save Changes'}</span>
       </button>
     </>
   );
@@ -52,6 +78,12 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
   return (
     <ModalShell isOpen={isOpen} onClose={onClose} title="Edit Product" footer={footer}>
       <form className="space-y-6">
+        {validationError && (
+          <div className="p-3 bg-danger-bg border border-danger/30 text-danger rounded-xl text-xs font-medium flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0" />
+            <span>{validationError}</span>
+          </div>
+        )}
         {/* Image Preview with Upload Overlay */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">Product Image</label>

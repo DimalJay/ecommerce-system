@@ -8,13 +8,29 @@ import { PRODUCTS } from '../data';
 import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { useProductDetail } from '../hooks/useProductDetail';
+import { getAssetUrl } from '../lib/request';
+import type { ProductDetailData } from '../api/productApi';
+
+const toProduct = (data: ProductDetailData): Product => ({
+  id: Number(data.id),
+  title: data.title,
+  category: data.category ?? '',
+  colorName: data.color ?? '',
+  description: data.description,
+  price: Number(data.price),
+  rating: 0,
+  reviewsCount: 0,
+  image: getAssetUrl(data.images?.[0] ?? ''),
+});
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const { addToCart, addToCartWithQty, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
 
-  const product = PRODUCTS.find((p) => p.id === Number(id));
+  const { data, isLoading, isError } = useProductDetail(id);
+  const product = data ? toProduct(data.data) : undefined;
 
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -31,17 +47,25 @@ export const ProductDetails: React.FC = () => {
   if (product && product.id !== prevProductId) {
     setPrevProductId(product.id);
     setSelectedSize('M');
-    setSelectedColor(product.swatches?.[0] ?? product.colorName);
+    setSelectedColor(product.colorName);
     setQuantity(1);
-    setActiveImage(product.image);
-    setImageThumbnails([
-      product.image,
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80',
-    ]);
+    const images = (data?.data.images ?? []).map(getAssetUrl);
+    setActiveImage(images[0]);
+    setImageThumbnails(images);
   }
 
-  if (!product) {
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center space-y-6">
+          <div className="inline-block w-10 h-10 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-text-muted">Loading product…</p>
+        </main>
+      </AppLayout>
+    );
+  }
+
+  if (isError || !product) {
     return (
       <AppLayout>
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center space-y-6">

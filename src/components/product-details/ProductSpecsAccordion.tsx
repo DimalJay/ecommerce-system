@@ -23,7 +23,11 @@ export const ProductSpecsAccordion: React.FC<ProductSpecsAccordionProps> = ({ pr
         </button>
         {openTab === 'details' && (
           <div className="pb-3 text-xs text-text-secondary leading-relaxed space-y-2 animate-fade-in">
-            <p>Thoughtfully designed for comfort and style. {product.title} is crafted to fit seamlessly into your wardrobe.</p>
+            {product.description ? (
+              <p>{product.description}</p>
+            ) : (
+              <p>Thoughtfully designed for comfort and style. {product.title} is crafted to fit seamlessly into your wardrobe.</p>
+            )}
             <ul className="list-disc list-inside space-y-1">
               <li>Premium quality materials and construction</li>
               <li>Fits true to size</li>

@@ -26,6 +26,8 @@ export interface AddProductSuccessData {
 
 export type ProductDetailResponse = Response<ProductDetailData>;
 export type AddProductResponse = Response<AddProductSuccessData>;
+export type UpdateProductResponse = Response<ProductDetailData>;
+export type DeleteProductResponse = Response<null>;
 
 /**
  * Returns a single product by ID.
@@ -43,3 +45,29 @@ export const addProductAdminApi = (formData: FormData): Promise<AddProductRespon
     method: 'POST',
     data: formData,
   });
+
+export type ProductsByCategoryResponse = Response<ProductDetailData[]>;
+
+/**
+ * Returns products by category.
+ * GET /products/category/{category}
+ */
+export const getProductsByCategoryApi = (category: string): Promise<ProductsByCategoryResponse> =>
+  request(`/products/category/${category}`, { method: 'GET' });
+
+/**
+ * Updates an existing product with multipart/form-data.
+ * PUT /product/{id}
+ */
+export const updateProductAdminApi = (id: string | number, formData: FormData): Promise<UpdateProductResponse> =>
+  request(`/product/${id}`, {
+    method: 'PUT',
+    data: formData,
+  });
+
+/**
+ * Deletes a product by ID.
+ * DELETE /product/{id}
+ */
+export const deleteProductAdminApi = (id: string | number): Promise<DeleteProductResponse> =>
+  request(`/product/${id}`, { method: 'DELETE' });
