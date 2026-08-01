@@ -7,6 +7,7 @@ import { PRODUCTS } from '../data';
 import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { getProductsByCategoryApi } from '../api/productApi';
 
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -14,8 +15,33 @@ export const CategoryPage: React.FC = () => {
   const { addToCart, wishlist, toggleWishlist, setActiveQuickViewProduct } = useCart();
   const { toastMessage, triggerToast } = useToast();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [apiProducts, setApiProducts] = useState<Product[]>([]);
 
-  useEffect(() => { window.scrollTo(0, 0); }, [categoryName]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    if (categoryName) {
+      getProductsByCategoryApi(categoryName)
+        .then((response) => {
+          if (response.success && response.data) {
+            const mappedProducts: Product[] = response.data.map(apiProduct => ({
+              id: Number(apiProduct.id) || Math.floor(Math.random() * 10000) + 1000,
+              title: apiProduct.title,
+              category: apiProduct.category || categoryName,
+              colorName: apiProduct.color || 'Default',
+              price: Number(apiProduct.price),
+              rating: 5,
+              reviewsCount: 1,
+              image: apiProduct.images?.[0] || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80',
+            }));
+            setApiProducts(mappedProducts);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch products:", err);
+        });
+    }
+  }, [categoryName]);
 
   const getFilteredProducts = (): Product[] => {
     if (!categoryName) return [];
@@ -26,7 +52,7 @@ export const CategoryPage: React.FC = () => {
     return PRODUCTS.filter((p) => p.category.toLowerCase() === normalized);
   };
 
-  const filteredProducts = getFilteredProducts();
+  const filteredProducts = [...apiProducts, ...getFilteredProducts()];
 
   const getCategoryMeta = () => {
     const name = categoryName || '';
