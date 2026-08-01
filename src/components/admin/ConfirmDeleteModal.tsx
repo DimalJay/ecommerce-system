@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { ModalShell } from '../ui';
+import { ModalShell, Toast } from '../ui';
 import type { AdminItem } from '../../types';
 import { useDeleteProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
@@ -13,7 +13,7 @@ interface ConfirmDeleteModalProps {
 }
 
 export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, onClose, onConfirm, item }) => {
-  const { triggerToast } = useToast();
+  const { toastMessage, triggerToast } = useToast();
   const deleteProductMutation = useDeleteProductMutation();
 
   if (!isOpen || !item) return null;
@@ -65,6 +65,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, 
           This action cannot be undone.
         </p>
       </div>
+      {toastMessage && <Toast message={toastMessage} />}
     </ModalShell>
   );
 };

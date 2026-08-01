@@ -348,6 +348,7 @@ export const AdminDashboard: React.FC = () => {
         item={selectedItem}
       />
       <ProductPreviewModal
+        key={isPreviewModalOpen ? selectedItem?.id ?? 'open' : 'closed'}
         isOpen={isPreviewModalOpen}
         onClose={() => { setIsPreviewModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}

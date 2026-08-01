@@ -11,9 +11,10 @@ import type { ProductFormStep } from './formConstants';
 interface StepperProps {
   steps: ProductFormStep[];
   currentStep: number;
+  onStepClick?: (stepId: number) => void;
 }
 
-export const ProductFormStepper: React.FC<StepperProps> = ({ steps, currentStep }) => (
+export const ProductFormStepper: React.FC<StepperProps> = ({ steps, currentStep, onStepClick }) => (
   <div className="flex items-center justify-between max-w-md mx-auto pb-6 mb-6 border-b border-border/70">
     {steps.map((step, idx) => {
       const Icon = step.icon;
@@ -22,7 +23,13 @@ export const ProductFormStepper: React.FC<StepperProps> = ({ steps, currentStep 
 
       return (
         <React.Fragment key={step.id}>
-          <div className="flex flex-col items-center gap-1.5 relative z-10">
+          <button
+            type="button"
+            onClick={onStepClick ? () => onStepClick(step.id) : undefined}
+            disabled={!onStepClick}
+            title={onStepClick ? `Go to ${step.label}` : undefined}
+            className="flex flex-col items-center gap-1.5 relative z-10 group transition-transform duration-200"
+          >
             <div
               className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
                 isCompleted
@@ -30,18 +37,18 @@ export const ProductFormStepper: React.FC<StepperProps> = ({ steps, currentStep 
                   : isActive
                   ? 'bg-text-primary text-elevated ring-4 ring-accent/20 scale-105 shadow-md'
                   : 'bg-bg-secondary text-text-muted border border-border'
-              }`}
+              } ${onStepClick ? 'group-hover:scale-110 group-hover:ring-4 group-hover:ring-accent/20 cursor-pointer' : 'cursor-default'}`}
             >
               {isCompleted ? <Check size={16} /> : <Icon size={16} />}
             </div>
             <span
               className={`text-[11px] font-semibold transition-colors ${
                 isActive ? 'text-text-primary' : isCompleted ? 'text-emerald-700' : 'text-text-muted'
-              }`}
+              } ${onStepClick ? 'group-hover:text-text-primary' : ''}`}
             >
               {step.label}
             </span>
-          </div>
+          </button>
 
           {idx < steps.length - 1 && (
             <div className="flex-1 h-0.5 mx-2 -mt-5 bg-border overflow-hidden">

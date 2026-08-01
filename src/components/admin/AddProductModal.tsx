@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Plus, UploadCloud, X } from 'lucide-react';
-import { ModalShell } from '../ui';
+import { ModalShell, Toast } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 import { ColorSwatchGrid } from './ColorSwatchGrid';
 import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConstants';
@@ -11,6 +11,7 @@ import {
 } from './productFormShared';
 import { useAddProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
+import { validateImageFile } from '../../lib/imageFiles';
 
 export interface AddProductModalProps {
   isOpen: boolean;
@@ -27,12 +28,9 @@ export interface AddProductModalProps {
   }) => void;
 }
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
-
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { triggerToast } = useToast();
+  const { toastMessage, triggerToast } = useToast();
   const addProductMutation = useAddProductMutation();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -81,12 +79,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     const validPreviews: string[] = [];
 
     Array.from(filesList).forEach((file) => {
-      if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
-        setValidationError(`"${file.name}" is not a valid image format (jpg, png, webp, gif).`);
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        setValidationError(`"${file.name}" exceeds max allowed file size of 2MB.`);
+      const error = validateImageFile(file);
+      if (error) {
+        setValidationError(error);
         return;
       }
       validFiles.push(file);
@@ -211,7 +206,10 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
   return (
     <ModalShell isOpen={isOpen} onClose={handleCloseModal} title="Add New Product" footer={footer}>
-      <ProductFormStepper steps={PRODUCT_FORM_STEPS} currentStep={currentStep} />
+      <ProductFormStepper
+        steps={PRODUCT_FORM_STEPS}
+        currentStep={currentStep}
+      />
 
       <ProductFormAlert message={validationError} />
 
@@ -387,6 +385,8 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
           )}
         </div>
       )}
+
+      {toastMessage && <Toast message={toastMessage} />}
     </ModalShell>
   );
 };

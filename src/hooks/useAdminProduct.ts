@@ -19,6 +19,7 @@ const getStockStatus = (stock: number): AdminItem['status'] => {
 
 export const toAdminItem = (apiProduct: ProductDetailData): AdminItem => {
   const stock = Number(apiProduct.stock_quantity) || 0;
+  const images = (apiProduct.images ?? []).map(getAssetUrl).filter(Boolean);
   return {
     id: apiProduct.id,
     name: apiProduct.title,
@@ -26,7 +27,8 @@ export const toAdminItem = (apiProduct: ProductDetailData): AdminItem => {
     category: apiProduct.category || 'Uncategorized',
     price: Number(apiProduct.price) || 0,
     stock,
-    image: getAssetUrl(apiProduct.images?.[0] ?? ''),
+    image: images[0] ?? '',
+    images,
     description: apiProduct.description || '',
     color: apiProduct.color || '',
     size: apiProduct.size || '',

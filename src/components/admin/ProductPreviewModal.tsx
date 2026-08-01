@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ExternalLink, Ruler, Palette, Layers, Tag } from 'lucide-react';
 import { ModalShell } from '../ui';
 import { ProductImage } from '../ui';
@@ -17,6 +17,9 @@ const STATUS_STYLES: Record<AdminItem['status'], string> = {
 };
 
 export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen, onClose, item }) => {
+  const images = item?.images?.length ? item.images : item?.image ? [item.image] : [];
+  const [activeImage, setActiveImage] = useState(0);
+
   if (!isOpen || !item) return null;
 
   return (
@@ -47,17 +50,41 @@ export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="relative bg-bg-secondary rounded-2xl overflow-hidden aspect-square">
-          <ProductImage
-            src={item.image}
-            alt={item.name}
-            className="w-full h-full object-cover"
-          />
-          <span
-            className={`absolute top-3 left-3 inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border bg-white/90 backdrop-blur-sm ${STATUS_STYLES[item.status]}`}
-          >
-            {item.status}
-          </span>
+        <div>
+          <div className="relative bg-bg-secondary rounded-2xl overflow-hidden aspect-square">
+            <ProductImage
+              src={images[activeImage] ?? item.image}
+              alt={item.name}
+              className="w-full h-full object-cover"
+            />
+            <span
+              className={`absolute top-3 left-3 inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border bg-white/90 backdrop-blur-sm ${STATUS_STYLES[item.status]}`}
+            >
+              {item.status}
+            </span>
+            {images.length > 1 && (
+              <span className="absolute bottom-3 right-3 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold text-white bg-slate-900/70 backdrop-blur-sm">
+                {activeImage + 1} / {images.length}
+              </span>
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <div className="grid grid-cols-5 gap-2 mt-3">
+              {images.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveImage(idx)}
+                  className={`relative rounded-lg overflow-hidden aspect-square border-2 transition-all cursor-pointer ${
+                    idx === activeImage ? 'border-accent ring-2 ring-accent/30' : 'border-transparent hover:border-border'
+                  }`}
+                >
+                  <ProductImage src={img} alt={`${item.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
