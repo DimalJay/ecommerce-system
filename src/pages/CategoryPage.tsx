@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components';
 import { CategoryHeader, CategoryProductList, OtherCategoriesGrid } from '../components/category';
 import { useCart } from '../context/CartContext';
-import { PRODUCTS } from '../data';
+
 import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
@@ -43,16 +43,7 @@ export const CategoryPage: React.FC = () => {
     }
   }, [categoryName]);
 
-  const getFilteredProducts = (): Product[] => {
-    if (!categoryName) return [];
-    const normalized = categoryName.toLowerCase();
-    if (normalized === 'women') return PRODUCTS.slice(0, 3);
-    if (normalized === 'men') return PRODUCTS.slice(3, 6);
-    if (normalized === 'kids') return PRODUCTS.filter((p) => p.category === 'kids');
-    return PRODUCTS.filter((p) => p.category.toLowerCase() === normalized);
-  };
-
-  const filteredProducts = [...apiProducts, ...getFilteredProducts()];
+  const filteredProducts = apiProducts;
 
   const getCategoryMeta = () => {
     const name = categoryName || '';
