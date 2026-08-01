@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Save,
   AlertCircle,
+  Trash2,
 } from 'lucide-react';
 import type { ProductFormStep } from './formConstants';
 
@@ -72,6 +73,7 @@ interface FooterProps {
   onBack: () => void;
   onNext: () => void;
   onSubmit: () => void;
+  onDelete?: () => void;
   isSubmitting?: boolean;
   submitLabel: string;
   submitIcon?: React.ReactNode;
@@ -84,11 +86,24 @@ export const ProductFormFooter: React.FC<FooterProps> = ({
   onBack,
   onNext,
   onSubmit,
+  onDelete,
   isSubmitting = false,
   submitLabel,
   submitIcon,
 }) => (
   <>
+    {onDelete && (
+      <button
+        type="button"
+        onClick={onDelete}
+        className="inline-flex items-center gap-1.5 mr-auto px-4 py-3 text-danger hover:bg-danger-bg rounded-lg font-medium transition-colors cursor-pointer"
+        title="Delete product"
+      >
+        <Trash2 size={16} />
+        <span>Delete</span>
+      </button>
+    )}
+
     {currentStep === 1 ? (
       <button
         type="button"

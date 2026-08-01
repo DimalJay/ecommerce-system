@@ -41,7 +41,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
   const [stockQuantity, setStockQuantity] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [description, setDescription] = useState('');
 
@@ -60,7 +60,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     setCategory('');
     setPrice('');
     setStockQuantity('');
-    setColor('');
+    setColor([]);
     setSelectedSizes([]);
     setDescription('');
     setSelectedFiles([]);
@@ -155,7 +155,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     formData.append('title', title.trim());
 
     if (description.trim()) formData.append('description', description.trim());
-    if (color.trim()) formData.append('color', color.trim());
+    if (color.length > 0) formData.append('color', color.join(','));
     if (selectedSizes.length > 0) formData.append('size', selectedSizes.join(','));
     if (price) formData.append('price', price);
     if (stockQuantity) formData.append('stock_quantity', stockQuantity);
@@ -306,9 +306,16 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
             <div>
               <label className={formLabelClass}>
-                Color {color && <span className="text-accent normal-case">— {color}</span>}
+                Colors {color.length > 0 && <span className="text-accent normal-case">— {color.join(', ')}</span>}
               </label>
-              <ColorSwatchGrid value={color} onSelect={setColor} />
+              <ColorSwatchGrid
+                value={color}
+                onToggle={(name) =>
+                  setColor((prev) =>
+                    prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
+                  )
+                }
+              />
             </div>
           </div>
 

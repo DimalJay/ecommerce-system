@@ -9,6 +9,7 @@ import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 import { getProductsByCategoryApi } from '../api/productApi';
 import { getAssetUrl } from '../lib/request';
+import { parseColorNames, parseSizes, colorNameToHex } from '../lib/colorUtils';
 
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -29,11 +30,13 @@ export const CategoryPage: React.FC = () => {
               id: Number(apiProduct.id) || Math.floor(Math.random() * 10000) + 1000,
               title: apiProduct.title,
               category: apiProduct.category || categoryName,
-              colorName: apiProduct.color || 'Default',
+              colorName: parseColorNames(apiProduct.color)[0] ?? 'Default',
               price: Number(apiProduct.price),
               rating: 5,
               reviewsCount: 1,
               image: getAssetUrl(apiProduct.images?.[0] || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80'),
+              swatches: parseColorNames(apiProduct.color).map(colorNameToHex),
+              availableSizes: parseSizes(apiProduct.size),
             }));
             setApiProducts(mappedProducts);
           }

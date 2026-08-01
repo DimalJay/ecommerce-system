@@ -340,6 +340,7 @@ export const AdminDashboard: React.FC = () => {
         onClose={() => { setIsUpdateModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}
         onSave={handleUpdateProduct}
+        onDelete={() => { setIsUpdateModalOpen(false); setIsDeleteModalOpen(true); }}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
@@ -352,6 +353,7 @@ export const AdminDashboard: React.FC = () => {
         isOpen={isPreviewModalOpen}
         onClose={() => { setIsPreviewModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}
+        onEdit={() => { setIsPreviewModalOpen(false); setIsUpdateModalOpen(true); }}
       />
       </div>
     </div>

@@ -10,18 +10,22 @@ import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 import { useProductDetail } from '../hooks/useProductDetail';
 import { getAssetUrl } from '../lib/request';
+import { parseColorNames, parseSizes, colorNameToHex } from '../lib/colorUtils';
 import type { ProductDetailData } from '../api/productApi';
 
 const toProduct = (data: ProductDetailData): Product => ({
   id: Number(data.id),
   title: data.title,
   category: data.category ?? '',
-  colorName: data.color ?? '',
+  colorName: parseColorNames(data.color)[0] ?? '',
   description: data.description,
   price: Number(data.price),
   rating: 0,
   reviewsCount: 0,
+  stock: Number(data.stock_quantity) || 0,
   image: getAssetUrl(data.images?.[0] ?? ''),
+  swatches: parseColorNames(data.color).map(colorNameToHex),
+  availableSizes: parseSizes(data.size),
 });
 
 export const ProductDetails: React.FC = () => {
@@ -46,7 +50,7 @@ export const ProductDetails: React.FC = () => {
 
   if (product && product.id !== prevProductId) {
     setPrevProductId(product.id);
-    setSelectedSize('M');
+    setSelectedSize(product.availableSizes?.[0] ?? 'M');
     setSelectedColor(product.colorName);
     setQuantity(1);
     const images = (data?.data.images ?? []).map(getAssetUrl);
@@ -80,6 +84,15 @@ export const ProductDetails: React.FC = () => {
   }
 
   const handleAddToBag = () => {
+    if (product.stock !== undefined && product.stock <= 0) {
+      triggerToast('This product is out of stock.');
+      return;
+    }
+    if (product.stock !== undefined && quantity > product.stock) {
+      triggerToast(`Only ${product.stock} units available.`);
+      setQuantity(product.stock);
+      return;
+    }
     addToCartWithQty(product, selectedSize, selectedColor, quantity);
     triggerToast(`Added ${quantity}x ${product.title} to your bag`);
     setIsCartOpen(true);
@@ -116,7 +129,8 @@ export const ProductDetails: React.FC = () => {
 
           <div className="lg:col-span-5 space-y-8">
             <ProductInfoSection product={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor}
-              selectedSize={selectedSize} setSelectedSize={setSelectedSize} quantity={quantity} setQuantity={setQuantity}
+              selectedSize={selectedSize} setSelectedSize={setSelectedSize} sizes={product.availableSizes}
+              quantity={quantity} setQuantity={setQuantity}
               wishlisted={wishlist.includes(product.id)} onToggleWishlist={handleToggleWishlist} onAddToBag={handleAddToBag}
               onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
             />

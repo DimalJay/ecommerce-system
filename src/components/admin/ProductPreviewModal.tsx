@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { ExternalLink, Ruler, Palette, Layers, Tag } from 'lucide-react';
+import { ExternalLink, Pencil, Ruler, Palette, Layers, Tag } from 'lucide-react';
 import { ModalShell } from '../ui';
 import { ProductImage } from '../ui';
 import type { AdminItem } from '../../types';
+import { parseColorNames } from '../../lib/colorUtils';
+import { colorNameToHex } from '../../lib/colorUtils';
 
 export interface ProductPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   item: AdminItem | null;
+  onEdit?: () => void;
 }
 
 const STATUS_STYLES: Record<AdminItem['status'], string> = {
@@ -16,7 +19,7 @@ const STATUS_STYLES: Record<AdminItem['status'], string> = {
   'Out of Stock': 'bg-rose-50 text-rose-700 border-rose-200/80',
 };
 
-export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen, onClose, item }) => {
+export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen, onClose, item, onEdit }) => {
   const images = item?.images?.length ? item.images : item?.image ? [item.image] : [];
   const [activeImage, setActiveImage] = useState(0);
 
@@ -37,6 +40,16 @@ export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen
           >
             Close
           </button>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="inline-flex items-center gap-2 px-5 py-3 text-accent hover:bg-accent-ghost rounded-lg font-medium transition-colors cursor-pointer"
+            >
+              <Pencil size={16} />
+              <span>Edit</span>
+            </button>
+          )}
           <a
             href={`/product/${item.id}`}
             target="_blank"
@@ -114,7 +127,24 @@ export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({ isOpen
             <div className="flex items-center gap-3 text-sm">
               <Palette size={14} className="text-text-muted shrink-0" />
               <span className="text-text-muted text-xs uppercase tracking-wider w-20 shrink-0">Color</span>
-              <span className="text-xs font-semibold text-text-primary">{item.color ?? '—'}</span>
+              {parseColorNames(item.color).length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {parseColorNames(item.color).map((name) => (
+                    <span
+                      key={name}
+                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-border bg-bg-secondary text-[11px] font-semibold text-text-primary"
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full border border-border"
+                        style={{ backgroundColor: colorNameToHex(name) }}
+                      />
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs font-semibold text-text-primary">—</span>
+              )}
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Ruler size={14} className="text-text-muted shrink-0" />

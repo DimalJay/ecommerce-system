@@ -8,7 +8,7 @@ export const productDetailsSchema = z.object({
 });
 
 export const productFormSchema = productDetailsSchema.extend({
-  color: z.string(),
+  color: z.array(z.string()),
   description: z.string(),
 });
 

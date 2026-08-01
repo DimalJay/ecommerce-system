@@ -17,12 +17,14 @@ import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
 import { validateImageFile } from '../../lib/imageFiles';
 import { toBackendPath } from '../../lib/request';
+import { parseColorNames } from '../../lib/colorUtils';
 
 export interface UpdateProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   item: AdminItem | null;
   onSave: (item: AdminItem) => void;
+  onDelete?: () => void;
 }
 
 interface ImageItem {
@@ -34,7 +36,7 @@ interface ImageItem {
 
 const newImageKey = () => `new_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, onClose, item, onSave }) => {
+export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, onClose, item, onSave, onDelete }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedSizes, setSelectedSizes] = useState<string[]>(
@@ -64,12 +66,12 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
       category: (item?.category ?? '').toLowerCase(),
       price: item?.price ?? 0,
       stock: item?.stock ?? 0,
-      color: item?.color ?? '',
+      color: parseColorNames(item?.color),
       description: item?.description ?? '',
     },
   });
 
-  const color = useWatch({ control, name: 'color' }) ?? '';
+  const color = useWatch({ control, name: 'color' }) ?? [];
 
   if (!isOpen || !item) return null;
 
@@ -173,7 +175,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
     payload.append('stock_quantity', String(values.stock));
     if (values.description) payload.append('description', values.description);
     if (selectedSizes.length > 0) payload.append('size', selectedSizes.join(','));
-    if (values.color) payload.append('color', values.color);
+    if (values.color.length > 0) payload.append('color', values.color.join(','));
 
     imageItems.forEach((it) => {
       if (it.isNew) {
@@ -189,7 +191,12 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
       {
         onSuccess: (response) => {
           triggerToast(`Product "${response.data.title}" updated successfully!`);
-          onSave({ ...item, ...values } as AdminItem);
+          onSave({
+            ...item,
+            ...values,
+            color: values.color.join(','),
+            description: values.description,
+          } as AdminItem);
           onClose();
         },
         onError: (err) => {
@@ -207,6 +214,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
       onBack={handleBack}
       onNext={handleNext}
       onSubmit={handleSave}
+      onDelete={onDelete}
       isSubmitting={updateProductMutation.isPending}
       submitLabel="Save Changes"
       submitIcon={<Save size={18} />}
@@ -305,10 +313,15 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
               </div>
 
               <div>
-                <label className={formLabelClass}>
-                  Color {color && <span className="text-accent normal-case">— {color}</span>}
-                </label>
-                <ColorSwatchGrid value={color} onSelect={(name) => setValue('color', name)} />
+              <label className={formLabelClass}>
+                Colors {color.length > 0 && <span className="text-accent normal-case">— {color.join(', ')}</span>}
+              </label>
+              <ColorSwatchGrid
+                value={color}
+                onToggle={(name) =>
+                  setValue('color', color.includes(name) ? color.filter((c) => c !== name) : [...color, name])
+                }
+              />
               </div>
             </div>
 
