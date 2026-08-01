@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Product } from '../../types';
 
 interface ProductSpecsAccordionProps {
   product: Product;

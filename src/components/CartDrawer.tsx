@@ -1,17 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, Trash2, Sparkles, ArrowRight } from 'lucide-react';
-import type { Product } from './ProductCard';
+import type { CartItem } from '../types';
 import { QuantitySelector, DrawerShell } from './ui';
 import { PriceRow } from './shared/PriceRow';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
-
-export interface CartItem {
-  product: Product;
-  quantity: number;
-  selectedSize: string;
-  selectedColor: string;
-}
 
 interface CartDrawerProps {
   isOpen: boolean;

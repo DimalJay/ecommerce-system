@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { RefreshCw, ShoppingBag } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
-import type { Order } from '../components/order-history';
+import type { Order } from '../types';
 
 export const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>(() => {
@@ -72,7 +71,7 @@ export const OrderManagement: React.FC = () => {
       const query = searchQuery.toLowerCase().trim();
       if (!query) return true;
 
-      const customerName = `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`.toLowerCase();
+      const customerName = (order.shippingInfo?.fullName || `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`).toLowerCase();
       const email = (order.shippingInfo?.email || '').toLowerCase();
       const city = (order.shippingInfo?.city || '').toLowerCase();
       const orderId = order.id.toLowerCase();
@@ -94,8 +93,6 @@ export const OrderManagement: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
-      <AdminNavbar />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8 sm:py-10 space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-border pb-6 gap-4 text-left">
           <div>

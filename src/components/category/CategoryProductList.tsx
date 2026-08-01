@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { ProductCard } from '../ProductCard';
-import type { Product } from '../ProductCard';
+import type { Product } from '../../types';
 
 interface CategoryProductListProps {
   products: Product[];

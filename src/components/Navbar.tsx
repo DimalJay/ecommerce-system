@@ -171,10 +171,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="p-3 bg-secondary hover:bg-tertiary border border-border rounded-full text-accent hover:text-accent-hover transition-all duration-200 cursor-pointer font-semibold flex items-center justify-center"
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-luxury-gold text-luxury-charcoal hover:bg-luxury-gold-light font-black text-xs sm:text-sm rounded-full border border-luxury-gold-light/40 shadow-sm transition-all duration-200 cursor-pointer flex items-center justify-center uppercase shrink-0"
                   title={`Signed in as ${user.name}`}
+                  aria-label={`User menu for ${user.name}`}
                 >
-                  <User size={14} className="sm:w-4 sm:h-4" />
+                  {(user.first_name || user.name || 'U').charAt(0).toUpperCase()}
                 </button>
 
                 {isProfileDropdownOpen && (

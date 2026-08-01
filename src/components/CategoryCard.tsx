@@ -1,13 +1,4 @@
-import React from 'react';
-
-export interface Category {
-  id: string;
-  name: string;
-  title?: string;
-  subtitle: string;
-  count: string;
-  image: string;
-}
+import type { Category } from '../types';
 
 interface CategoryCardProps {
   category: Category;

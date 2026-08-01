@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Package, Plus, RefreshCw, Boxes, TrendingUp } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
-import { AdminOrderCard } from '../components/admin/AdminOrderCard';
-import { ItemTable, AddItemModal, UpdateItemModal, ConfirmDeleteModal } from '../components/admin';
+import {
+  AdminSidebar,
+  ADMIN_NAV_ITEMS,
+  AdminOrderCard,
+  AdminProductTable,
+  AddProductModal,
+  UpdateProductModal,
+  ConfirmDeleteModal,
+} from '../components/admin';
+import type { AdminTab } from '../components/admin';
 import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
@@ -82,10 +89,8 @@ function saveOrders(orders: Order[]) {
   localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
 }
 
-type Tab = 'orders' | 'products';
-
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('orders');
+  const [activeTab, setActiveTab] = useState<AdminTab>('orders');
 
   const [products, setProducts] = useState<AdminItem[]>(loadProducts);
   const [orders, setOrders] = useState<Order[]>(loadOrders);
@@ -171,23 +176,42 @@ export const AdminDashboard: React.FC = () => {
   const categories = ['All', 'Women', 'Men', 'Unisex', 'Kids'];
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
-      <AdminNavbar />
+    <div className="min-h-screen bg-bg-primary text-text-primary font-sans lg:flex">
+      <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8 sm:py-10 space-y-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Admin Dashboard</h1>
-            <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Admin Dashboard</h1>
+              <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
+            </div>
+            <button
+              onClick={() => { setOrders(loadOrders()); setProducts(loadProducts()); }}
+              className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
+            >
+              <RefreshCw size={14} />
+              <span>Refresh</span>
+            </button>
           </div>
-          <button
-            onClick={() => { setOrders(loadOrders()); setProducts(loadProducts()); }}
-            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
-          >
-            <RefreshCw size={14} />
-            <span>Refresh</span>
-          </button>
-        </div>
+
+        <nav className="lg:hidden flex gap-2 overflow-x-auto">
+          {ADMIN_NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setActiveTab(key)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === key
+                  ? 'bg-text-primary text-elevated shadow-md'
+                  : 'bg-elevated border border-border text-text-secondary hover:text-accent'
+              }`}
+            >
+              <Icon size={14} />
+              {label}
+            </button>
+          ))}
+        </nav>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white border border-luxury-gold-light/20 rounded-2xl p-5 flex items-center gap-4 shadow-xs">
@@ -225,33 +249,6 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-2xl font-bold text-luxury-charcoal">{processingCount + lowStockCount}</p>
               <p className="text-xs text-text-muted font-medium uppercase tracking-wider">Needs Attention</p>
             </div>
-          </div>
-        </div>
-
-        <div className="border-b border-border">
-          <div className="flex gap-0">
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`px-6 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === 'orders'
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              <ShoppingBag size={16} className="inline mr-2" />
-              Orders
-            </button>
-            <button
-              onClick={() => setActiveTab('products')}
-              className={`px-6 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === 'products'
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              <Package size={16} className="inline mr-2" />
-              Products
-            </button>
           </div>
         </div>
 
@@ -365,7 +362,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <ItemTable
+            <AdminProductTable
               items={products}
               onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
               onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
@@ -377,12 +374,12 @@ export const AdminDashboard: React.FC = () => {
         )}
       </main>
 
-      <AddItemModal
+      <AddProductModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddProduct}
       />
-      <UpdateItemModal
+      <UpdateProductModal
         key={isUpdateModalOpen ? selectedItem?.sku ?? 'none' : 'closed'}
         isOpen={isUpdateModalOpen}
         onClose={() => { setIsUpdateModalOpen(false); setSelectedItem(null); }}
@@ -395,6 +392,7 @@ export const AdminDashboard: React.FC = () => {
         onConfirm={handleDeleteProduct}
         item={selectedItem}
       />
+      </div>
     </div>
   );
 };

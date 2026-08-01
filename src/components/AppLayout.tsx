@@ -7,7 +7,7 @@ import { QuickViewModal } from './QuickViewModal';
 import { SizeGuideModal } from './SizeGuideModal';
 import { AuthModal } from './auth/AuthModal';
 import { useCart } from '../context/CartContext';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 
 interface AppLayoutProps {
   children: React.ReactNode;

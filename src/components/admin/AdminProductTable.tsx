@@ -1,19 +1,8 @@
 import React from 'react';
 import { Edit2, Trash2, ShoppingBag } from 'lucide-react';
+import type { AdminItem } from '../../types';
 
-export interface AdminItem {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: number;
-  stock: number;
-  image: string;
-  description?: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
-
-interface ItemTableProps {
+export interface AdminProductTableProps {
   items: AdminItem[];
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
@@ -22,7 +11,7 @@ interface ItemTableProps {
   sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({
+export const AdminProductTable: React.FC<AdminProductTableProps> = ({
   items,
   onEdit,
   onDelete,
@@ -107,10 +96,10 @@ export const ItemTable: React.FC<ItemTableProps> = ({
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.status === 'In Stock'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
-                      : item.status === 'Low Stock'
-                        ? 'bg-amber-50 text-amber-700 border-amber-200/80'
-                        : 'bg-rose-50 text-rose-700 border-rose-200/80'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                    : item.status === 'Low Stock'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200/80'
+                      : 'bg-rose-50 text-rose-700 border-rose-200/80'
                     }`}>
                     {item.status}
                   </span>
@@ -151,3 +140,5 @@ export const ItemTable: React.FC<ItemTableProps> = ({
     </div>
   );
 };
+
+export const ItemTable = AdminProductTable;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 import { DrawerShell } from './ui';
 import { PRODUCTS } from '../data';
 

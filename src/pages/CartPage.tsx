@@ -84,7 +84,10 @@ export const CartPage: React.FC = () => {
   const handleCheckout = () => {
     if (selectedCartItems.length === 0) return;
     setIsCheckingOut(true);
-    setTimeout(() => { setIsCheckingOut(false); navigate('/checkout'); }, 1000);
+    setTimeout(() => {
+      setIsCheckingOut(false);
+      navigate('/checkout', { state: { selectedItems: selectedCartItems } });
+    }, 1000);
   };
 
   return (

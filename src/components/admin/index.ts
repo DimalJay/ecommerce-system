@@ -1,9 +1,12 @@
-export { AddItemModal } from './AddItemModal';
-export { UpdateItemModal } from './UpdateItemModal';
+export { AddProductModal, AddProductModal as AddItemModal } from './AddProductModal';
+export { UpdateProductModal, UpdateProductModal as UpdateItemModal } from './UpdateProductModal';
+export { AdminProductTable, AdminProductTable as ItemTable } from './AdminProductTable';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
-export { ItemTable } from './ItemTable';
-export type { AdminItem } from './ItemTable';
+export type { AdminItem } from '../../types';
 export { SizeToggleGrid } from './SizeToggleGrid';
 export { OrderStats } from './OrderStats';
 export { OrderControls } from './OrderControls';
 export { AdminOrderCard } from './AdminOrderCard';
+export { AdminSidebar } from './AdminSidebar';
+export { ADMIN_NAV_ITEMS } from './adminNavItems';
+export type { AdminTab } from './adminNavItems';

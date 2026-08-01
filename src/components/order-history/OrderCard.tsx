@@ -1,36 +1,7 @@
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Order } from '../../types';
 import { getStatusBadgeClass, OrderItemsList, ShippingDetailsCard, BillingReceiptCard } from '../shared/OrderCardSections';
-
-export interface OrderItem {
-  product: Product;
-  quantity: number;
-  selectedSize: string;
-  selectedColor: string;
-}
-
-export interface Order {
-  id: string;
-  date: string;
-  items: OrderItem[];
-  shippingInfo: {
-    fullName?: string;
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    phone: string;
-    address: string;
-    apartment: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country?: string;
-  };
-  paymentMethod: string;
-  total: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
-}
 
 interface OrderCardProps {
   order: Order;
