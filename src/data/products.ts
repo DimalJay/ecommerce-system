@@ -1,4 +1,4 @@
-import type { Product } from '../components/ProductCard';
+import type { Product } from '../types';
 
 export const PRODUCTS: Product[] = [
   {

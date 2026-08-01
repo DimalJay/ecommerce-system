@@ -4,7 +4,7 @@ import { AppLayout } from '../components';
 import { CategoryHeader, CategoryProductList, OtherCategoriesGrid } from '../components/category';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data';
-import type { Product } from '../components/ProductCard';
+import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 

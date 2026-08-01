@@ -1,6 +1,6 @@
 import type React from 'react';
 import { ShoppingBag, Heart } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Product } from '../../types';
 import { StarRating, ColorSwatches, SizeSelector, QuantitySelector } from '../ui';
 
 interface ProductInfoSectionProps {

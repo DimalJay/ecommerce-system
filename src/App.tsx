@@ -1,10 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import AdminDashboard from './pages/AdminDashboard';
-import { Checkout, ProductDetails, OrderHistoryPage, CategoryPage, AdminAuthPage } from './pages';
-import { CartPage } from './pages/CartPage';
+import {
+  HomePage,
+  AdminDashboard,
+  CheckoutPage,
+  ProductDetails,
+  OrderHistoryPage,
+  CategoryPage,
+  AdminAuthPage,
+  CartPage,
+} from './pages';
 import { CartProvider } from './context/CartContext';
 import { ScrollToTop } from './components/ui/ScrollToTop';
+import { ProtectedRoute, ProtectedAdminRoute } from './components/auth';
 
 function App() {
   return (
@@ -12,16 +19,51 @@ function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/items" element={<AdminDashboard />} />
-          <Route path="/admin/orders" element={<AdminDashboard />} />
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/items"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
           <Route path="/admin/login" element={<AdminAuthPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/orders" element={<OrderHistoryPage />} />
-          <Route path="/order-history" element={<OrderHistoryPage />} />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/order-history"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
         </Routes>
       </Router>

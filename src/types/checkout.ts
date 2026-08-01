@@ -7,6 +7,8 @@ export type PaymentMethod = 'card' | 'paypal' | 'cod' | 'bank';
 
 export interface ShippingFields {
   fullName: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   phone: string;
   address: string;

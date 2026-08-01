@@ -38,7 +38,8 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             placeholder="john.doe@email.com"
             value={form.email}
             onChange={onChange('email')}
-            className={getInputClass(!!errors?.email)}
+            className={`${getInputClass(!!errors?.email)} opacity-60 bg-slate-50 cursor-not-allowed`}
+            disabled
             required
           />
         </CheckoutField>

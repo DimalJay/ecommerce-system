@@ -3,7 +3,7 @@ import { RefreshCw, ShoppingBag } from 'lucide-react';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
-import type { Order } from '../components/order-history';
+import type { Order } from '../types';
 
 export const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>(() => {
@@ -71,7 +71,7 @@ export const OrderManagement: React.FC = () => {
       const query = searchQuery.toLowerCase().trim();
       if (!query) return true;
 
-      const customerName = `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`.toLowerCase();
+      const customerName = (order.shippingInfo?.fullName || `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`).toLowerCase();
       const email = (order.shippingInfo?.email || '').toLowerCase();
       const city = (order.shippingInfo?.city || '').toLowerCase();
       const orderId = order.id.toLowerCase();

@@ -30,7 +30,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
           <div>
             <span className="text-[10px] font-bold text-text-muted block uppercase tracking-wider">Client Name</span>
             <span className="text-xs font-bold text-text-primary">
-              {order.shippingInfo?.firstName} {order.shippingInfo?.lastName}
+              {order.shippingInfo?.fullName || `${order.shippingInfo?.firstName || ''} ${order.shippingInfo?.lastName || ''}`.trim()}
             </span>
           </div>
           <div>

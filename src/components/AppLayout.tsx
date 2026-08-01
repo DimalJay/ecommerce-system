@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartDrawer } from './CartDrawer';
@@ -7,7 +7,7 @@ import { QuickViewModal } from './QuickViewModal';
 import { SizeGuideModal } from './SizeGuideModal';
 import { AuthModal } from './auth/AuthModal';
 import { useCart } from '../context/CartContext';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -34,6 +34,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthOpen(true);
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
+  }, []);
 
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);

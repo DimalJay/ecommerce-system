@@ -1,5 +1,6 @@
 import React from 'react';
-import { ProductCard, type Product } from '../ProductCard';
+import { ProductCard } from '../ProductCard';
+import type { Product } from '../../types';
 
 interface ProductSpotlightSectionProps {
   id?: string;

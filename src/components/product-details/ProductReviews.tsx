@@ -1,6 +1,6 @@
 import type React from 'react';
 import { ShieldCheck } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Product } from '../../types';
 import { StarRating } from '../ui';
 
 interface ProductReviewsProps {
