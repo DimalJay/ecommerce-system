@@ -25,3 +25,8 @@ dist-ssr
 
 # Backend has its own separate git repo
 backend/
+
+# Environments
+.env
+.env.local
+.env.*.local
