@@ -15,7 +15,9 @@ export interface Product {
   discount?: string;
   image: string;
   isNew?: boolean;
+  stock?: number;
   swatches?: string[];
+  availableSizes?: string[];
 }
 
 export interface CartItem {

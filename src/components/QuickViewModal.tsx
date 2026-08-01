@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Ruler } from 'lucide-react';
 import type { Product } from '../types';
-import { StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
+import { ProductImage, StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -19,14 +19,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   onAddToCart,
   onOpenSizeGuide
 }) => {
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedSize, setSelectedSize] = useState(() => product?.availableSizes?.[0] ?? 'M');
   const [selectedColor, setSelectedColor] = useState(() => product?.swatches?.[0] ?? product?.colorName ?? '');
   const [quantity, setQuantity] = useState(1);
 
   if (!isOpen || !product) return null;
 
   const handleAddToCart = () => {
-    onAddToCart(product, selectedSize, selectedColor, quantity);
+    if (product.stock !== undefined && product.stock <= 0) return;
+    onAddToCart(product, selectedSize, selectedColor, Math.min(quantity, product.stock ?? quantity));
     onClose();
   };
 
@@ -52,9 +53,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
         {/* Product Image Section */}
         <div className="relative bg-luxury-sand h-56 md:h-full min-h-56 md:min-h-87.5">
-          <img 
-            src={product.image} 
-            alt={product.title} 
+          <ProductImage
+            src={product.image}
+            alt={product.title}
             className="w-full h-full object-cover"
           />
           {product.discount && (
@@ -107,7 +108,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   Size Guide
                 </button>
               </div>
-              <SizeSelector selectedSize={selectedSize} onSelect={setSelectedSize} />
+              <SizeSelector sizes={product.availableSizes} selectedSize={selectedSize} onSelect={setSelectedSize} />
             </div>
 
             {/* Color Swatch Selection */}
@@ -128,7 +129,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <QuantitySelector
                 quantity={quantity}
                 onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
-                onIncrease={() => setQuantity(quantity + 1)}
+                onIncrease={() => setQuantity(product.stock !== undefined ? Math.min(quantity + 1, product.stock) : quantity + 1)}
+                max={product.stock}
                 variant="pill"
               />
 

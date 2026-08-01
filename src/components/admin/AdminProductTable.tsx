@@ -6,6 +6,7 @@ export interface AdminProductTableProps {
   items: AdminItem[];
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
+  onPreview: (item: AdminItem) => void;
   searchQuery: string;
   categoryFilter: string;
   sortBy: string;
@@ -15,6 +16,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
   items,
   onEdit,
   onDelete,
+  onPreview,
   searchQuery,
   categoryFilter,
   sortBy
@@ -71,7 +73,11 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
           </thead>
           <tbody className="divide-y divide-luxury-gold-light/20">
             {filteredItems.map((item) => (
-              <tr key={item.id} className="hover:bg-luxury-cream/50 transition-colors duration-150 group">
+              <tr
+                key={item.id}
+                onClick={() => onPreview(item)}
+                className="hover:bg-luxury-cream/50 transition-colors duration-150 group cursor-pointer"
+              >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -108,7 +114,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
-                      onClick={() => onEdit(item)}
+                      onClick={(e) => { e.stopPropagation(); onEdit(item); }}
                       className="p-2 text-text-muted hover:text-luxury-gold hover:bg-luxury-sand/60 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Edit Item"
                       aria-label="Edit Item"
@@ -117,7 +123,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(item)}
+                      onClick={(e) => { e.stopPropagation(); onDelete(item); }}
                       className="p-2 text-text-muted hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Delete Item"
                       aria-label="Delete Item"
