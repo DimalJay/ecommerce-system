@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-# Backend has its own separate git repo
-backend/

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { request } from '../lib/request';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
@@ -145,10 +146,12 @@ export const CheckoutPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (checkoutItems.length === 0) {
+    if (checkoutItems.length === 0 || isSubmitting) {
       return;
     }
 
@@ -158,49 +161,79 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
-    const newOrder: Order = {
-      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      date: new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
+    const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
+
+    const payload = {
+      full_name: form.fullName,
+      email: form.email,
+      phone: form.phone,
+      address: form.address,
+      apartment: form.apartment || null,
+      city: form.city,
+      state: form.state,
+      postal_code: form.postalCode,
+      country: form.country,
+      payment_method: paymentMethod,
+      total: total,
+      notes: form.notes || null,
       items: checkoutItems.map((item) => ({
-        product: item.product,
+        product_id: item.product.id,
         quantity: item.quantity,
-        selectedSize: item.selectedSize,
-        selectedColor: item.selectedColor,
-      })),
-      shippingInfo: {
-        fullName: form.fullName,
-        email: form.email,
-        phone: form.phone,
-        address: form.address,
-        apartment: form.apartment,
-        city: form.city,
-        state: form.state,
-        postalCode: form.postalCode,
-        country: form.country,
-      },
-      paymentMethod,
-      total,
-      status: 'Processing',
+        price: item.product.price,
+        selected_size: item.selectedSize || null,
+        selected_color: item.selectedColor || null,
+      }))
     };
 
-    try {
-      const existingOrdersRaw = localStorage.getItem('orders');
-      const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
-      localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
-    } catch (err) {
-      console.error('Failed to save order to localStorage:', err);
-    }
+    setIsSubmitting(true);
+    // Make request to backend api at /orders
+    request('/orders', {
+      method: 'POST',
+      data: payload
+    })
+      .then((res: any) => {
+        const apiOrder = res.data;
+        const newOrder = {
+          id: apiOrder.order_code,
+          date: new Date(apiOrder.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+          items: checkoutItems.map((item) => ({
+            product: item.product,
+            quantity: item.quantity,
+            selectedSize: item.selectedSize,
+            selectedColor: item.selectedColor,
+          })),
+          shippingInfo,
+          paymentMethod,
+          total,
+          status: apiOrder.status,
+        };
 
-    // Set completed order to trigger modal
-    setCompletedOrder(newOrder);
+        try {
+          const existingOrdersRaw = localStorage.getItem('orders');
+          const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
+          localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
+        } catch (err) {
+          console.error('Failed to save order to localStorage:', err);
+        }
 
-    // Clear only checked-out items from cart
-    const keysToRemove = checkoutItems.map(getItemKey);
-    removeCheckedOutItems(keysToRemove);
+        // Set completed order to trigger modal
+        setCompletedOrder(newOrder);
+
+        // Clear cart items
+        const keysToRemove = checkoutItems.map(getItemKey);
+        removeCheckedOutItems(keysToRemove);
+      })
+      .catch((err) => {
+        console.error('Failed to place order:', err);
+        alert(err.message || 'Failed to place order. Please try again.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
