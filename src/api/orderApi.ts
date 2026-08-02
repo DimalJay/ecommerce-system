@@ -60,6 +60,7 @@ export interface CreateOrderPayload {
 
 export type OrdersResponse = Response<ApiOrder[]>;
 export type CreateOrderResponse = Response<ApiOrder>;
+export type UpdateOrderStatusResponse = Response<ApiOrder>;
 
 /**
  * Returns the authenticated user's orders.
@@ -67,6 +68,16 @@ export type CreateOrderResponse = Response<ApiOrder>;
  */
 export const getOrders = (): Promise<OrdersResponse> =>
   request('/orders', { method: 'GET' });
+
+/**
+ * Updates the status of an order (admin only).
+ * PUT /orders/{id}/status
+ */
+export const updateOrderStatus = (
+  orderId: number | string,
+  status: string,
+): Promise<UpdateOrderStatusResponse> =>
+  request(`/orders/${orderId}/status`, { method: 'PUT', data: { status } });
 
 /**
  * Places a new order.

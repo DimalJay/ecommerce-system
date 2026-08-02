@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Order } from '../../types';
 import { getStatusBadgeClass, OrderItemsList, ShippingDetailsCard, BillingReceiptCard } from '../shared/OrderCardSections';
 import { getOrderItemCount } from '../../lib/orderUtils';
+import { OrderStatusStepper } from '../shared/OrderStatusStepper';
 
 interface OrderCardProps {
   order: Order;
@@ -77,6 +78,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isExpanded, onToggl
       {/* Expandable Order Detail Accordion panel */}
       {isExpanded && (
         <div className="p-6 border-t border-luxury-sand bg-luxury-sand/10 space-y-8 animate-fade-in">
+          <div className="bg-white border border-luxury-gold-light/20 rounded-2xl p-4 sm:p-5">
+            <OrderStatusStepper status={order.status} />
+          </div>
+
           <OrderItemsList items={order.items} itemsCount={itemsCount} title="Ordered Items" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-luxury-gold-light/10">

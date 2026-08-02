@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { ShoppingBag, Package, Plus, RefreshCw, Boxes, TrendingUp } from 'lucide-react';
 import {
   AdminSidebar,
   ADMIN_NAV_ITEMS,
-  AdminOrderCard,
+  AdminOrderTable,
+  AdminOrderDetailsModal,
   AdminProductTable,
   AddProductModal,
   UpdateProductModal,
@@ -16,11 +16,7 @@ import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
 import { useAdminProducts } from '../hooks/useAdminProduct';
-import {
-  useAdminOrders,
-  ADMIN_ORDERS_QUERY_KEY,
-  type AdminOrdersQueryResult,
-} from '../hooks/useAdminOrders';
+import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdminOrders';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
@@ -41,8 +37,8 @@ export const AdminDashboard: React.FC = () => {
   const orders = ordersData?.orders ?? [];
   const totalOrdersCount = ordersData?.total ?? 0;
   const ordersPageCount = Math.max(ordersData?.pageCount ?? 1, 1);
-  const queryClient = useQueryClient();
-  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const updateOrderStatusMutation = useUpdateOrderStatus();
+  const [previewOrder, setPreviewOrder] = useState<Order | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -81,21 +77,23 @@ export const AdminDashboard: React.FC = () => {
     setSelectedItem(null);
   };
 
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    queryClient.setQueriesData<AdminOrdersQueryResult>(
-      { queryKey: ADMIN_ORDERS_QUERY_KEY },
-      (current) => {
-        if (!current) return current;
-        return {
-          ...current,
-          orders: current.orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
-        };
+  const handleStatusChange = (order: Order, newStatus: Order['status']) => {
+    if (!order.dbId) {
+      setPreviewOrder((current) => (current && current.id === order.id ? { ...current, status: newStatus } : current));
+      return;
+    }
+    const previousStatus = order.status;
+    setPreviewOrder((current) => (current && current.id === order.id ? { ...current, status: newStatus } : current));
+    updateOrderStatusMutation.mutate(
+      { orderId: order.dbId, status: newStatus },
+      {
+        onError: () => {
+          setPreviewOrder((current) =>
+            current && current.id === order.id ? { ...current, status: previousStatus } : current,
+          );
+        },
       },
     );
-  };
-
-  const toggleExpandOrder = (id: string) => {
-    setExpandedOrderId(expandedOrderId === id ? null : id);
   };
 
   const filteredOrders = orders.filter((order) => {
@@ -105,7 +103,9 @@ export const AdminDashboard: React.FC = () => {
     const email = (order.shippingInfo?.email || '').toLowerCase();
     const id = order.id.toLowerCase();
     return name.includes(query) || email.includes(query) || id.includes(query);
-  }).sort((a, b) => b.id.localeCompare(a.id));
+  }).sort((a, b) => {
+    return (new Date(b.createdAt ?? b.date).getTime() || 0) - (new Date(a.createdAt ?? a.date).getTime() || 0);
+  });
 
   const getSortLabel = (val: string) => {
     switch (val) {
@@ -238,15 +238,11 @@ export const AdminDashboard: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredOrders.map((order) => (
-                  <AdminOrderCard
-                    key={order.id}
-                    order={order}
-                    isExpanded={expandedOrderId === order.id}
-                    onToggleExpand={() => toggleExpandOrder(order.id)}
-                    onStatusChange={handleStatusChange}
-                  />
-                ))}
+                <AdminOrderTable
+                  orders={filteredOrders}
+                  onPreview={(order) => setPreviewOrder(order)}
+                  onStatusChange={handleStatusChange}
+                />
 
                 {ordersPageCount > 1 && (
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-sm">
@@ -417,6 +413,12 @@ export const AdminDashboard: React.FC = () => {
         onClose={() => { setIsPreviewModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}
         onEdit={() => { setIsPreviewModalOpen(false); setIsUpdateModalOpen(true); }}
+      />
+      <AdminOrderDetailsModal
+        order={previewOrder}
+        onClose={() => setPreviewOrder(null)}
+        onStatusChange={handleStatusChange}
+        isUpdating={updateOrderStatusMutation.isPending}
       />
       </div>
     </div>

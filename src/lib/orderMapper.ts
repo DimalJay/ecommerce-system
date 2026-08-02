@@ -33,6 +33,8 @@ export const toOrderFromApi = (apiOrder: ApiOrder): Order => {
 
   return {
     id: apiOrder.order_code,
+    dbId: apiOrder.id ? Number(apiOrder.id) : undefined,
+    createdAt: apiOrder.created_at,
     date,
     items: (apiOrder.items ?? []).map((item) => ({
       product: {

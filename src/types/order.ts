@@ -12,6 +12,10 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  /** Numeric order id used by backend APIs (e.g. PUT /orders/{id}/status). */
+  dbId?: number;
+  /** RFC timestamp (ISO) of when the order was placed, used for sorting. */
+  createdAt?: string;
   date: string;
   items: OrderItem[];
   shippingInfo: {

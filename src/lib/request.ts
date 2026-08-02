@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
+import { showGlobalToast } from "../components/ui/GlobalToast";
 
 export class HTTPError extends Error {
   response?: AxiosResponse;
@@ -12,6 +13,23 @@ export class HTTPError extends Error {
     this.response = response;
   }
 }
+
+const SUCCESS_MESSAGES: Record<string, string> = {
+  post: "Created successfully",
+  put: "Updated successfully",
+  patch: "Updated successfully",
+  delete: "Deleted successfully",
+};
+
+const isWriteMethod = (config: AxiosRequestConfig): boolean => {
+  const method = (config.method ?? "get").toLowerCase();
+  return method === "post" || method === "put" || method === "patch" || method === "delete";
+};
+
+const successMessageFor = (config: AxiosRequestConfig, fallback?: string): string => {
+  const method = (config.method ?? "get").toLowerCase();
+  return fallback ?? SUCCESS_MESSAGES[method] ?? "Saved successfully";
+};
 
 const BASE_URL = `${import.meta.env.VITE_API_URL ?? "http://localhost"}/api/v1`;
 
@@ -50,11 +68,23 @@ export const backend = axios.create({
 backend.interceptors.response.use(
   (response) => {
     if (response.data?.error || response.data?.success === false) {
-      throw new Error(response.data?.error ?? response.data?.message);
+      const message = response.data?.error ?? response.data?.message ?? "Request failed";
+      if (isWriteMethod(response.config)) {
+        showGlobalToast(message, "error");
+      }
+      throw new Error(message);
+    }
+    if (isWriteMethod(response.config)) {
+      showGlobalToast(successMessageFor(response.config, response.data?.message));
     }
     return response;
   },
   (error: AxiosError) => {
+    const apiData = error.response?.data as { message?: string } | undefined;
+    const message = apiData?.message ?? "Failed to Fetch. Status: " + (error.response?.status ?? "");
+    if (isWriteMethod(error.config ?? {}) && error.response?.status !== 401) {
+      showGlobalToast(message, "error");
+    }
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         const currentPath = window.location.pathname;

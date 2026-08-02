@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getAdminOrders } from '../api/orderApi';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getAdminOrders, updateOrderStatus } from '../api/orderApi';
 import { toOrderFromApi } from '../lib/orderMapper';
 import type { Order } from '../types/order';
 
@@ -31,3 +31,32 @@ export const useAdminOrders = (page: number, status = 'All') =>
     },
     retry: false,
   });
+
+export interface UpdateOrderStatusInput {
+  orderId: number;
+  status: Order['status'];
+}
+
+export const useUpdateOrderStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, status }: UpdateOrderStatusInput) => updateOrderStatus(orderId, status),
+    onSuccess: (_, { orderId, status }) => {
+      queryClient.setQueriesData<AdminOrdersQueryResult>(
+        { queryKey: ADMIN_ORDERS_QUERY_KEY },
+        (current) => {
+          if (!current) return current;
+          return {
+            ...current,
+            orders: current.orders.map((order) =>
+              order.dbId === orderId ? { ...order, status } : order,
+            ),
+          };
+        },
+      );
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_ORDERS_QUERY_KEY });
+    },
+  });
+};

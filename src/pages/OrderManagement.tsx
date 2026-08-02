@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { RefreshCw, ShoppingBag } from 'lucide-react';
 import { OrderStats } from '../components/admin/OrderStats';
 import { OrderControls } from '../components/admin/OrderControls';
-import { AdminOrderCard } from '../components/admin/AdminOrderCard';
+import { AdminOrderTable } from '../components/admin/AdminOrderTable';
+import { AdminOrderDetailsModal } from '../components/admin/AdminOrderDetailsModal';
 import type { Order } from '../types';
 import { formatCustomerName } from '../lib/orderUtils';
 
@@ -18,7 +19,7 @@ export const OrderManagement: React.FC = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
-  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [previewOrder, setPreviewOrder] = useState<Order | null>(null);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'value-high' | 'value-low'>('newest');
 
   // Load orders from localStorage
@@ -34,25 +35,21 @@ export const OrderManagement: React.FC = () => {
   };
 
   // Update order status in state & localStorage
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    const updatedOrders = orders.map((order) => {
-      if (order.id === orderId) {
-        return { ...order, status: newStatus };
+  const handleStatusChange = (order: Order, newStatus: Order['status']) => {
+    const updatedOrders = orders.map((o) => {
+      if (o.id === order.id) {
+        return { ...o, status: newStatus };
       }
-      return order;
+      return o;
     });
 
     setOrders(updatedOrders);
+    setPreviewOrder((current) => (current && current.id === order.id ? { ...current, status: newStatus } : current));
     try {
       localStorage.setItem('orders', JSON.stringify(updatedOrders));
     } catch (err) {
       console.error('Failed to save updated orders:', err);
     }
-  };
-
-  // Toggle order expanded detail view
-  const toggleExpandOrder = (id: string) => {
-    setExpandedOrderId(expandedOrderId === id ? null : id);
   };
 
   // KPI Calculations
@@ -143,18 +140,18 @@ export const OrderManagement: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredOrders.map((order) => (
-              <AdminOrderCard
-                key={order.id}
-                order={order}
-                isExpanded={expandedOrderId === order.id}
-                onToggleExpand={() => toggleExpandOrder(order.id)}
-                onStatusChange={handleStatusChange}
-              />
-            ))}
-          </div>
+          <AdminOrderTable
+            orders={filteredOrders}
+            onPreview={(order) => setPreviewOrder(order)}
+            onStatusChange={handleStatusChange}
+          />
         )}
+
+        <AdminOrderDetailsModal
+          order={previewOrder}
+          onClose={() => setPreviewOrder(null)}
+          onStatusChange={handleStatusChange}
+        />
       </main>
     </div>
   );

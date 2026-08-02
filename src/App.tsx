@@ -11,6 +11,7 @@ import {
 } from './pages';
 import { CartProvider } from './context/CartContext';
 import { ScrollToTop } from './components/ui/ScrollToTop';
+import { GlobalToast } from './components/ui/GlobalToast';
 import { ProtectedRoute, ProtectedAdminRoute } from './components/auth';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path="/category/:categoryName" element={<CategoryPage />} />
         </Routes>
       </Router>
+      <GlobalToast />
     </CartProvider>
   );
 }

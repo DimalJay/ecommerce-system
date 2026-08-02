@@ -4,6 +4,7 @@ export { SizeSelector } from './SizeSelector';
 export { QuantitySelector } from './QuantitySelector';
 export { SearchInput } from './SearchInput';
 export { Toast } from './Toast';
+export { GlobalToast } from './GlobalToast';
 export { ModalShell } from './ModalShell';
 export { DrawerShell } from './DrawerShell';
 export { ProductImage } from './ProductImage';
