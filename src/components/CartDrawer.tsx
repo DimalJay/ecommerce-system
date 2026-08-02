@@ -134,12 +134,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               <div className="flex items-center justify-between mt-2">
-                <QuantitySelector
-                  quantity={item.quantity}
-                  onDecrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity - 1)}
-                  onIncrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity + 1)}
-                  variant="pill"
-                />
+             <QuantitySelector
+              quantity={item.quantity}
+              onDecrease={() =>
+              onUpdateQuantity(
+               item.product.id,
+               item.selectedSize,
+               item.selectedColor,
+               item.quantity - 1
+                  )
+               }
+              onIncrease={() =>
+               onUpdateQuantity(
+               item.product.id,
+               item.selectedSize,
+              item.selectedColor,
+               item.quantity + 1
+               )
+               }
+              max={item.product.stock}
+                variant="pill"
+                  />
                 <span className="text-sm font-semibold text-accent">
                   Rs. {(item.product.price * item.quantity).toFixed(2)}
                 </span>
