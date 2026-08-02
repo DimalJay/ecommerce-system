@@ -48,7 +48,7 @@ export const OrderStatusStepper: React.FC<OrderStatusStepperProps> = ({ status }
                   {isCompleted ? <CheckCircle2 size={16} /> : <Icon size={16} />}
                 </div>
                 <span
-                  className={`text-[11px] font-semibold tracking-tight ${
+                  className={`text-[10px] sm:text-[11px] font-semibold tracking-tight ${
                     isActive
                       ? 'text-luxury-charcoal font-bold'
                       : isCompleted

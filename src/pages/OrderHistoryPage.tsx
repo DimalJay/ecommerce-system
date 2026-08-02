@@ -88,7 +88,7 @@ export const OrderHistoryPage: React.FC = () => {
                 <button
                   key={status}
                   onClick={() => handleFilterChange(status)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 min-h-[44px] ${
                     isActive
                       ? 'bg-luxury-charcoal text-white shadow-xs border border-luxury-charcoal'
                       : 'bg-white text-text-secondary border border-luxury-gold-light/30 hover:border-luxury-gold-light hover:text-luxury-charcoal'
@@ -96,7 +96,7 @@ export const OrderHistoryPage: React.FC = () => {
                 >
                   <span>{status}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
                       isActive ? 'bg-luxury-gold text-luxury-charcoal' : 'bg-luxury-sand text-text-muted'
                     }`}
                   >
@@ -143,8 +143,8 @@ export const OrderHistoryPage: React.FC = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between pt-6 border-t border-luxury-gold-light/20">
-            <p className="text-xs text-text-muted">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-6 border-t border-luxury-gold-light/20">
+            <p className="text-xs text-text-muted text-center sm:text-left">
               Showing <span className="font-bold text-luxury-charcoal">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to{' '}
               <span className="font-bold text-luxury-charcoal">
                 {Math.min(currentPage * ITEMS_PER_PAGE, filteredOrders.length)}
@@ -152,21 +152,21 @@ export const OrderHistoryPage: React.FC = () => {
               of <span className="font-bold text-luxury-charcoal">{filteredOrders.length}</span> orders
             </p>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-xl border border-luxury-gold-light/30 text-luxury-charcoal hover:bg-luxury-sand/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2.5 rounded-xl border border-luxury-gold-light/30 text-luxury-charcoal hover:bg-luxury-sand/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 aria-label="Previous Page"
               >
                 <ChevronLeft size={16} />
               </button>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center justify-center gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                   <button
                     key={pageNum}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-10 h-10 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       currentPage === pageNum
                         ? 'bg-luxury-gold text-luxury-charcoal font-black shadow-xs'
                         : 'text-text-secondary hover:bg-luxury-sand/40'

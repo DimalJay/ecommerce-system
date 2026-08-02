@@ -6,7 +6,8 @@ import {
   Heart,
   User,
   Menu,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 import webLogo from '../assets/Web Logo.png';
 import { useCart } from '../context/CartContext';
@@ -43,36 +44,49 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const toggleSearch = () => {
+    setIsSearchOpen((prev) => {
+      if (prev) setSearchQuery('');
+      return !prev;
+    });
+  };
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+    setSearchQuery('');
+  };
+
   return (
     <>
       {/* Top Announcement Ticker */}
-      <div className="bg-text-primary text-bg-primary text-center py-3 px-4 text-xs font-medium tracking-wider flex items-center justify-center gap-3 uppercase select-none">
+      <div className="bg-text-primary text-bg-primary text-center py-2.5 sm:py-3 px-4 text-xs font-medium tracking-wider flex items-center justify-center gap-3 uppercase select-none overflow-hidden">
         <Sparkles size={12} className="text-accent shrink-0" />
-        <span>Complimentary Worldwide Express Shipping on orders over Rs. 300</span>
-        <span className="hidden sm:inline-block text-text-muted/50">|</span>
-        <span className="hidden sm:inline-flex bg-accent/15 text-accent-light border border-accent/25 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider">
+        <span className="min-w-0 truncate">Complimentary Worldwide Express Shipping on orders over Rs. 300</span>
+        <span className="hidden sm:inline-block text-text-muted/50 shrink-0">|</span>
+        <span className="hidden sm:inline-flex bg-accent/15 text-accent-light border border-accent/25 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider shrink-0">
           Use AURA20
         </span>
       </div>
 
       {/* Main Header Navigation Bar */}
-      <header className="sticky top-0 z-50 glass-nav px-4 sm:px-6 lg:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-50">
+        <div className="relative glass-nav px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
           {/* Left Brand Logo & Mobile Menu */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-2 hover:bg-secondary rounded-xl text-text-secondary transition-colors cursor-pointer"
+              className="lg:hidden p-1.5 sm:p-2 hover:bg-secondary rounded-xl text-text-secondary transition-colors cursor-pointer"
               title="Menu"
               aria-label="Toggle navigation menu"
             >
-              <Menu size={16} className="sm:w-5 sm:h-5" />
+              <Menu size={18} className="sm:w-5 sm:h-5" />
             </button>
 
-            <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-              <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-text-primary">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
+              <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105 shrink-0" />
+              <span className="hidden sm:inline text-lg sm:text-xl font-bold tracking-tight text-text-primary">
                 Aura<span className="text-accent">Fashion</span>
               </span>
             </Link>
@@ -95,11 +109,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Search Bar & Actions */}
-          <div className="flex items-center gap-2">
-            {/* Search Input Bar */}
-            <div className="relative flex items-center">
-              {isSearchOpen ? (
-                <div className="flex items-center gap-2 bg-elevated border border-border rounded-full px-4 py-2 w-44 sm:w-56 transition-all duration-300 animate-fade-in shadow-sm">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Search: inline input on desktop, full-width bar below header on mobile */}
+            <div className="flex items-center">
+              {isSearchOpen && (
+                <div className="hidden lg:flex items-center gap-2 bg-elevated border border-border rounded-full px-4 py-2 w-44 sm:w-56 transition-all duration-300 animate-fade-in shadow-sm">
                   <Search size={18} className="text-text-muted shrink-0" />
                   <input
                     type="text"
@@ -111,33 +125,38 @@ export const Navbar: React.FC<NavbarProps> = ({
                   />
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsSearchOpen(false);
-                      setSearchQuery('');
-                    }}
+                    onClick={closeSearch}
                     className="text-xs text-text-muted hover:text-text-primary font-semibold cursor-pointer"
                   >
                     &times;
                   </button>
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsSearchOpen(true)}
-                  className="p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-accent transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
-                  title="Search Shop"
-                  aria-label="Search Shop"
-                >
-                  <Search size={15} className="sm:w-4.5 sm:h-4.5" />
-                </button>
               )}
+
+              <button
+                type="button"
+                onClick={toggleSearch}
+                className={`p-2 sm:p-3 rounded-full border transition-all duration-200 cursor-pointer shadow-sm active:scale-95 ${
+                  isSearchOpen
+                    ? 'flex lg:hidden bg-accent text-elevated border-accent hover:bg-accent-hover'
+                    : 'flex bg-elevated hover:bg-secondary border-border text-text-secondary hover:text-accent'
+                }`}
+                title={isSearchOpen ? 'Close search' : 'Search Shop'}
+                aria-label={isSearchOpen ? 'Close search' : 'Search Shop'}
+              >
+                {isSearchOpen ? (
+                  <X size={15} className="sm:w-4.5 sm:h-4.5" />
+                ) : (
+                  <Search size={15} className="sm:w-4.5 sm:h-4.5" />
+                )}
+              </button>
             </div>
 
             {/* Wishlist Button */}
             <button
               type="button"
               onClick={onOpenWishlist}
-              className="relative p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-danger transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
+              className="relative p-2 sm:p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-danger transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
               title="Wishlist"
               aria-label="Wishlist"
             >
@@ -153,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary border border-text-primary hover:border-accent rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 active:scale-95 flex items-center justify-center"
+              className="relative p-2 sm:p-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary border border-text-primary hover:border-accent rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 active:scale-95 flex items-center justify-center"
               title="Shopping Cart"
               aria-label="Shopping Cart"
             >
@@ -215,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={onOpenAuth}
-                className="p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-accent transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
+                className="p-2 sm:p-3 bg-elevated hover:bg-secondary border border-border rounded-full text-text-secondary hover:text-accent transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
                 title="Sign In / Register"
                 aria-label="Sign In"
               >
@@ -223,6 +242,31 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
           </div>
+        </div>
+
+        {/* Mobile: full-width search expands below the header row instead of crowding the icons */}
+        {isSearchOpen && (
+          <div className="lg:hidden absolute inset-x-0 top-full z-30 border-b border-border bg-bg-primary/95 backdrop-blur-md px-4 sm:px-6 py-3 flex items-center gap-2 shadow-lg animate-fade-in">
+            <div className="relative flex-1">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+              <input
+                type="text"
+                placeholder="Search the shop..."
+                className="w-full pl-9 pr-4 py-2.5 bg-elevated border border-border rounded-full text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <button
+              type="button"
+              onClick={closeSearch}
+              className="shrink-0 px-4 py-2.5 bg-text-primary hover:bg-accent text-elevated text-xs font-semibold rounded-full transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
         </div>
       </header>
 

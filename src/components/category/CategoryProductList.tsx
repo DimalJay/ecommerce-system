@@ -34,7 +34,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
 
   if (viewMode === 'grid') {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {products.map((p) => (
           <ProductCard
             key={p.id}
@@ -57,7 +57,7 @@ export const CategoryProductList: React.FC<CategoryProductListProps> = ({
           className="bg-white border border-luxury-gold-light/20 rounded-3xl p-4 flex flex-col sm:flex-row items-center gap-6 transition-all duration-300 hover:shadow-md hover:border-luxury-gold-light/50"
         >
           {/* Image */}
-          <div className="relative w-full sm:w-48 aspect-3/4 rounded-2xl overflow-hidden shrink-0 bg-luxury-sand">
+          <div className="relative w-40 sm:w-48 aspect-3/4 rounded-2xl overflow-hidden shrink-0 bg-luxury-sand">
             <Link to={`/product/${p.id}`} className="block w-full h-full">
               <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
             </Link>

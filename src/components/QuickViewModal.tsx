@@ -40,7 +40,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       />
 
       {/* Modal Container */}
-      <div className="relative bg-luxury-cream border border-luxury-gold-light/40 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl z-10 animate-scale-up grid grid-cols-1 md:grid-cols-2">
+      <div className="relative bg-luxury-cream border border-luxury-gold-light/40 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl z-10 animate-scale-up grid grid-cols-1 md:grid-cols-2 max-h-[85vh] overflow-y-auto md:max-h-none md:overflow-hidden">
         
         {/* Close Button */}
         <button 

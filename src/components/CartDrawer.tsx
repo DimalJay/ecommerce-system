@@ -133,7 +133,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </p>
               </div>
 
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center justify-between gap-2 flex-wrap mt-2">
              <QuantitySelector
               quantity={item.quantity}
               onDecrease={() =>

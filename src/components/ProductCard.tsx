@@ -20,10 +20,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onOpenQuickView
 }) => {
   return (
-    <div className="group bg-elevated border border-border hover:border-accent-light/60 rounded-xl p-4 flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-1 relative overflow-hidden">
+    <div className="group bg-elevated border border-border hover:border-accent-light/60 rounded-xl p-3 sm:p-4 flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-1 relative overflow-hidden">
 
       {/* Product Image Box with Overlay */}
-      <div className="relative bg-secondary h-72 w-full rounded-lg overflow-hidden mb-4">
+      <div className="relative bg-secondary aspect-[4/5] w-full rounded-lg overflow-hidden mb-3 sm:mb-4">
         <Link to={`/product/${product.id}`} className="block h-full w-full">
           <ProductImage
             src={product.image}
@@ -62,11 +62,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </button>
 
         {/* Quick View & Quick Add Hover Slide-up Overlay */}
-        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 ease-out flex gap-2 z-10">
+        <div className="absolute bottom-3 left-3 right-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-3 md:group-hover:translate-y-0 transition-all duration-300 ease-out flex flex-col sm:flex-row gap-1.5 sm:gap-2 z-10">
           <button
             type="button"
             onClick={() => onOpenQuickView(product)}
-            className="flex-1 bg-elevated/95 hover:bg-elevated text-text-primary text-xs font-medium py-3 px-3 rounded-lg backdrop-blur-sm shadow-md border border-border flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
+            className="flex-1 bg-elevated/95 hover:bg-elevated text-text-primary text-xs font-medium py-2.5 sm:py-3 px-3 rounded-lg backdrop-blur-sm shadow-md border border-border flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
           >
             <Eye size={13} />
             Quick View
@@ -75,7 +75,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             type="button"
             onClick={() => onAddToCart(product, 'M', product.colorName)}
-            className="p-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary rounded-lg shadow-md flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-[0.98]"
+            className="p-2.5 sm:p-3 bg-text-primary hover:bg-accent text-elevated hover:text-text-primary rounded-lg shadow-md flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-[0.98]"
             title="Quick Add to Bag"
             aria-label="Quick Add to Bag"
           >
@@ -114,8 +114,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
         </Link>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/60">
-          <div className="flex items-baseline gap-2">
+        <div className="flex items-center justify-between flex-wrap gap-x-2 gap-y-2 mt-auto pt-3 border-t border-border/60">
+          <div className="flex items-baseline gap-2 min-w-0">
             <span className="text-sm font-bold text-accent">
               Rs. {product.price.toFixed(2)}
             </span>

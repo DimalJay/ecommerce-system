@@ -22,8 +22,8 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-footer-bg border-t border-footer-border pt-14 pb-10 px-6 sm:px-8 lg:px-10 mt-16 text-footer-text">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <footer className="bg-footer-bg border-t border-footer-border pt-12 sm:pt-14 pb-10 px-6 sm:px-8 lg:px-10 mt-12 sm:mt-16 text-footer-text">
+      <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
 
         {/* Main Footer Links Columns */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
@@ -99,18 +99,18 @@ export const Footer: React.FC = () => {
                 <span>Subscribed! Check your inbox for your welcome offer.</span>
               </div>
             ) : (
-              <form className="flex items-center bg-footer-bg border border-footer-border rounded-full p-1 focus-within:border-accent transition-colors" onSubmit={handleSubscribe}>
+              <form className="flex flex-col sm:flex-row sm:items-center gap-2 bg-footer-bg border border-footer-border rounded-2xl sm:rounded-full p-1.5 sm:p-1 focus-within:border-accent transition-colors" onSubmit={handleSubscribe}>
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="w-full px-4 py-2 text-sm text-elevated placeholder-footer-text/40 bg-transparent focus:outline-none"
+                  className="w-full sm:w-auto sm:flex-1 px-4 py-2 sm:py-2.5 text-sm text-elevated placeholder-footer-text/40 bg-transparent focus:outline-none"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                   required
                 />
                 <button
                   type="submit"
-                  className="bg-accent hover:bg-accent-hover text-elevated font-semibold px-5 py-2 rounded-full text-sm transition-all cursor-pointer shrink-0"
+                  className="bg-accent hover:bg-accent-hover text-elevated font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer shrink-0"
                 >
                   Join
                 </button>

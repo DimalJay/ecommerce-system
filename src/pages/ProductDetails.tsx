@@ -118,7 +118,7 @@ export const ProductDetails: React.FC = () => {
           <span className="text-luxury-charcoal font-bold">{product.title}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <ProductImageGallery activeImage={activeImage} setActiveImage={setActiveImage} imageThumbnails={imageThumbnails} title={product.title} discount={product.discount} />
 
           <div className="lg:col-span-5 space-y-8">
@@ -136,9 +136,9 @@ export const ProductDetails: React.FC = () => {
           <section className="space-y-6 pt-10 border-t border-luxury-gold-light/20">
             <div className="text-center max-w-xl mx-auto mb-10">
               <span className="text-[10px] font-black text-luxury-gold uppercase tracking-widest block mb-2">Recommendations</span>
-              <h2 className="text-3xl font-black text-luxury-charcoal tracking-tight font-sans">You May Also Like</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-luxury-charcoal tracking-tight font-sans">You May Also Like</h2>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {relatedProducts.map((p) => (
                 <ProductCard key={p.id} product={p} isWishlisted={wishlist.includes(p.id)}
                   onToggleWishlist={toggleWishlist} onAddToCart={handleAddToCart} onOpenQuickView={setActiveQuickViewProduct}

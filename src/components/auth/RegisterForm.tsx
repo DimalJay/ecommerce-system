@@ -29,7 +29,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isSubmitti
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <AuthInput
           label="First Name"
           icon={User}
@@ -57,7 +57,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isSubmitti
         {...register('email')}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <AuthInput
           label="Password"
           icon={Lock}

@@ -51,7 +51,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
       </div>
 
       {/* Price Indicator */}
-      <div className="flex items-baseline gap-3 border-y border-luxury-gold-light/20 py-4">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2 border-y border-luxury-gold-light/20 py-4">
         <span className="text-3xl font-black text-luxury-gold">
           Rs. {product.price.toFixed(2)}
         </span>
@@ -68,7 +68,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
 
         {product.stock !== undefined && (
           <span
-            className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg ml-auto ${
+            className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg sm:ml-auto ${
               product.stock <= 0
                 ? 'bg-rose-50 text-rose-600'
                 : product.stock <= 10
@@ -119,7 +119,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
 
       {/* Quantity Selector & Action Buttons */}
       <div className="space-y-4 pt-2">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <QuantitySelector
             quantity={quantity}
             onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -131,7 +131,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             type="button"
             onClick={onAddToBag}
             disabled={product.stock !== undefined && product.stock <= 0}
-            className="flex-1 py-4 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg shadow-luxury-gold/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-luxury-gold"
+            className="flex-1 min-w-[160px] py-3.5 sm:py-4 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg shadow-luxury-gold/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-luxury-gold"
           >
             <ShoppingBag size={15} />
             {product.stock !== undefined && product.stock <= 0 ? 'Out of Stock' : 'Add to Bag'}
@@ -140,7 +140,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
           <button
             type="button"
             onClick={onToggleWishlist}
-            className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-center ${
+            className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-center shrink-0 ${
               wishlisted
                 ? 'bg-rose-50 border-rose-200 text-rose-500'
                 : 'border-luxury-gold-light/30 hover:border-luxury-gold text-text-muted hover:text-luxury-charcoal bg-white'

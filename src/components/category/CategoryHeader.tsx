@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Filter, Grid, List } from 'lucide-react';
+import { ArrowLeft, Grid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface CategoryHeaderProps {
@@ -38,13 +38,9 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-3 self-start md:self-end">
-          <button className="flex items-center gap-2 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer">
-            <Filter size={12} />
-            Filter
-          </button>
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="flex items-center gap-2 px-4 py-2 border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 min-h-[44px] border border-luxury-gold-light/30 hover:border-luxury-gold rounded-full text-xs font-bold uppercase tracking-wider bg-white transition-all cursor-pointer"
           >
             {viewMode === 'grid' ? <List size={12} /> : <Grid size={12} />}
             <span>{viewMode === 'grid' ? 'List View' : 'Grid View'}</span>

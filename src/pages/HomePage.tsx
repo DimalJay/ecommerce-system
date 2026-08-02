@@ -29,7 +29,7 @@ export const HomePage: React.FC = () => {
     <AppLayout>
       {toastMessage && <Toast message={toastMessage} />}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1 space-y-20">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1 space-y-14 sm:space-y-20">
 
         {/* Hero */}
         <HeroSection />
@@ -42,7 +42,7 @@ export const HomePage: React.FC = () => {
               <h2 className="text-xl sm:text-2xl font-bold text-text-primary mt-1">Shop by Category</h2>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {categories.map((cat) => (
               <CategoryCard
                 key={cat.id}
@@ -70,7 +70,7 @@ export const HomePage: React.FC = () => {
               View All <ArrowRight size={14} />
             </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {newArrivals.map((product) => (
               <ProductCard
                 key={product.id}
@@ -134,7 +134,7 @@ export const HomePage: React.FC = () => {
               Subscribe for early access to new arrivals, exclusive offers, and 15% off your first order.
             </p>
             <form
-              className="flex gap-2 max-w-sm mx-auto pt-2"
+              className="flex flex-col sm:flex-row gap-2 max-w-sm mx-auto pt-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 triggerToast('Welcome! Check your inbox for your welcome offer.');

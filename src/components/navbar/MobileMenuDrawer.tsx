@@ -56,13 +56,13 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-col gap-2.5 text-[10px] font-black uppercase tracking-widest text-slate-600">
+          <nav className="flex flex-col gap-1 text-xs font-black uppercase tracking-widest text-slate-600">
             {navItems.map((item, idx) => (
               <Link
                 key={idx}
                 to={item.path}
                 onClick={onClose}
-                className="hover:text-luxury-gold transition-colors py-1.5 border-b border-slate-100/60"
+                className="hover:text-luxury-gold transition-colors py-3 border-b border-slate-100/60"
               >
                 {item.label}
               </Link>
@@ -83,7 +83,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <Link
                 to="/order-history"
                 onClick={onClose}
-                className="block w-full text-center py-2.5 bg-luxury-sand/40 hover:bg-luxury-sand text-slate-700 rounded-lg text-[9px] font-bold uppercase tracking-wider"
+                className="block w-full text-center py-3 bg-luxury-sand/40 hover:bg-luxury-sand text-slate-700 rounded-lg text-[11px] font-bold uppercase tracking-wider"
               >
                 Order History
               </Link>
@@ -93,7 +93,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   onClose();
                   logout();
                 }}
-                className="block w-full text-center py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-[9px] font-bold uppercase tracking-wider cursor-pointer"
+                className="block w-full text-center py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-[11px] font-bold uppercase tracking-wider cursor-pointer"
               >
                 Sign Out
               </button>
@@ -105,7 +105,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 onClose();
                 onOpenAuth();
               }}
-              className="block w-full text-center py-2.5 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer"
+              className="block w-full text-center py-3 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all cursor-pointer"
             >
               Sign In / Register
             </button>

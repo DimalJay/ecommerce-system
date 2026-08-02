@@ -40,13 +40,13 @@ export const AdminOrderTable: React.FC<AdminOrderTableProps> = ({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-luxury-sand/50 text-text-primary text-xs font-black uppercase tracking-wider border-b border-luxury-gold-light/30">
-              <th className="px-6 py-4">Order</th>
-              <th className="px-6 py-4">Customer</th>
-              <th className="px-6 py-4">Date Placed</th>
-              <th className="px-6 py-4">Items</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Total</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-3 sm:px-5 py-4">Order</th>
+              <th className="px-3 sm:px-5 py-4">Customer</th>
+              <th className="px-3 sm:px-5 py-4">Date Placed</th>
+              <th className="px-3 sm:px-5 py-4">Items</th>
+              <th className="px-3 sm:px-5 py-4">Status</th>
+              <th className="px-3 sm:px-5 py-4 text-right">Total</th>
+              <th className="px-3 sm:px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-luxury-gold-light/20">
@@ -59,7 +59,7 @@ export const AdminOrderTable: React.FC<AdminOrderTableProps> = ({
                   onClick={() => onPreview(order)}
                   className="hover:bg-luxury-cream/50 transition-colors duration-150 cursor-pointer group"
                 >
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <div className="flex items-center gap-3">
                       <span className="w-9 h-9 shrink-0 rounded-xl bg-luxury-sand/60 text-luxury-gold flex items-center justify-center">
                         <ShoppingBag size={16} />
@@ -72,18 +72,18 @@ export const AdminOrderTable: React.FC<AdminOrderTableProps> = ({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <span className="text-xs font-bold text-text-primary">{formatCustomerName(order.shippingInfo)}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <span className="text-xs font-medium text-text-secondary">{order.date}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <span className="text-xs font-bold text-text-secondary">
                       {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <select
                       value={order.status}
                       onClick={(e) => e.stopPropagation()}
@@ -99,12 +99,12 @@ export const AdminOrderTable: React.FC<AdminOrderTableProps> = ({
                       ))}
                     </select>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-3 sm:px-5 py-4 text-right">
                     <span className="font-extrabold text-luxury-charcoal text-xs sm:text-sm">
                       Rs. {order.total.toFixed(2)}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-5 py-4">
                     <div className="flex items-center justify-end">
                       <button
                         type="button"

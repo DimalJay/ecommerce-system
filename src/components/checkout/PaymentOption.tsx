@@ -26,7 +26,7 @@ export const PaymentOption: React.FC<PaymentOptionProps> = ({
     }`}
     onClick={onSelect}
   >
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-3 flex-wrap">
       <div className="flex items-center gap-3">
         <span
           className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${

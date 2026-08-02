@@ -16,14 +16,14 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
   discount
 }) => {
   return (
-    <div className="lg:col-span-7 grid grid-cols-12 gap-4">
-      {/* Thumbnails Sidebar */}
-      <div className="col-span-2 space-y-3">
+    <div className="lg:col-span-7 flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-4">
+      {/* Mobile: horizontal thumbnail rail below the main image. Tablet/desktop: left sidebar. */}
+      <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 lg:col-span-2 shrink-0">
         {imageThumbnails.map((thumb, idx) => (
           <button
             key={idx}
             onClick={() => setActiveImage(thumb)}
-            className={`w-full aspect-3/4 rounded-xl overflow-hidden bg-luxury-sand border transition-all cursor-pointer ${
+            className={`w-16 sm:w-20 shrink-0 lg:w-full aspect-[3/4] rounded-xl overflow-hidden bg-luxury-sand border transition-all cursor-pointer ${
               activeImage === thumb 
                 ? 'border-luxury-gold ring-1 ring-luxury-gold/20 shadow-sm' 
                 : 'border-luxury-gold-light/20 hover:border-luxury-gold-light/60'
@@ -35,7 +35,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
       </div>
 
       {/* Main Image View */}
-      <div className="col-span-10 relative bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden aspect-3/4 shadow-sm group">
+      <div className="order-1 lg:order-2 lg:col-span-10 relative bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden aspect-[3/4] shadow-sm group">
         <img
           src={activeImage}
           alt={title}

@@ -171,7 +171,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
                 <Building2 size={16} className="text-luxury-gold" />
                 <span>Bank Account Details</span>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-slate-400 font-medium block">Bank Name</span>
                   <span className="font-bold text-slate-700">Commercial Bank PLC</span>

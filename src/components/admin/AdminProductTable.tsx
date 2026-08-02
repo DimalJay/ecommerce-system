@@ -63,12 +63,12 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-luxury-sand/50 text-text-primary text-xs font-black uppercase tracking-wider border-b border-luxury-gold-light/30">
-              <th className="px-6 py-4">Product</th>
-              <th className="px-6 py-4">Category</th>
-              <th className="px-6 py-4">Price</th>
-              <th className="px-6 py-4">Stock</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-3 sm:px-5 py-4">Product</th>
+              <th className="px-3 sm:px-5 py-4">Category</th>
+              <th className="px-3 sm:px-5 py-4">Price</th>
+              <th className="px-3 sm:px-5 py-4">Stock</th>
+              <th className="px-3 sm:px-5 py-4">Status</th>
+              <th className="px-3 sm:px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-luxury-gold-light/20">
@@ -78,7 +78,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                 onClick={() => onPreview(item)}
                 className="hover:bg-luxury-cream/50 transition-colors duration-150 group cursor-pointer"
               >
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <div className="flex items-center gap-4">
                     <img
                       src={item.image}
@@ -91,16 +91,16 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">{item.category}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <span className="font-extrabold text-luxury-charcoal text-xs sm:text-sm">Rs. {item.price.toFixed(2)}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <span className="text-xs font-medium text-text-secondary">{item.stock} units</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.status === 'In Stock'
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
                     : item.status === 'Low Stock'
@@ -110,7 +110,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                     {item.status}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-5 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
@@ -138,7 +138,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
         </table>
       </div>
 
-      <div className="px-6 py-4 bg-white border-t border-luxury-gold-light/20 flex items-center justify-between">
+      <div className="px-3 sm:px-5 py-4 bg-white border-t border-luxury-gold-light/20 flex items-center justify-between">
         <p className="text-xs text-text-secondary font-medium">
           Showing <span className="font-bold text-luxury-charcoal">{filteredItems.length > 0 ? 1 : 0}</span> to <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> of <span className="font-bold text-luxury-charcoal">{filteredItems.length}</span> items
         </p>

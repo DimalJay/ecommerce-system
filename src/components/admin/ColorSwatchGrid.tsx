@@ -7,7 +7,7 @@ interface ColorSwatchGridProps {
 }
 
 export const ColorSwatchGrid: React.FC<ColorSwatchGridProps> = ({ value, onToggle }) => (
-  <div className="grid grid-cols-4 gap-2.5">
+  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
     {PREDEFINED_COLORS.map(({ name, hex }) => {
       const isSelected = value.includes(name);
       return (
