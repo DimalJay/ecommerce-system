@@ -272,12 +272,12 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               <label className={formLabelClass}>Category</label>
               <select {...register('category')} className={formInputClass}>
                 <option value="">Select Category</option>
-                <option value="Apparel">Apparel</option>
-                <option value="Women">Women</option>
-                <option value="Men">Men</option>
-                <option value="Kids">Kids</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Unisex">Unisex</option>
+                <option value="apparel">Apparel</option>
+                <option value="women">Women</option>
+                <option value="men">Men</option>
+                <option value="kids">Kids</option>
+                <option value="accessories">Accessories</option>
+                <option value="unisex">Unisex</option>
               </select>
             </div>
 
