@@ -29,7 +29,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     isSizeGuideOpen,
     setIsSizeGuideOpen,
     addToCart,
-    addToCartWithQuantity
+    addToCartWithQuantity,
+    user
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -45,14 +46,24 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleRequestLogin = () => {
+      setIsAuthOpen(true);
+    };
+    window.addEventListener('auth:request-login', handleRequestLogin);
+    return () => {
+      window.removeEventListener('auth:request-login', handleRequestLogin);
+    };
+  }, []);
+
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);
-    setIsCartOpen(true);
+    if (user) setIsCartOpen(true);
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
     addToCartWithQuantity(product, size, color, qty);
-    setIsCartOpen(true);
+    if (user) setIsCartOpen(true);
   };
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);

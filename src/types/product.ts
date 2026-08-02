@@ -25,6 +25,8 @@ export interface CartItem {
   quantity: number;
   selectedSize: string;
   selectedColor: string;
+  /** Backend cart item ID, required to remove the item from the server cart. */
+  cartItemId?: string;
 }
 
 export interface Category {

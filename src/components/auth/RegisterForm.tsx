@@ -1,10 +1,11 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User, Mail, Lock } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../../lib/validations/auth';
 import { AuthInput } from './AuthInput';
 import { AuthSubmitButton } from './AuthSubmitButton';
+import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 
 export interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => void;
@@ -13,13 +14,18 @@ export interface RegisterFormProps {
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isSubmitting, submitLabel }) => {
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  const password = useWatch({ control, name: 'password' }) ?? '';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
@@ -59,6 +65,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isSubmitti
           placeholder="Create a password"
           error={errors.password?.message}
           {...register('password')}
+          onFocus={() => setPasswordFocused(true)}
+          onBlur={() => setPasswordFocused(false)}
         />
         <AuthInput
           label="Confirm Password"
@@ -69,6 +77,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isSubmitti
           {...register('confirm_password')}
         />
       </div>
+
+      <PasswordStrengthMeter password={password} active={passwordFocused} />
 
       <AuthSubmitButton isSubmitting={isSubmitting} label={submitLabel} />
     </form>
