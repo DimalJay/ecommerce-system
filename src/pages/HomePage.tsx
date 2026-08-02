@@ -8,31 +8,22 @@ import {
   ProductCard,
   CategoryCard
 } from '../components';
-import type { Product, Category } from '../types';
-import { PRODUCTS } from '../data';
+import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
-
-const CATEGORIES: Category[] = [
-  { id: 'women', name: 'Women', subtitle: 'Elegant essentials', count: '24 Items', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80' },
-  { id: 'men', name: 'Men', subtitle: 'Modern classics', count: '18 Items', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80' },
-  { id: 'kids', name: 'Kids', subtitle: 'Playful & durable', count: '12 Items', image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80' },
-  { id: 'accessories', name: 'Accessories', subtitle: 'Finish the look', count: '9 Items', image: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80' }
-];
+import { useHomeData } from '../hooks/useHomeData';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, wishlist, toggleWishlist, setActiveQuickViewProduct } = useCart();
   const { toastMessage, triggerToast } = useToast();
+  const { categories, womenProducts, newArrivals } = useHomeData();
 
   const handleAddToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     addToCart(product, size, color);
     triggerToast(`Added ${product.title} to your bag`);
   };
-
-  const womenProducts = PRODUCTS.slice(0, 3);
-  const newArrivals = PRODUCTS.filter((p) => p.isNew);
 
   return (
     <AppLayout>
@@ -52,7 +43,7 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <CategoryCard
                 key={cat.id}
                 category={cat}
@@ -142,7 +133,13 @@ export const HomePage: React.FC = () => {
             <p className="text-sm text-white/60">
               Subscribe for early access to new arrivals, exclusive offers, and 15% off your first order.
             </p>
-            <form className="flex gap-2 max-w-sm mx-auto pt-2" onSubmit={(e) => { e.preventDefault(); triggerToast('Welcome! Check your inbox for your welcome offer.'); }}>
+            <form
+              className="flex gap-2 max-w-sm mx-auto pt-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                triggerToast('Welcome! Check your inbox for your welcome offer.');
+              }}
+            >
               <input
                 type="email"
                 placeholder="Enter your email"

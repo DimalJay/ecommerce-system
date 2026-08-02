@@ -1,6 +1,12 @@
 import { request } from '../lib/request';
 import type { Response } from '../types/response';
 
+export interface ProductRatings {
+  average_rating: number;
+  total_reviews: number;
+  rating_counts?: Record<string, number>;
+}
+
 export interface ProductDetailData {
   id: string;
   sku: string;
@@ -12,6 +18,7 @@ export interface ProductDetailData {
   stock_quantity: string;
   category?: string;
   images: string[];
+  ratings?: ProductRatings;
   created_at?: string;
   updated_at?: string | null;
 }
