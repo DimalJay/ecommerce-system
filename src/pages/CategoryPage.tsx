@@ -7,9 +7,7 @@ import { useCart } from '../context/CartContext';
 import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
-import { getProductsByCategoryApi } from '../api/productApi';
-import { getAssetUrl } from '../lib/request';
-import { parseColorNames, parseSizes, colorNameToHex } from '../lib/colorUtils';
+import { useCategoryProducts } from '../hooks/useCategoryProducts';
 
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -17,37 +15,12 @@ export const CategoryPage: React.FC = () => {
   const { addToCart, wishlist, toggleWishlist, setActiveQuickViewProduct } = useCart();
   const { toastMessage, triggerToast } = useToast();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [apiProducts, setApiProducts] = useState<Product[]>([]);
+
+  const { data: products = [] } = useCategoryProducts(categoryName);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    if (categoryName) {
-      getProductsByCategoryApi(categoryName)
-        .then((response) => {
-          if (response.success && response.data) {
-            const mappedProducts: Product[] = response.data.map(apiProduct => ({
-              id: Number(apiProduct.id) || Math.floor(Math.random() * 10000) + 1000,
-              title: apiProduct.title,
-              category: apiProduct.category || categoryName,
-              colorName: parseColorNames(apiProduct.color)[0] ?? 'Default',
-              price: Number(apiProduct.price),
-              rating: apiProduct.ratings?.average_rating ?? 0,
-              reviewsCount: apiProduct.ratings?.total_reviews ?? 0,
-              image: getAssetUrl(apiProduct.images?.[0] || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80'),
-              swatches: parseColorNames(apiProduct.color).map(colorNameToHex),
-              availableSizes: parseSizes(apiProduct.size),
-            }));
-            setApiProducts(mappedProducts);
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to fetch products:", err);
-        });
-    }
   }, [categoryName]);
-
-  const filteredProducts = apiProducts;
 
   const getCategoryMeta = () => {
     const name = categoryName || '';
@@ -56,6 +29,7 @@ export const CategoryPage: React.FC = () => {
       women: { title: "Women's Collection", desc: "Discover our women's collection — thoughtfully designed for everyday elegance." },
       men: { title: "Men's Collection", desc: "Explore our men's collection — refined essentials for the modern wardrobe." },
       kids: { title: "Kids' Collection", desc: "Shop our kids' collection — comfortable, durable, and built for play." },
+      'new-arrivals': { title: 'New Arrivals', desc: 'The latest additions to our collection, curated for this season.' },
     };
     return metaMap[normalized] ?? {
       title: `${name.charAt(0).toUpperCase() + name.slice(1)} Collection`,
@@ -83,7 +57,7 @@ export const CategoryPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1 space-y-12">
         <CategoryHeader title={meta.title} desc={meta.desc} viewMode={viewMode} setViewMode={setViewMode} />
-        <CategoryProductList products={filteredProducts} viewMode={viewMode} wishlist={wishlist}
+        <CategoryProductList products={products} viewMode={viewMode} wishlist={wishlist}
           toggleWishlist={toggleWishlist} handleAddToCart={handleAddToCart} setActiveQuickViewProduct={setActiveQuickViewProduct}
         />
         <OtherCategoriesGrid categories={otherCategories} onNavigate={(key) => navigate(`/category/${key}`)} />

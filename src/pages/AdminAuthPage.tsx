@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowLeft, Mail, Lock, ShieldCheck } from 'lucide-react';
 import { Toast } from '../components/ui';
 import { PasswordInput } from '../components/auth/PasswordInput';
 import { useToast } from '../hooks/useToast';
 import { useCart } from '../context/CartContext';
 import { useAdminLoginMutation } from '../hooks/useAdminAuth';
+import { adminLoginSchema, type AdminLoginFormData } from '../lib/validations/auth';
+
+const inputClass =
+  'w-full pl-11 pr-4 py-3 bg-bg-secondary border border-border rounded-xl text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all';
 
 export const AdminAuthPage: React.FC = () => {
   const { login } = useCart();
@@ -14,21 +20,18 @@ export const AdminAuthPage: React.FC = () => {
 
   const adminLoginMutation = useAdminLoginMutation();
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AdminLoginFormData>({
+    resolver: zodResolver(adminLoginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-
-    if (!email || !password) {
-      setErrorMessage('Please enter both administrative email and password.');
-      return;
-    }
-
+  const onSubmit = handleSubmit((data) => {
     adminLoginMutation.mutate(
-      { email: email.trim(), password },
+      { email: data.email, password: data.password },
       {
         onSuccess: (res) => {
           const adminData = res.data.admin;
@@ -37,11 +40,11 @@ export const AdminAuthPage: React.FC = () => {
           setTimeout(() => navigate('/admin'), 1000);
         },
         onError: (err) => {
-          setErrorMessage(err.message || 'Invalid administrative credentials.');
+          triggerToast(err.message || 'Invalid administrative credentials.');
         },
-      }
+      },
     );
-  };
+  });
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
@@ -58,14 +61,7 @@ export const AdminAuthPage: React.FC = () => {
               <p className="text-sm text-text-muted">Sign in to access the administrative dashboard</p>
             </div>
 
-            {errorMessage && (
-              <div className="bg-danger-bg border border-danger/20 text-danger rounded-xl p-4 text-sm font-medium flex items-start gap-3 text-left">
-                <ShieldAlert size={16} className="text-danger shrink-0 mt-0.5" />
-                <span>{errorMessage}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5 text-left">
+            <form onSubmit={onSubmit} className="space-y-5 text-left">
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
                   Admin Email Address
@@ -74,13 +70,14 @@ export const AdminAuthPage: React.FC = () => {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@example.com"
-                    required
-                    className="w-full pl-11 pr-4 py-3 bg-bg-secondary border border-border rounded-xl text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    {...register('email')}
+                    className={inputClass}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-danger font-medium">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -90,13 +87,14 @@ export const AdminAuthPage: React.FC = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
                   <PasswordInput
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    required
-                    className="w-full pl-11 pr-12 py-3 bg-bg-secondary border border-border rounded-xl text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    {...register('password')}
+                    className={`${inputClass} pr-12`}
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-danger font-medium">{errors.password.message}</p>
+                )}
               </div>
 
               <button

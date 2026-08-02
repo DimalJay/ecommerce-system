@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { request } from '../lib/request';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
@@ -14,6 +13,9 @@ import {
 import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/checkout';
 import type { Order, CartItem } from '../types';
 import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
+import { createOrder, type CreateOrderPayload } from '../api/orderApi';
+import { toOrderFromApi } from '../lib/orderMapper';
+import { getCheckoutSchema } from '../lib/validations/checkout';
 
 export const CheckoutPage: React.FC = () => {
   const location = useLocation();
@@ -90,64 +92,23 @@ export const CheckoutPage: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!form.fullName.trim() && !accountFullName) newErrors.fullName = 'Full Name is required';
-    if (!form.email.trim() && !accountEmail) {
-      newErrors.email = 'Email address is required';
-    } else if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      newErrors.email = 'Please enter a valid email address';
+    const values = {
+      ...form,
+      fullName: form.fullName.trim() || accountFullName,
+      email: form.email.trim() || accountEmail,
+    };
+    const result = getCheckoutSchema(paymentMethod === 'card').safeParse(values);
+    if (result.success) {
+      setErrors({});
+      return true;
     }
-
-    if (!form.phone.trim()) newErrors.phone = 'Phone number is required';
-    if (!form.address.trim()) newErrors.address = 'Street address is required';
-    if (!form.city.trim()) newErrors.city = 'City is required';
-    if (!form.state) newErrors.state = 'Please select a state or province';
-    if (!form.postalCode.trim()) newErrors.postalCode = 'Postal code is required';
-    if (!form.country) newErrors.country = 'Country is required';
-
-    if (paymentMethod === 'card') {
-      const cleanCardNumber = form.cardNumber.replace(/\s+/g, '');
-      if (!cleanCardNumber) {
-        newErrors.cardNumber = 'Card number is required';
-      } else if (!/^\d{16}$/.test(cleanCardNumber)) {
-        newErrors.cardNumber = 'Card number must be 16 digits';
-      }
-
-      if (!form.cardholderName.trim()) {
-        newErrors.cardholderName = 'Cardholder name is required';
-      }
-
-      const cleanExpiry = form.expiry.trim();
-      if (!cleanExpiry) {
-        newErrors.expiry = 'Expiry date required';
-      } else {
-        const expiryMatch = cleanExpiry.match(/^(0[1-9]|1[0-2])\s*\/\s*([0-9]{2})$/);
-        if (!expiryMatch) {
-          newErrors.expiry = 'Use MM/YY format';
-        } else {
-          const expiryMonth = parseInt(expiryMatch[1], 10);
-          const expiryYear = parseInt(`20${expiryMatch[2]}`, 10);
-          const currentDate = new Date();
-          const currentMonth = currentDate.getMonth() + 1;
-          const currentYear = currentDate.getFullYear();
-
-          if (expiryYear < currentYear || (expiryYear === currentYear && expiryMonth < currentMonth)) {
-            newErrors.expiry = 'Card is expired';
-          }
-        }
-      }
-
-      const cleanCVV = form.cvv.trim();
-      if (!cleanCVV) {
-        newErrors.cvv = 'CVV required';
-      } else if (!/^\d{3,4}$/.test(cleanCVV)) {
-        newErrors.cvv = 'Must be 3 or 4 digits';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const fieldErrors = result.error.flatten().fieldErrors;
+    setErrors(
+      Object.fromEntries(
+        Object.entries(fieldErrors).map(([field, messages]) => [field, messages?.[0] ?? '']),
+      ),
+    );
+    return false;
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -165,9 +126,7 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
-    const { cardNumber, cardholderName, expiry, cvv, ...shippingInfo } = form;
-
-    const payload = {
+    const payload: CreateOrderPayload = {
       full_name: form.fullName.trim() || accountFullName,
       email: form.email.trim() || accountEmail,
       phone: form.phone,
@@ -178,7 +137,7 @@ export const CheckoutPage: React.FC = () => {
       postal_code: form.postalCode,
       country: form.country,
       payment_method: paymentMethod,
-      total: total,
+      total,
       notes: form.notes || null,
       items: checkoutItems.map((item) => ({
         product_id: item.product.id,
@@ -186,43 +145,13 @@ export const CheckoutPage: React.FC = () => {
         price: item.product.price,
         selected_size: item.selectedSize || null,
         selected_color: item.selectedColor || null,
-      }))
+      })),
     };
 
     setIsSubmitting(true);
-    // Make request to backend api at /orders
-    request('/orders', {
-      method: 'POST',
-      data: payload
-    })
-      .then((res: any) => {
-        const apiOrder = res.data;
-        const newOrder = {
-          id: apiOrder.order_code,
-          date: new Date(apiOrder.created_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
-          items: checkoutItems.map((item) => ({
-            product: item.product,
-            quantity: item.quantity,
-            selectedSize: item.selectedSize,
-            selectedColor: item.selectedColor,
-          })),
-          shippingInfo,
-          paymentMethod,
-          total,
-          status: apiOrder.status,
-        };
-
-        try {
-          const existingOrdersRaw = localStorage.getItem('orders');
-          const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : [];
-          localStorage.setItem('orders', JSON.stringify([newOrder, ...existingOrders]));
-        } catch (err) {
-          console.error('Failed to save order to localStorage:', err);
-        }
+    createOrder(payload)
+      .then((res) => {
+        const newOrder = toOrderFromApi(res.data);
 
         // Set completed order to trigger modal
         setCompletedOrder(newOrder);

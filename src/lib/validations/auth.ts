@@ -20,3 +20,10 @@ export const registerSchema = z
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
+
+export const adminLoginSchema = z.object({
+  email: z.string().trim().min(1, 'Admin email is required').email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export type AdminLoginFormData = z.infer<typeof adminLoginSchema>;

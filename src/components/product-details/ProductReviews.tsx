@@ -1,5 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ShieldCheck, Star, Send, Loader2 } from 'lucide-react';
 import type { Product } from '../../types';
 import { useProductReviews, useAddReview } from '../../hooks/useProductReviews';
@@ -7,6 +9,7 @@ import { useAuthContext } from '../../context/AuthContext';
 import { useToast } from '../../hooks/useToast';
 import { Toast, StarRating } from '../ui';
 import { HTTPError } from '../../lib/request';
+import { reviewSchema, type ReviewFormValues } from '../../lib/validations/review';
 
 interface ProductReviewsProps {
   product: Product;
@@ -26,29 +29,30 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
   const { data, isLoading, isError } = useProductReviews(product.id);
   const addReviewMutation = useAddReview(product.id);
 
-  const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
-  const [comment, setComment] = useState<string>('');
 
-  const reviews = data?.data?.reviews ?? [];
-  const averageRating = data?.data?.average_rating ?? 0;
-  const totalReviews = data?.data?.total_reviews ?? 0;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<ReviewFormValues>({
+    resolver: zodResolver(reviewSchema),
+    defaultValues: { rating: 0, comment: '' },
+  });
 
+  const rating = useWatch({ control, name: 'rating' });
   const isSubmitting = addReviewMutation.isPending;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (rating < 1 || rating > 5) {
-      triggerToast('Please select a rating between 1 and 5 stars.');
-      return;
-    }
+  const onSubmit = handleSubmit((values) => {
     addReviewMutation.mutate(
-      { rating, comment: comment.trim() || undefined },
+      { rating: values.rating, comment: values.comment.trim() || undefined },
       {
         onSuccess: () => {
           triggerToast('Review added successfully. Thank you!');
-          setRating(0);
-          setComment('');
+          reset();
         },
         onError: (err: unknown) => {
           const message = err instanceof HTTPError ? err.message : 'Failed to add review. Please try again.';
@@ -56,7 +60,11 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
         },
       },
     );
-  };
+  });
+
+  const reviews = data?.data?.reviews ?? [];
+  const averageRating = data?.data?.average_rating ?? 0;
+  const totalReviews = data?.data?.total_reviews ?? 0;
 
   return (
     <section className="space-y-8 pt-10 border-t border-luxury-gold-light/20">
@@ -131,7 +139,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
           ))}
 
           {/* Write a Review */}
-          <form onSubmit={handleSubmit} className="bg-white border border-luxury-gold-light/20 p-6 rounded-3xl space-y-4 text-left">
+          <form onSubmit={onSubmit} className="bg-white border border-luxury-gold-light/20 p-6 rounded-3xl space-y-4 text-left">
             <h3 className="text-sm font-bold text-luxury-charcoal">Write a Review</h3>
 
             {!user ? (
@@ -152,7 +160,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
                         className="p-0.5 transition-transform hover:scale-110"
                         onMouseEnter={() => setHoverRating(value)}
                         onMouseLeave={() => setHoverRating(0)}
-                        onClick={() => setRating(value)}
+                        onClick={() => setValue('rating', value, { shouldValidate: true })}
                       >
                         <Star
                           size={22}
@@ -166,15 +174,20 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
                     {rating > 0 ? `${rating} / 5` : 'Select a rating'}
                   </span>
                 </div>
+                {errors.rating && (
+                  <p className="text-xs text-rose-500 font-medium">{errors.rating.message}</p>
+                )}
 
                 <textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
+                  {...register('comment')}
                   placeholder="Share your experience with this product (optional)"
                   rows={3}
                   maxLength={1000}
                   className="w-full text-sm px-4 py-3 rounded-xl border border-luxury-gold-light/40 bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 resize-none"
                 />
+                {errors.comment && (
+                  <p className="text-xs text-rose-500 font-medium">{errors.comment.message}</p>
+                )}
 
                 <button
                   type="submit"

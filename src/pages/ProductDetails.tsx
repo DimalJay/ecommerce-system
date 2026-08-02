@@ -4,29 +4,14 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { AppLayout, ProductCard } from '../components';
 import { ProductImageGallery, ProductInfoSection, ProductSpecsAccordion, ProductReviews } from '../components/product-details';
 import { useCart } from '../context/CartContext';
-import { PRODUCTS } from '../data';
 import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
 import { useProductDetail } from '../hooks/useProductDetail';
+import { getProductsByCategoryApi } from '../api/productApi';
+import { toProductFromApi } from '../lib/productMapper';
 import { getAssetUrl } from '../lib/request';
-import { parseColorNames, parseSizes, colorNameToHex } from '../lib/colorUtils';
-import type { ProductDetailData } from '../api/productApi';
-
-const toProduct = (data: ProductDetailData): Product => ({
-  id: Number(data.id),
-  title: data.title,
-  category: data.category ?? '',
-  colorName: parseColorNames(data.color)[0] ?? '',
-  description: data.description,
-  price: Number(data.price),
-  rating: data.ratings?.average_rating ?? 0,
-  reviewsCount: data.ratings?.total_reviews ?? 0,
-  stock: Number(data.stock_quantity) || 0,
-  image: getAssetUrl(data.images?.[0] ?? ''),
-  swatches: parseColorNames(data.color).map(colorNameToHex),
-  availableSizes: parseSizes(data.size),
-});
+import { useQuery } from '@tanstack/react-query';
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,7 +19,18 @@ export const ProductDetails: React.FC = () => {
   const { addToCart, addToCartWithQuantity, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
 
   const { data, isLoading, isError } = useProductDetail(id);
-  const product = data ? toProduct(data.data) : undefined;
+  const product = data ? toProductFromApi(data.data) : undefined;
+
+  const { data: relatedData } = useQuery({
+    queryKey: ['related-products', product?.category],
+    queryFn: () => getProductsByCategoryApi(product?.category as string),
+    enabled: Boolean(product?.category),
+    retry: false,
+  });
+  const relatedProducts = (relatedData?.data ?? [])
+    .filter((p) => Number(p.id) !== product?.id)
+    .slice(0, 3)
+    .map((p) => toProductFromApi(p));
 
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -108,8 +104,6 @@ export const ProductDetails: React.FC = () => {
     triggerToast(`Added ${p.title} to your bag`);
     setIsCartOpen(true);
   };
-
-  const relatedProducts = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   return (
     <AppLayout>

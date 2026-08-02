@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, UploadCloud, X } from 'lucide-react';
 import { ModalShell, Toast } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
@@ -12,6 +14,7 @@ import {
 import { useAddProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
 import { validateImageFile } from '../../lib/imageUtils';
+import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 
 export interface AddProductModalProps {
   isOpen: boolean;
@@ -28,6 +31,17 @@ export interface AddProductModalProps {
   }) => void;
 }
 
+const DEFAULT_VALUES: ProductFormValues = {
+  sku: '',
+  title: '',
+  category: '',
+  price: 0,
+  stock: 0,
+  color: [],
+  size: [],
+  description: '',
+};
+
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toastMessage, triggerToast } = useToast();
@@ -35,42 +49,45 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Form states
-  const [sku, setSku] = useState('');
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [stockQuantity, setStockQuantity] = useState('');
-  const [color, setColor] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [description, setDescription] = useState('');
-
-  // Drag & drop & file upload states
+  // Drag & drop & file upload state
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    trigger,
+    reset,
+    formState: { errors },
+  } = useForm<ProductFormInput, unknown, ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
+    defaultValues: DEFAULT_VALUES,
+  });
+
+  const color = useWatch({ control, name: 'color' }) ?? [];
+  const size = useWatch({ control, name: 'size' }) ?? [];
+
   if (!isOpen) return null;
 
-  const resetForm = () => {
+  const handleCloseModal = () => {
+    reset(DEFAULT_VALUES);
     setCurrentStep(1);
-    setSku('');
-    setTitle('');
-    setCategory('');
-    setPrice('');
-    setStockQuantity('');
-    setColor([]);
-    setSelectedSizes([]);
-    setDescription('');
     setSelectedFiles([]);
     setFilePreviews([]);
     setValidationError(null);
+    onClose();
   };
 
-  const handleCloseModal = () => {
-    resetForm();
-    onClose();
+  const handleToggleColor = (name: string) => {
+    setValue('color', color.includes(name) ? color.filter((c) => c !== name) : [...color, name]);
+  };
+
+  const handleToggleSize = (item: string) => {
+    setValue('size', size.includes(item) ? size.filter((s) => s !== item) : [...size, item]);
   };
 
   const processFiles = (filesList: FileList | File[]) => {
@@ -123,15 +140,16 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
   };
 
   const handleRemoveFile = (index: number) => {
+    URL.revokeObjectURL(filePreviews[index]);
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
     setFilePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setValidationError(null);
-    if (currentStep === 1 && (!sku.trim() || !title.trim())) {
-      setValidationError('SKU and Title are required fields.');
-      return;
+    if (currentStep === 1) {
+      const valid = await trigger(['sku', 'title']);
+      if (!valid) return;
     }
     setCurrentStep((step) => Math.min(step + 1, PRODUCT_FORM_STEPS.length));
   };
@@ -141,25 +159,25 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     setCurrentStep((step) => Math.max(step - 1, 1));
   };
 
-  const handleSubmit = () => {
+  const handleSave = handleSubmit((values) => {
     setValidationError(null);
 
-    if (!sku.trim() || !title.trim()) {
-      setCurrentStep(1);
-      setValidationError('SKU and Title are required fields.');
+    if (selectedFiles.length === 0) {
+      setCurrentStep(3);
+      setValidationError('Add at least one product image.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('sku', sku.trim());
-    formData.append('title', title.trim());
+    formData.append('sku', values.sku.trim());
+    formData.append('title', values.title.trim());
 
-    if (description.trim()) formData.append('description', description.trim());
-    if (color.length > 0) formData.append('color', color.join(','));
-    if (selectedSizes.length > 0) formData.append('size', selectedSizes.join(','));
-    if (price) formData.append('price', price);
-    if (stockQuantity) formData.append('stock_quantity', stockQuantity);
-    if (category.trim()) formData.append('category', category.trim());
+    if (values.description.trim()) formData.append('description', values.description.trim());
+    if (values.color.length > 0) formData.append('color', values.color.join(','));
+    if (values.size.length > 0) formData.append('size', values.size.join(','));
+    if (values.price > 0) formData.append('price', String(values.price));
+    if (values.stock > 0) formData.append('stock_quantity', String(values.stock));
+    if (values.category.trim()) formData.append('category', values.category.trim());
 
     selectedFiles.forEach((file) => {
       formData.append('images[]', file);
@@ -171,14 +189,14 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
         if (onSave) {
           onSave({
-            name: title,
-            sku,
-            category,
-            price: parseFloat(price) || 0,
-            stock: parseInt(stockQuantity) || 0,
+            name: values.title,
+            sku: values.sku,
+            category: values.category,
+            price: values.price,
+            stock: values.stock,
             image: filePreviews[0] || 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=150&q=80',
-            selectedSizes,
-            description,
+            selectedSizes: values.size,
+            description: values.description,
           });
         }
 
@@ -188,7 +206,12 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
         setValidationError(err.message || 'Failed to create product.');
       },
     });
-  };
+  });
+
+  const fieldError = (field: keyof ProductFormValues) =>
+    errors[field] ? (
+      <p className="text-xs text-danger mt-1">{errors[field]?.message}</p>
+    ) : null;
 
   const footer = (
     <ProductFormFooter
@@ -197,7 +220,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
       onCancel={handleCloseModal}
       onBack={handleBack}
       onNext={handleNext}
-      onSubmit={handleSubmit}
+      onSubmit={handleSave}
       isSubmitting={addProductMutation.isPending}
       submitLabel="Save Product"
       submitIcon={<Plus size={18} />}
@@ -223,11 +246,11 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               </label>
               <input
                 type="text"
-                value={sku}
-                onChange={(e) => setSku(e.target.value)}
+                {...register('sku')}
                 placeholder="e.g. TSHIRT-BLK-M"
                 className={formInputClass}
               />
+              {fieldError('sku')}
             </div>
 
             <div>
@@ -236,22 +259,18 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               </label>
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                {...register('title')}
                 placeholder="e.g. Classic Black T-Shirt"
                 className={formInputClass}
               />
+              {fieldError('title')}
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
               <label className={formLabelClass}>Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className={formInputClass}
-              >
+              <select {...register('category')} className={formInputClass}>
                 <option value="">Select Category</option>
                 <option value="Apparel">Apparel</option>
                 <option value="Women">Women</option>
@@ -267,22 +286,22 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               <input
                 type="number"
                 step="0.01"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                {...register('price')}
                 placeholder="19.99"
                 className={formInputClass}
               />
+              {fieldError('price')}
             </div>
 
             <div>
               <label className={formLabelClass}>Stock Quantity</label>
               <input
                 type="number"
-                value={stockQuantity}
-                onChange={(e) => setStockQuantity(e.target.value)}
+                {...register('stock')}
                 placeholder="50"
                 className={formInputClass}
               />
+              {fieldError('stock')}
             </div>
           </div>
         </div>
@@ -295,12 +314,8 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             <div>
               <label className={formLabelClass}>Sizes</label>
               <SizeToggleGrid
-                selectedSizes={selectedSizes}
-                onToggle={(size) => {
-                  setSelectedSizes((prev) =>
-                    prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
-                  );
-                }}
+                selectedSizes={size}
+                onToggle={handleToggleSize}
               />
             </div>
 
@@ -310,11 +325,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               </label>
               <ColorSwatchGrid
                 value={color}
-                onToggle={(name) =>
-                  setColor((prev) =>
-                    prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-                  )
-                }
+                onToggle={handleToggleColor}
               />
             </div>
           </div>
@@ -323,8 +334,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             <label className={formLabelClass}>Description</label>
             <textarea
               rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              {...register('description')}
               placeholder="Write a detailed description about the product..."
               className={`${formInputClass} resize-none`}
             />
@@ -366,7 +376,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
           </div>
 
           {filePreviews.length > 0 && (
-            <div className="mt-4 space-y-2">
+            <div className="mt-2 space-y-2">
               <span className="text-xs font-medium text-text-muted">
                 Selected Images ({filePreviews.length})
               </span>

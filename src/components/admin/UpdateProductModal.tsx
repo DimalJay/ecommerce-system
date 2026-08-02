@@ -11,7 +11,7 @@ import {
   ProductFormAlert,
 } from './productFormShared';
 import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConstants';
-import { productFormSchema, type ProductFormValues } from '../../lib/validations/product';
+import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 import type { AdminItem } from '../../types';
 import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
@@ -58,15 +58,17 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
     setValue,
     trigger,
     formState: { errors },
-  } = useForm<ProductFormValues>({
+  } = useForm<ProductFormInput, unknown, ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     mode: 'onTouched',
     defaultValues: {
-      name: item?.name ?? '',
+      sku: item?.sku ?? '',
+      title: item?.name ?? '',
       category: (item?.category ?? '').toLowerCase(),
       price: item?.price ?? 0,
       stock: item?.stock ?? 0,
       color: parseColorNames(item?.color),
+      size: selectedSizes,
       description: item?.description ?? '',
     },
   });
@@ -148,7 +150,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
   const handleNext = async () => {
     setValidationError(null);
     if (currentStep === 1) {
-      const valid = await trigger(['name', 'price', 'stock']);
+      const valid = await trigger(['sku', 'title', 'price', 'stock']);
       if (!valid) return;
     }
     setCurrentStep((step) => Math.min(step + 1, PRODUCT_FORM_STEPS.length));
@@ -169,7 +171,8 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
     }
 
     const payload = new FormData();
-    payload.append('title', values.name.trim());
+    payload.append('title', values.title.trim());
+    payload.append('sku', values.sku.trim());
     if (values.category) payload.append('category', values.category);
     payload.append('price', String(values.price));
     payload.append('stock_quantity', String(values.stock));
@@ -193,9 +196,14 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
           triggerToast(`Product "${response.data.title}" updated successfully!`);
           onSave({
             ...item,
-            ...values,
+            sku: values.sku,
+            name: values.title,
+            category: values.category,
+            price: values.price,
+            stock: values.stock,
             color: values.color.join(','),
             description: values.description,
+            size: values.size.join(','),
           } as AdminItem);
           onClose();
         },
@@ -246,14 +254,14 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className={formLabelClass}>
-                  Product Name <span className="text-danger">*</span>
+                  Product Title <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  {...register('name')}
+                  {...register('title')}
                   className={formInputClass}
                 />
-                {fieldError('name')}
+                {fieldError('title')}
               </div>
 
               <div>

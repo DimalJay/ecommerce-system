@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { Product, CartItem } from '../types';
-import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
 import { getItemKey } from '../lib/cartUtils';
 import { AuthProvider, useAuthContext, type UserSession } from './AuthContext';
@@ -38,21 +37,14 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, login, logout } = useAuthContext();
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      product: PRODUCTS[0],
-      quantity: 1,
-      selectedSize: 'M',
-      selectedColor: PRODUCTS[0].colorName,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>('');
   const [promoApplied, setPromoApplied] = useState<boolean>(false);
   const [promoError, setPromoError] = useState<string>('');
 
-  const [wishlist, setWishlist] = useState<number[]>([2]);
+  const [wishlist, setWishlist] = useState<number[]>([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);

@@ -2,7 +2,7 @@ import React from 'react';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import type { Product } from '../types';
 import { DrawerShell } from './ui';
-import { PRODUCTS } from '../data';
+import { useAllProducts } from '../hooks/useAllProducts';
 
 interface WishlistDrawerProps {
   isOpen: boolean;
@@ -19,8 +19,10 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
   onRemoveFromWishlist,
   onMoveToCart,
 }) => {
-  // Retrieve matching products from static data
-  const wishlistedProducts = PRODUCTS.filter((p) => wishlistIds.includes(p.id));
+  const { data: allProducts = [] } = useAllProducts();
+
+  // Resolve wishlisted product ids against backend products
+  const wishlistedProducts = allProducts.filter((p) => wishlistIds.includes(p.id));
 
   return (
     <DrawerShell
