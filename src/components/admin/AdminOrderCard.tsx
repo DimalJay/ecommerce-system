@@ -1,7 +1,8 @@
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import type { Order, OrderItem } from '../order-history';
+import type { Order } from '../../types';
 import { getStatusBadgeClass, OrderItemsList, ShippingDetailsCard, BillingReceiptCard } from '../shared/OrderCardSections';
+import { formatCustomerName, getOrderItemCount } from '../../lib/orderUtils';
 
 interface AdminOrderCardProps {
   order: Order;
@@ -16,7 +17,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
   onToggleExpand,
   onStatusChange,
 }) => {
-  const itemsCount = order.items.reduce((sum: number, item: OrderItem) => sum + item.quantity, 0);
+  const itemsCount = getOrderItemCount(order.items);
 
   return (
     <div className="bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden shadow-xs hover:border-luxury-gold-light/50 transition-all text-left">
@@ -30,7 +31,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
           <div>
             <span className="text-[10px] font-bold text-text-muted block uppercase tracking-wider">Client Name</span>
             <span className="text-xs font-bold text-text-primary">
-              {order.shippingInfo?.firstName} {order.shippingInfo?.lastName}
+              {formatCustomerName(order.shippingInfo)}
             </span>
           </div>
           <div>

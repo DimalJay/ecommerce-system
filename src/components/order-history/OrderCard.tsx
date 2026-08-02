@@ -1,36 +1,8 @@
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Order } from '../../types';
 import { getStatusBadgeClass, OrderItemsList, ShippingDetailsCard, BillingReceiptCard } from '../shared/OrderCardSections';
-
-export interface OrderItem {
-  product: Product;
-  quantity: number;
-  selectedSize: string;
-  selectedColor: string;
-}
-
-export interface Order {
-  id: string;
-  date: string;
-  items: OrderItem[];
-  shippingInfo: {
-    fullName?: string;
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    phone: string;
-    address: string;
-    apartment: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country?: string;
-  };
-  paymentMethod: string;
-  total: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
-}
+import { getOrderItemCount } from '../../lib/orderUtils';
 
 interface OrderCardProps {
   order: Order;
@@ -39,7 +11,7 @@ interface OrderCardProps {
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order, isExpanded, onToggleExpand }) => {
-  const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemsCount = getOrderItemCount(order.items);
 
   return (
     <div className="bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden shadow-xs hover:border-luxury-gold-light/50 transition-all">

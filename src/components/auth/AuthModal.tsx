@@ -1,33 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { X, Mail, Lock, User, ShoppingBag } from 'lucide-react';
-import { AuthFormField } from './AuthFormField';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../hooks/useToast';
 import { Toast } from '../ui';
-import { loadAccounts, saveAccount } from '../../lib/accounts';
+import { useLoginMutation, useRegisterMutation } from '../../hooks/useAuth';
+import { getUserApi } from '../../api/userApi';
+import type { LoginFormData, RegisterFormData } from '../../lib/validations/auth';
+import type { UserSession } from '../../context/AuthContext';
+import { AuthModalHeader } from './AuthModalHeader';
+import { AuthModeTabs, type AuthMode } from './AuthModeTabs';
+import { LoginForm } from './LoginForm';
+import { RegisterForm } from './RegisterForm';
 
-type AuthMode = 'login' | 'register';
-type FieldKey = 'name' | 'email' | 'password';
-
-interface AuthModalProps {
+export interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-interface FieldConfig {
-  key: FieldKey;
-  label: string;
-  placeholder: string;
-  type: string;
-  icon: React.ComponentType<{ size?: number }>;
-}
-
-const INPUT_CLASS =
-  'w-full pl-11 pr-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold transition-all text-xs font-semibold text-luxury-charcoal';
-
-const SUBMIT_CLASS =
-  'w-full py-3 bg-luxury-charcoal hover:bg-luxury-gold text-white hover:text-luxury-charcoal rounded-lg text-sm font-bold uppercase tracking-wider transition-all shadow-md mt-2 cursor-pointer';
 
 const MODE_COPY: Record<AuthMode, { title: string; subtitle: string; submitLabel: string; switchLabel: string }> = {
   login: {
@@ -44,79 +32,100 @@ const MODE_COPY: Record<AuthMode, { title: string; subtitle: string; submitLabel
   },
 };
 
-const FIELD_CONFIG: Record<AuthMode, FieldConfig[]> = {
-  login: [
-    { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
-    { key: 'password', label: 'Password', placeholder: '••••••••', type: 'password', icon: Lock },
-  ],
-  register: [
-    { key: 'name', label: 'Full Name', placeholder: 'John Doe', type: 'text', icon: User },
-    { key: 'email', label: 'Email Address', placeholder: 'name@example.com', type: 'email', icon: Mail },
-    { key: 'password', label: 'Password', placeholder: 'Create a password', type: 'password', icon: Lock },
-  ],
-};
-
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
   const { login } = useCart();
   const { toastMessage, triggerToast } = useToast();
 
   const [mode, setMode] = useState<AuthMode>('login');
-  const [values, setValues] = useState<Record<FieldKey, string>>({ name: '', email: '', password: '' });
 
-  const setValue = (key: FieldKey) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValues((prev) => ({ ...prev, [key]: e.target.value }));
+  const loginMutation = useLoginMutation();
+  const registerMutation = useRegisterMutation();
+
+  const isSubmitting = loginMutation.isPending || registerMutation.isPending;
 
   const handleClose = () => {
-    setValues((prev) => ({ ...prev, password: '' }));
+    loginMutation.reset();
+    registerMutation.reset();
     onClose();
   };
 
   const completeAuth = (message: string) => {
     triggerToast(message);
     handleClose();
-    setTimeout(() => navigate('/order-history'), 1000);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = values.email.toLowerCase().trim();
-    const account = loadAccounts().find((acc) => acc.email.toLowerCase() === email);
-
-    if (!account) {
-      triggerToast('No account found with this email. Please create an account.');
-      return;
+  const resolveUserSession = async (fallback: {
+    id?: string;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+  }): Promise<UserSession> => {
+    try {
+      const res = await getUserApi();
+      if (res.success && res.data) {
+        const u = res.data;
+        const fullName = `${u.first_name} ${u.last_name}`.trim();
+        return {
+          email: u.email,
+          name: fullName || u.email,
+          id: u.id,
+          first_name: u.first_name,
+          last_name: u.last_name,
+        };
+      }
+    } catch {
+      // Fall back to the mutation response below
     }
-
-    login(account.email, account.name);
-    completeAuth(`Welcome back, ${account.name}!`);
+    const fullName = [fallback.first_name, fallback.last_name].filter(Boolean).join(' ');
+    return {
+      email: fallback.email,
+      name: fullName || fallback.email,
+      id: fallback.id,
+      first_name: fallback.first_name,
+      last_name: fallback.last_name,
+    };
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = values.email.toLowerCase().trim();
-    const name = values.name.trim();
+  const handleLogin = (data: LoginFormData) => {
+    loginMutation.mutate(data, {
+      onSuccess: async (response) => {
+        const session = await resolveUserSession(response.data.user);
+        login(session.email, session.name, {
+          id: session.id,
+          first_name: session.first_name,
+          last_name: session.last_name,
+        });
+        completeAuth(`Welcome back, ${session.first_name}!`);
+      },
+      onError: (err) => triggerToast(err.message),
+    });
+  };
 
-    if (!name || !email || !values.password) {
-      triggerToast('Please fill in all fields.');
-      return;
-    }
-
-    const exists = loadAccounts().some((acc) => acc.email.toLowerCase() === email);
-    if (exists) {
-      triggerToast('An account with this email already exists. Please sign in.');
-      return;
-    }
-
-    saveAccount({ email, name });
-    login(email, name);
-    completeAuth(`Account created successfully! Welcome ${name}`);
+  const handleRegister = (data: RegisterFormData) => {
+    const { confirm_password, ...payload } = data;
+    void confirm_password;
+    registerMutation.mutate(payload, {
+      onSuccess: async (response) => {
+        const session = await resolveUserSession({
+          id: response.data,
+          email: data.email,
+          first_name: data.first_name,
+          last_name: data.last_name,
+        });
+        login(session.email, session.name, {
+          id: session.id,
+          first_name: session.first_name,
+          last_name: session.last_name,
+        });
+        completeAuth(`Account created successfully! Welcome ${session.first_name}!`);
+      },
+      onError: (err) => triggerToast(err.message),
+    });
   };
 
   if (!isOpen) return null;
 
   const copy = MODE_COPY[mode];
-  const handleSubmit = mode === 'login' ? handleLogin : handleRegister;
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
@@ -139,49 +148,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         </button>
 
         <div className="p-6 sm:p-8 space-y-6">
-          <div className="text-center space-y-1">
-            <div className="w-12 h-12 rounded-full bg-luxury-gold/15 text-luxury-gold flex items-center justify-center mx-auto mb-3">
-              <ShoppingBag size={22} />
-            </div>
-            <h2 className="text-2xl font-black text-luxury-charcoal uppercase tracking-wider">{copy.title}</h2>
-            <p className="text-xs text-slate-400 font-medium">{copy.subtitle}</p>
-          </div>
+          <AuthModalHeader title={copy.title} subtitle={copy.subtitle} />
 
-          <div className="grid grid-cols-2 gap-1 p-1 bg-luxury-sand/40 border border-luxury-gold-light/20 rounded-xl">
-            {(Object.keys(MODE_COPY) as AuthMode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMode(m)}
-                className={`py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                  mode === m
-                    ? 'bg-luxury-charcoal text-white shadow-md'
-                    : 'text-slate-500 hover:text-luxury-charcoal'
-                }`}
-              >
-                {m === 'login' ? 'Sign In' : 'Register'}
-              </button>
-            ))}
-          </div>
+          <AuthModeTabs mode={mode} onModeChange={setMode} />
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-left">
-            {FIELD_CONFIG[mode].map((field) => (
-              <AuthFormField key={field.key} label={field.label} icon={<field.icon size={16} />}>
-                <input
-                  type={field.type}
-                  value={values[field.key]}
-                  onChange={setValue(field.key)}
-                  placeholder={field.placeholder}
-                  required
-                  className={INPUT_CLASS}
-                />
-              </AuthFormField>
-            ))}
-
-            <button type="submit" className={SUBMIT_CLASS}>
-              {copy.submitLabel}
-            </button>
-          </form>
+          {mode === 'login' ? (
+            <LoginForm
+              onSubmit={handleLogin}
+              isSubmitting={isSubmitting}
+              submitLabel={copy.submitLabel}
+            />
+          ) : (
+            <RegisterForm
+              onSubmit={handleRegister}
+              isSubmitting={isSubmitting}
+              submitLabel={copy.submitLabel}
+            />
+          )}
 
           <div className="text-center">
             <button

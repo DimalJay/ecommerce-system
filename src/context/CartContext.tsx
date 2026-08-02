@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { Product, CartItem } from '../types';
-import { PRODUCTS } from '../data';
 import { PROMO_CODE } from '../lib/constants';
-import { getItemKey } from '../lib/cartKey';
+import { getItemKey } from '../lib/cartUtils';
+import { AuthProvider, useAuthContext, type UserSession } from './AuthContext';
 
-interface CartContextType {
+export interface CartContextType {
   cartItems: CartItem[];
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   addToCart: (product: Product, size?: string, color?: string) => void;
-  addToCartWithQty: (product: Product, size: string, color: string, qty: number) => void;
-  updateCartQty: (productId: number, size: string, color: string, newQty: number) => void;
+  addToCartWithQuantity: (product: Product, size: string, color: string, quantity: number) => void;
+  updateCartQuantity: (productId: number, size: string, color: string, newQuantity: number) => void;
   removeCartItem: (productId: number, size: string, color: string) => void;
   removeCheckedOutItems: (itemKeysToRemove: string[]) => void;
   promoCode: string;
@@ -27,52 +27,27 @@ interface CartContextType {
   setActiveQuickViewProduct: (product: Product | null) => void;
   isSizeGuideOpen: boolean;
   setIsSizeGuideOpen: (open: boolean) => void;
-  user: { name: string; email: string } | null;
-  login: (email: string, name: string) => void;
+  user: UserSession | null;
+  login: (email: string, fullName: string, extra?: { id?: string; first_name?: string; last_name?: string }) => void;
   logout: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      product: PRODUCTS[0],
-      quantity: 1,
-      selectedSize: 'M',
-      selectedColor: PRODUCTS[0].colorName
-    }
-  ]);
+const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, login, logout } = useAuthContext();
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [promoCode, setPromoCode] = useState<string>('');
   const [promoApplied, setPromoApplied] = useState<boolean>(false);
   const [promoError, setPromoError] = useState<string>('');
 
-  const [wishlist, setWishlist] = useState<number[]>([2]);
+  const [wishlist, setWishlist] = useState<number[]>([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<Product | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
-
-  const [user, setUser] = useState<{ name: string; email: string } | null>(() => {
-    try {
-      const savedUser = localStorage.getItem('auth_user');
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const login = (email: string, name: string) => {
-    const newUser = { email, name };
-    setUser(newUser);
-    localStorage.setItem('auth_user', JSON.stringify(newUser));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('auth_user');
-  };
 
   const toggleWishlist = (productId: number) => {
     setWishlist((prev) => {
@@ -103,7 +78,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const addToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
+  const addToCartWithQuantity = (product: Product, size: string, color: string, quantity: number) => {
     const targetColor = color === 'Default' ? product.colorName : color;
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
@@ -117,17 +92,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const next = [...prev];
         next[existingIndex] = {
           ...next[existingIndex],
-          quantity: next[existingIndex].quantity + qty
+          quantity: next[existingIndex].quantity + quantity,
         };
         return next;
       }
 
-      return [...prev, { product, quantity: qty, selectedSize: size, selectedColor: targetColor }];
+      return [...prev, { product, quantity, selectedSize: size, selectedColor: targetColor }];
     });
   };
 
-  const updateCartQty = (productId: number, size: string, color: string, newQty: number) => {
-    if (newQty <= 0) {
+  const updateCartQuantity = (productId: number, size: string, color: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
       removeCartItem(productId, size, color);
       return;
     }
@@ -136,7 +111,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         item.product.id === productId &&
         item.selectedSize === size &&
         item.selectedColor === color
-          ? { ...item, quantity: newQty }
+          ? { ...item, quantity: newQuantity }
           : item
       )
     );
@@ -179,8 +154,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isCartOpen,
         setIsCartOpen,
         addToCart,
-        addToCartWithQty,
-        updateCartQty,
+        addToCartWithQuantity,
+        updateCartQuantity,
         removeCartItem,
         removeCheckedOutItems,
         promoCode,
@@ -199,11 +174,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsSizeGuideOpen,
         user,
         login,
-        logout
+        logout,
       }}
     >
       {children}
     </CartContext.Provider>
+  );
+};
+
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <AuthProvider>
+      <InnerCartProvider>{children}</InnerCartProvider>
+    </AuthProvider>
   );
 };
 

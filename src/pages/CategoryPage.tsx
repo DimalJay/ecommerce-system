@@ -3,10 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components';
 import { CategoryHeader, CategoryProductList, OtherCategoriesGrid } from '../components/category';
 import { useCart } from '../context/CartContext';
-import { PRODUCTS } from '../data';
-import type { Product } from '../components/ProductCard';
+
+import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { useCategoryProducts } from '../hooks/useCategoryProducts';
 
 export const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -15,18 +16,11 @@ export const CategoryPage: React.FC = () => {
   const { toastMessage, triggerToast } = useToast();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  useEffect(() => { window.scrollTo(0, 0); }, [categoryName]);
+  const { data: products = [] } = useCategoryProducts(categoryName);
 
-  const getFilteredProducts = (): Product[] => {
-    if (!categoryName) return [];
-    const normalized = categoryName.toLowerCase();
-    if (normalized === 'women') return PRODUCTS.slice(0, 3);
-    if (normalized === 'men') return PRODUCTS.slice(3, 6);
-    if (normalized === 'kids') return PRODUCTS.filter((p) => p.category === 'kids');
-    return PRODUCTS.filter((p) => p.category.toLowerCase() === normalized);
-  };
-
-  const filteredProducts = getFilteredProducts();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [categoryName]);
 
   const getCategoryMeta = () => {
     const name = categoryName || '';
@@ -35,6 +29,7 @@ export const CategoryPage: React.FC = () => {
       women: { title: "Women's Collection", desc: "Discover our women's collection — thoughtfully designed for everyday elegance." },
       men: { title: "Men's Collection", desc: "Explore our men's collection — refined essentials for the modern wardrobe." },
       kids: { title: "Kids' Collection", desc: "Shop our kids' collection — comfortable, durable, and built for play." },
+      'new-arrivals': { title: 'New Arrivals', desc: 'The latest additions to our collection, curated for this season.' },
     };
     return metaMap[normalized] ?? {
       title: `${name.charAt(0).toUpperCase() + name.slice(1)} Collection`,
@@ -62,7 +57,7 @@ export const CategoryPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1 space-y-12">
         <CategoryHeader title={meta.title} desc={meta.desc} viewMode={viewMode} setViewMode={setViewMode} />
-        <CategoryProductList products={filteredProducts} viewMode={viewMode} wishlist={wishlist}
+        <CategoryProductList products={products} viewMode={viewMode} wishlist={wishlist}
           toggleWishlist={toggleWishlist} handleAddToCart={handleAddToCart} setActiveQuickViewProduct={setActiveQuickViewProduct}
         />
         <OtherCategoriesGrid categories={otherCategories} onNavigate={(key) => navigate(`/category/${key}`)} />

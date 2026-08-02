@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartDrawer } from './CartDrawer';
@@ -7,7 +7,7 @@ import { QuickViewModal } from './QuickViewModal';
 import { SizeGuideModal } from './SizeGuideModal';
 import { AuthModal } from './auth/AuthModal';
 import { useCart } from '../context/CartContext';
-import type { Product } from './ProductCard';
+import type { Product } from '../types';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     cartItems,
     isCartOpen,
     setIsCartOpen,
-    updateCartQty,
+    updateCartQuantity,
     removeCartItem,
     wishlist,
     isWishlistOpen,
@@ -29,11 +29,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     isSizeGuideOpen,
     setIsSizeGuideOpen,
     addToCart,
-    addToCartWithQty
+    addToCartWithQuantity
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthOpen(true);
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
+  }, []);
 
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);
@@ -41,7 +51,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    addToCartWithQty(product, size, color, qty);
+    addToCartWithQuantity(product, size, color, qty);
     setIsCartOpen(true);
   };
 
@@ -68,7 +78,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
-        onUpdateQuantity={updateCartQty}
+        onUpdateQuantity={updateCartQuantity}
         onRemoveItem={removeCartItem}
       />
 

@@ -1,6 +1,6 @@
 import type React from 'react';
 import { ShoppingBag, Heart } from 'lucide-react';
-import type { Product } from '../ProductCard';
+import type { Product } from '../../types';
 import { StarRating, ColorSwatches, SizeSelector, QuantitySelector } from '../ui';
 
 interface ProductInfoSectionProps {
@@ -9,6 +9,7 @@ interface ProductInfoSectionProps {
   setSelectedColor: (color: string) => void;
   selectedSize: string;
   setSelectedSize: (size: string) => void;
+  sizes?: string[];
   quantity: number;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   wishlisted: boolean;
@@ -23,6 +24,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
   setSelectedColor,
   selectedSize,
   setSelectedSize,
+  sizes,
   quantity,
   setQuantity,
   wishlisted,
@@ -63,6 +65,29 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             </span>
           </>
         )}
+
+        {product.stock !== undefined && (
+          <span
+            className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg ml-auto ${
+              product.stock <= 0
+                ? 'bg-rose-50 text-rose-600'
+                : product.stock <= 10
+                ? 'bg-amber-50 text-amber-700'
+                : 'bg-emerald-50 text-emerald-700'
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                product.stock <= 0 ? 'bg-rose-500' : product.stock <= 10 ? 'bg-amber-500' : 'bg-emerald-500'
+              }`}
+            />
+            {product.stock <= 0
+              ? 'Out of Stock'
+              : product.stock <= 10
+              ? `Only ${product.stock} left in stock`
+              : 'In Stock'}
+          </span>
+        )}
       </div>
 
       {/* Swatch & Color Selector */}
@@ -89,7 +114,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
             Size Guide
           </button>
         </div>
-        <SizeSelector selectedSize={selectedSize} onSelect={setSelectedSize} />
+        <SizeSelector sizes={sizes} selectedSize={selectedSize} onSelect={setSelectedSize} />
       </div>
 
       {/* Quantity Selector & Action Buttons */}
@@ -98,16 +123,18 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
           <QuantitySelector
             quantity={quantity}
             onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
-            onIncrease={() => setQuantity((q) => q + 1)}
+            onIncrease={() => setQuantity((q) => (product.stock !== undefined ? Math.min(q + 1, product.stock) : q + 1))}
+            max={product.stock}
           />
 
           <button
             type="button"
             onClick={onAddToBag}
-            className="flex-1 py-4 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg shadow-luxury-gold/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            disabled={product.stock !== undefined && product.stock <= 0}
+            className="flex-1 py-4 bg-luxury-gold hover:bg-luxury-gold-dark text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg shadow-luxury-gold/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-luxury-gold"
           >
             <ShoppingBag size={15} />
-            Add to Bag
+            {product.stock !== undefined && product.stock <= 0 ? 'Out of Stock' : 'Add to Bag'}
           </button>
 
           <button

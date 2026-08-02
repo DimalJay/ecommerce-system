@@ -4,17 +4,33 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { AppLayout, ProductCard } from '../components';
 import { ProductImageGallery, ProductInfoSection, ProductSpecsAccordion, ProductReviews } from '../components/product-details';
 import { useCart } from '../context/CartContext';
-import { PRODUCTS } from '../data';
-import type { Product } from '../components/ProductCard';
+import type { Product } from '../types';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
+import { useProductDetail } from '../hooks/useProductDetail';
+import { getProductsByCategoryApi } from '../api/productApi';
+import { toProductFromApi } from '../lib/productMapper';
+import { getAssetUrl } from '../lib/request';
+import { useQuery } from '@tanstack/react-query';
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { addToCart, addToCartWithQty, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
+  const { addToCart, addToCartWithQuantity, setIsCartOpen, wishlist, toggleWishlist, setActiveQuickViewProduct, setIsSizeGuideOpen } = useCart();
 
-  const product = PRODUCTS.find((p) => p.id === Number(id));
+  const { data, isLoading, isError } = useProductDetail(id);
+  const product = data ? toProductFromApi(data.data) : undefined;
+
+  const { data: relatedData } = useQuery({
+    queryKey: ['related-products', product?.category],
+    queryFn: () => getProductsByCategoryApi(product?.category as string),
+    enabled: Boolean(product?.category),
+    retry: false,
+  });
+  const relatedProducts = (relatedData?.data ?? [])
+    .filter((p) => Number(p.id) !== product?.id)
+    .slice(0, 3)
+    .map((p) => toProductFromApi(p));
 
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -30,18 +46,26 @@ export const ProductDetails: React.FC = () => {
 
   if (product && product.id !== prevProductId) {
     setPrevProductId(product.id);
-    setSelectedSize('M');
-    setSelectedColor(product.swatches?.[0] ?? product.colorName);
+    setSelectedSize(product.availableSizes?.[0] ?? 'M');
+    setSelectedColor(product.colorName);
     setQuantity(1);
-    setActiveImage(product.image);
-    setImageThumbnails([
-      product.image,
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80',
-    ]);
+    const images = (data?.data.images ?? []).map(getAssetUrl);
+    setActiveImage(images[0]);
+    setImageThumbnails(images);
   }
 
-  if (!product) {
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center space-y-6">
+          <div className="inline-block w-10 h-10 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-text-muted">Loading product…</p>
+        </main>
+      </AppLayout>
+    );
+  }
+
+  if (isError || !product) {
     return (
       <AppLayout>
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center space-y-6">
@@ -56,7 +80,16 @@ export const ProductDetails: React.FC = () => {
   }
 
   const handleAddToBag = () => {
-    addToCartWithQty(product, selectedSize, selectedColor, quantity);
+    if (product.stock !== undefined && product.stock <= 0) {
+      triggerToast('This product is out of stock.');
+      return;
+    }
+    if (product.stock !== undefined && quantity > product.stock) {
+      triggerToast(`Only ${product.stock} units available.`);
+      setQuantity(product.stock);
+      return;
+    }
+    addToCartWithQuantity(product, selectedSize, selectedColor, quantity);
     triggerToast(`Added ${quantity}x ${product.title} to your bag`);
     setIsCartOpen(true);
   };
@@ -71,8 +104,6 @@ export const ProductDetails: React.FC = () => {
     triggerToast(`Added ${p.title} to your bag`);
     setIsCartOpen(true);
   };
-
-  const relatedProducts = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   return (
     <AppLayout>
@@ -92,7 +123,8 @@ export const ProductDetails: React.FC = () => {
 
           <div className="lg:col-span-5 space-y-8">
             <ProductInfoSection product={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor}
-              selectedSize={selectedSize} setSelectedSize={setSelectedSize} quantity={quantity} setQuantity={setQuantity}
+              selectedSize={selectedSize} setSelectedSize={setSelectedSize} sizes={product.availableSizes}
+              quantity={quantity} setQuantity={setQuantity}
               wishlisted={wishlist.includes(product.id)} onToggleWishlist={handleToggleWishlist} onAddToBag={handleAddToBag}
               onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
             />

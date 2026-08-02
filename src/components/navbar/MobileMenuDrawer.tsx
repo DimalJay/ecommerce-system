@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User } from 'lucide-react';
 
 interface MobileMenuDrawerProps {
   isOpen: boolean;
@@ -75,8 +74,10 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
         <div className="border-t border-luxury-sand pt-3 space-y-2 mt-auto">
           {user ? (
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <User size={14} className="text-luxury-gold" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 bg-luxury-gold text-luxury-charcoal font-black text-xs rounded-full flex items-center justify-center uppercase shrink-0">
+                  {(user.name || 'U').charAt(0).toUpperCase()}
+                </div>
                 <span className="text-[11px] font-bold text-luxury-charcoal truncate">{user.name}</span>
               </div>
               <Link

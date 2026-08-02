@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ShoppingBag, Clock, MapPin, CreditCard, ArrowRight } from 'lucide-react';
-import type { OrderRecord } from '../../types';
+import type { Order } from '../../types';
 
 interface OrderSuccessModalProps {
-  order: OrderRecord;
+  order: Order;
   onClose: () => void;
 }
 

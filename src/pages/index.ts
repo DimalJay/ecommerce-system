@@ -1,8 +1,8 @@
-export { Home } from './Home';
+export { HomePage, HomePage as Home } from './HomePage';
 export { AdminDashboard } from './AdminDashboard';
-export { Checkout } from './CheckoutPage';
+export { CheckoutPage, CheckoutPage as Checkout } from './CheckoutPage';
 export { ProductDetails } from './ProductDetails';
-export { OrderHistory } from './OrderHistory';
+export { OrderHistoryPage, OrderHistoryPage as OrderHistory } from './OrderHistoryPage';
 export { CategoryPage } from './CategoryPage';
 export { OrderManagement } from './OrderManagement';
 export { AdminAuthPage } from './AdminAuthPage';

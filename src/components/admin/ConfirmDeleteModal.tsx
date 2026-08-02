@@ -1,7 +1,9 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { ModalShell } from '../ui';
+import { ModalShell, Toast } from '../ui';
 import type { AdminItem } from '../../types';
+import { useDeleteProductMutation } from '../../hooks/useAdminProduct';
+import { useToast } from '../../hooks/useToast';
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
@@ -11,7 +13,22 @@ interface ConfirmDeleteModalProps {
 }
 
 export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, onClose, onConfirm, item }) => {
+  const { toastMessage, triggerToast } = useToast();
+  const deleteProductMutation = useDeleteProductMutation();
+
   if (!isOpen || !item) return null;
+
+  const handleConfirm = () => {
+    deleteProductMutation.mutate(item.id, {
+      onSuccess: () => {
+        triggerToast(`Product "${item.name}" deleted successfully!`);
+        onConfirm(item);
+      },
+      onError: (err) => {
+        triggerToast(err.message || 'Failed to delete product.');
+      },
+    });
+  };
 
   return (
     <ModalShell
@@ -30,10 +47,11 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, 
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(item)}
-            className="flex-1 px-5 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer active:scale-95"
+            onClick={handleConfirm}
+            disabled={deleteProductMutation.isPending}
+            className="flex-1 px-5 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Delete
+            {deleteProductMutation.isPending ? 'Deleting...' : 'Delete'}
           </button>
         </>
       }
@@ -47,6 +65,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, 
           This action cannot be undone.
         </p>
       </div>
+      {toastMessage && <Toast message={toastMessage} />}
     </ModalShell>
   );
 };

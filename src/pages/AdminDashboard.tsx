@@ -1,74 +1,22 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Package, Plus, RefreshCw, Boxes, TrendingUp } from 'lucide-react';
-import { AdminNavbar } from '../components/admin/AdminNavbar';
-import { AdminOrderCard } from '../components/admin/AdminOrderCard';
-import { ItemTable, AddItemModal, UpdateItemModal, ConfirmDeleteModal } from '../components/admin';
+import {
+  AdminSidebar,
+  ADMIN_NAV_ITEMS,
+  AdminOrderCard,
+  AdminProductTable,
+  AddProductModal,
+  UpdateProductModal,
+  ConfirmDeleteModal,
+  ProductPreviewModal,
+} from '../components/admin';
+import type { AdminTab } from '../components/admin';
 import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
+import { useAdminProducts } from '../hooks/useAdminProduct';
 
 const STORAGE_ORDERS_KEY = 'orders';
-const STORAGE_PRODUCTS_KEY = 'admin-products';
-
-const SEED_PRODUCTS: AdminItem[] = [
-  {
-    id: '1',
-    name: 'Midnight Silk Slip Dress',
-    sku: 'DR-SLK-001',
-    category: 'Women',
-    price: 185.00,
-    stock: 45,
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=150&q=80',
-    status: 'In Stock',
-    description: 'Elegant silk slip dress with a subtle sheen, perfect for evening occasions.',
-  },
-  {
-    id: '2',
-    name: 'Tailored Linen Blazer',
-    sku: 'BZ-LIN-023',
-    category: 'Men',
-    price: 240.00,
-    stock: 8,
-    image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=150&q=80',
-    status: 'Low Stock',
-    description: 'Lightweight linen blazer for a sharp yet breathable look.',
-  },
-  {
-    id: '3',
-    name: 'Cashmere Blend Overcoat',
-    sku: 'CT-CSH-005',
-    category: 'Unisex',
-    price: 495.00,
-    stock: 0,
-    image: 'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?auto=format&fit=crop&w=150&q=80',
-    status: 'Out of Stock',
-    description: 'Luxurious cashmere blend overcoat for cold-weather elegance.',
-  },
-  {
-    id: '4',
-    name: 'Pleated Wide-Leg Trousers',
-    sku: 'TR-PLT-012',
-    category: 'Women',
-    price: 125.00,
-    stock: 32,
-    image: 'https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?auto=format&fit=crop&w=150&q=80',
-    status: 'In Stock',
-    description: 'Flowing wide-leg trousers with pleated front detail.',
-  },
-];
-
-function loadProducts(): AdminItem[] {
-  try {
-    const data = localStorage.getItem(STORAGE_PRODUCTS_KEY);
-    if (data) return JSON.parse(data);
-  } catch { /* ignore */ }
-  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(SEED_PRODUCTS));
-  return SEED_PRODUCTS;
-}
-
-function saveProducts(items: AdminItem[]) {
-  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(items));
-}
 
 function loadOrders(): Order[] {
   try {
@@ -82,12 +30,15 @@ function saveOrders(orders: Order[]) {
   localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
 }
 
-type Tab = 'orders' | 'products';
-
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('orders');
+  const [activeTab, setActiveTab] = useState<AdminTab>('orders');
 
-  const [products, setProducts] = useState<AdminItem[]>(loadProducts);
+  const {
+    data: products = [],
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+    refetch: refetchProducts,
+  } = useAdminProducts();
   const [orders, setOrders] = useState<Order[]>(loadOrders);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
@@ -100,6 +51,7 @@ export const AdminDashboard: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<AdminItem | null>(null);
 
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
@@ -108,35 +60,17 @@ export const AdminDashboard: React.FC = () => {
   const processingCount = orders.filter((o) => o.status === 'Processing').length;
   const lowStockCount = products.filter((p) => p.status === 'Low Stock' || p.status === 'Out of Stock').length;
 
-  const handleAddProduct = (data: { name: string; sku: string; category: string; price: number; stock: number; image: string; description: string }) => {
-    const newItem: AdminItem = {
-      id: Date.now().toString(),
-      name: data.name,
-      sku: data.sku,
-      category: data.category,
-      price: data.price,
-      stock: data.stock,
-      image: data.image,
-      description: data.description,
-      status: data.stock <= 0 ? 'Out of Stock' : data.stock < 10 ? 'Low Stock' : 'In Stock',
-    };
-    const updated = [...products, newItem];
-    setProducts(updated);
-    saveProducts(updated);
+  const handleAddProduct = () => {
+    setIsAddModalOpen(false);
   };
 
-  const handleUpdateProduct = (item: AdminItem) => {
-    const updated = products.map((p) =>
-      p.id === item.id ? { ...p, ...item, status: item.stock <= 0 ? 'Out of Stock' as const : item.stock < 10 ? 'Low Stock' as const : 'In Stock' as const } : p
-    );
-    setProducts(updated);
-    saveProducts(updated);
+  const handleUpdateProduct = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedItem(null);
   };
 
-  const handleDeleteProduct = (item: AdminItem) => {
-    const updated = products.filter((p) => p.id !== item.id);
-    setProducts(updated);
-    saveProducts(updated);
+  const handleDeleteProduct = () => {
+    setIsDeleteModalOpen(false);
     setSelectedItem(null);
   };
 
@@ -168,26 +102,45 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  const categories = ['All', 'Women', 'Men', 'Unisex', 'Kids'];
+  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col font-sans">
-      <AdminNavbar />
+    <div className="min-h-screen bg-bg-primary text-text-primary font-sans lg:flex">
+      <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 py-8 sm:py-10 space-y-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Admin Dashboard</h1>
-            <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Admin Dashboard</h1>
+              <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
+            </div>
+            <button
+              onClick={() => { setOrders(loadOrders()); refetchProducts(); }}
+              className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
+            >
+              <RefreshCw size={14} />
+              <span>Refresh</span>
+            </button>
           </div>
-          <button
-            onClick={() => { setOrders(loadOrders()); setProducts(loadProducts()); }}
-            className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
-          >
-            <RefreshCw size={14} />
-            <span>Refresh</span>
-          </button>
-        </div>
+
+        <nav className="lg:hidden flex gap-2 overflow-x-auto">
+          {ADMIN_NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setActiveTab(key)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === key
+                  ? 'bg-text-primary text-elevated shadow-md'
+                  : 'bg-elevated border border-border text-text-secondary hover:text-accent'
+              }`}
+            >
+              <Icon size={14} />
+              {label}
+            </button>
+          ))}
+        </nav>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white border border-luxury-gold-light/20 rounded-2xl p-5 flex items-center gap-4 shadow-xs">
@@ -225,33 +178,6 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-2xl font-bold text-luxury-charcoal">{processingCount + lowStockCount}</p>
               <p className="text-xs text-text-muted font-medium uppercase tracking-wider">Needs Attention</p>
             </div>
-          </div>
-        </div>
-
-        <div className="border-b border-border">
-          <div className="flex gap-0">
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`px-6 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === 'orders'
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              <ShoppingBag size={16} className="inline mr-2" />
-              Orders
-            </button>
-            <button
-              onClick={() => setActiveTab('products')}
-              className={`px-6 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === 'products'
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              <Package size={16} className="inline mr-2" />
-              Products
-            </button>
           </div>
         </div>
 
@@ -365,29 +291,56 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <ItemTable
-              items={products}
-              onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
-              onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
-              searchQuery={searchQuery}
-              categoryFilter={categoryFilter}
-              sortBy={sortBy}
-            />
+            {isProductsLoading ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center">
+                <div className="w-10 h-10 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-text-muted text-sm mt-4 font-medium">Loading products...</p>
+              </div>
+            ) : isProductsError ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center space-y-4">
+                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                  <ShoppingBag size={28} />
+                </div>
+                <h3 className="text-lg font-bold text-luxury-charcoal uppercase tracking-wider">Failed to Load Products</h3>
+                <p className="text-text-muted text-xs max-w-sm mx-auto">
+                  Could not fetch products from the server. Make sure you are logged in as admin, then try refreshing.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => refetchProducts()}
+                  className="inline-flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  <RefreshCw size={14} />
+                  <span>Retry</span>
+                </button>
+              </div>
+            ) : (
+              <AdminProductTable
+                items={products}
+                onPreview={(item) => { setSelectedItem(item); setIsPreviewModalOpen(true); }}
+                onEdit={(item) => { setSelectedItem(item); setIsUpdateModalOpen(true); }}
+                onDelete={(item) => { setSelectedItem(item); setIsDeleteModalOpen(true); }}
+                searchQuery={searchQuery}
+                categoryFilter={categoryFilter}
+                sortBy={sortBy}
+              />
+            )}
           </div>
         )}
       </main>
 
-      <AddItemModal
+      <AddProductModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddProduct}
       />
-      <UpdateItemModal
+      <UpdateProductModal
         key={isUpdateModalOpen ? selectedItem?.sku ?? 'none' : 'closed'}
         isOpen={isUpdateModalOpen}
         onClose={() => { setIsUpdateModalOpen(false); setSelectedItem(null); }}
         item={selectedItem}
         onSave={handleUpdateProduct}
+        onDelete={() => { setIsUpdateModalOpen(false); setIsDeleteModalOpen(true); }}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
@@ -395,6 +348,14 @@ export const AdminDashboard: React.FC = () => {
         onConfirm={handleDeleteProduct}
         item={selectedItem}
       />
+      <ProductPreviewModal
+        key={isPreviewModalOpen ? selectedItem?.id ?? 'open' : 'closed'}
+        isOpen={isPreviewModalOpen}
+        onClose={() => { setIsPreviewModalOpen(false); setSelectedItem(null); }}
+        item={selectedItem}
+        onEdit={() => { setIsPreviewModalOpen(false); setIsUpdateModalOpen(true); }}
+      />
+      </div>
     </div>
   );
 };

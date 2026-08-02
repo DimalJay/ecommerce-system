@@ -1,31 +1,22 @@
 import React from 'react';
 import { Edit2, Trash2, ShoppingBag } from 'lucide-react';
+import type { AdminItem } from '../../types';
 
-export interface AdminItem {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: number;
-  stock: number;
-  image: string;
-  description?: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
-
-interface ItemTableProps {
+export interface AdminProductTableProps {
   items: AdminItem[];
   onEdit: (item: AdminItem) => void;
   onDelete: (item: AdminItem) => void;
+  onPreview: (item: AdminItem) => void;
   searchQuery: string;
   categoryFilter: string;
   sortBy: string;
 }
 
-export const ItemTable: React.FC<ItemTableProps> = ({
+export const AdminProductTable: React.FC<AdminProductTableProps> = ({
   items,
   onEdit,
   onDelete,
+  onPreview,
   searchQuery,
   categoryFilter,
   sortBy
@@ -82,7 +73,11 @@ export const ItemTable: React.FC<ItemTableProps> = ({
           </thead>
           <tbody className="divide-y divide-luxury-gold-light/20">
             {filteredItems.map((item) => (
-              <tr key={item.id} className="hover:bg-luxury-cream/50 transition-colors duration-150 group">
+              <tr
+                key={item.id}
+                onClick={() => onPreview(item)}
+                className="hover:bg-luxury-cream/50 transition-colors duration-150 group cursor-pointer"
+              >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -107,10 +102,10 @@ export const ItemTable: React.FC<ItemTableProps> = ({
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.status === 'In Stock'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
-                      : item.status === 'Low Stock'
-                        ? 'bg-amber-50 text-amber-700 border-amber-200/80'
-                        : 'bg-rose-50 text-rose-700 border-rose-200/80'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                    : item.status === 'Low Stock'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200/80'
+                      : 'bg-rose-50 text-rose-700 border-rose-200/80'
                     }`}>
                     {item.status}
                   </span>
@@ -119,7 +114,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
-                      onClick={() => onEdit(item)}
+                      onClick={(e) => { e.stopPropagation(); onEdit(item); }}
                       className="p-2 text-text-muted hover:text-luxury-gold hover:bg-luxury-sand/60 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Edit Item"
                       aria-label="Edit Item"
@@ -128,7 +123,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(item)}
+                      onClick={(e) => { e.stopPropagation(); onDelete(item); }}
                       className="p-2 text-text-muted hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-colors duration-200 cursor-pointer active:scale-95"
                       title="Delete Item"
                       aria-label="Delete Item"
@@ -151,3 +146,5 @@ export const ItemTable: React.FC<ItemTableProps> = ({
     </div>
   );
 };
+
+export const ItemTable = AdminProductTable;

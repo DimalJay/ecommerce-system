@@ -6,12 +6,16 @@ import type { Order } from '../../types';
 
 export function getStatusBadgeClass(status: Order['status']): string {
   switch (status) {
+    case 'Accepted':
+      return 'bg-emerald-50 text-emerald-800 border-emerald-200/50';
     case 'Processing':
       return 'bg-amber-50 text-amber-800 border-amber-200/50';
     case 'Shipped':
       return 'bg-blue-50 text-blue-800 border-blue-200/50';
     case 'Delivered':
-      return 'bg-emerald-50 text-emerald-800 border-emerald-200/50';
+      return 'bg-teal-50 text-teal-800 border-teal-200/50';
+    case 'Rejected':
+      return 'bg-rose-50 text-rose-800 border-rose-200/50';
     default:
       return 'bg-slate-50 text-text-primary border-slate-200/50';
   }
