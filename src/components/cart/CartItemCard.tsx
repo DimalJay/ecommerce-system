@@ -104,13 +104,13 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
 
       {/* Controls & Price */}
       <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-luxury-sand">
-        <QuantitySelector
-          quantity={item.quantity}
-          onDecrease={() => onUpdateQuantity(item.quantity - 1)}
-          onIncrease={() => onUpdateQuantity(item.quantity + 1)}
-          variant="compact"
-          max={item.product.stock}
-        />
+      <QuantitySelector
+  quantity={item.quantity}
+  onDecrease={() => onUpdateQuantity(item.quantity - 1)}
+  onIncrease={() => onUpdateQuantity(item.quantity + 1)}
+  max={item.product.stock}
+  variant="compact"
+/>
 
         {/* Row Subtotal */}
         <div className="text-right min-w-[80px]">

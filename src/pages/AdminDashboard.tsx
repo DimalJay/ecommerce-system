@@ -102,7 +102,7 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
+  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category?.trim().toLowerCase()).filter(Boolean)))];
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary font-sans lg:flex">
@@ -227,7 +227,7 @@ export const AdminDashboard: React.FC = () => {
                     onClick={() => { setIsCategoryOpen(!isCategoryOpen); setIsSortOpen(false); }}
                     className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-primary bg-luxury-cream border border-luxury-sand rounded-xl hover:bg-luxury-sand transition-colors cursor-pointer"
                   >
-                    <span>Category: {categoryFilter}</span>
+                    <span>Category: {categoryFilter === 'All' ? 'All' : categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1)}</span>
                     <RefreshCw size={12} className={`transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
                   </button>
                   {isCategoryOpen && (
@@ -241,7 +241,7 @@ export const AdminDashboard: React.FC = () => {
                             categoryFilter === cat ? 'bg-luxury-sand text-luxury-gold-dark' : 'text-text-secondary hover:bg-luxury-cream'
                           }`}
                         >
-                          {cat}
+                          {cat === 'All' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1)}
                         </button>
                       ))}
                     </div>
