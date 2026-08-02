@@ -109,6 +109,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
           onDecrease={() => onUpdateQuantity(item.quantity - 1)}
           onIncrease={() => onUpdateQuantity(item.quantity + 1)}
           variant="compact"
+          max={item.product.stock}
         />
 
         {/* Row Subtotal */}

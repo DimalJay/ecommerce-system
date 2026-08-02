@@ -139,6 +139,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   onDecrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity - 1)}
                   onIncrease={() => onUpdateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity + 1)}
                   variant="pill"
+                  max={item.product.stock}
                 />
                 <span className="text-sm font-semibold text-accent">
                   Rs. {(item.product.price * item.quantity).toFixed(2)}
