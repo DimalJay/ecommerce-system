@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
-import { StarRating } from './ui';
+import { StarRating, ProductImage } from './ui';
 import type { Product } from '../types';
 
 interface ProductCardProps {
@@ -25,7 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image Box with Overlay */}
       <div className="relative bg-secondary h-72 w-full rounded-lg overflow-hidden mb-4">
         <Link to={`/product/${product.id}`} className="block h-full w-full">
-          <img
+          <ProductImage
             src={product.image}
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

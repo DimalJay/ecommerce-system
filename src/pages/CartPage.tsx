@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import { AppLayout } from '../components';
 import { useCart } from '../context/CartContext';
-import { getItemKey } from '../lib/cartKey';
+import { getItemKey } from '../lib/cartUtils';
 import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartToolbar } from '../components/cart/CartToolbar';
 import { CartSummary } from '../components/cart/CartSummary';
@@ -15,7 +15,7 @@ import { PROMO_CODE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST
 export const CartPage: React.FC = () => {
   const {
     cartItems,
-    updateCartQty,
+    updateCartQuantity,
     removeCartItem,
     removeCheckedOutItems,
     promoCode,
@@ -130,7 +130,7 @@ export const CartPage: React.FC = () => {
                   const key = getItemKey(item);
                   return (
                     <CartItemCard key={key} item={item} isSelected={selectedKeys.has(key)} onToggleSelect={() => handleToggleItem(key)}
-                      onUpdateQuantity={(newQty) => updateCartQty(item.product.id, item.selectedSize, item.selectedColor, newQty)}
+                      onUpdateQuantity={(newQty) => updateCartQuantity(item.product.id, item.selectedSize, item.selectedColor, newQty)}
                       onRemove={() => removeCartItem(item.product.id, item.selectedSize, item.selectedColor)}
                     />
                   );

@@ -134,7 +134,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         onClick={handleClose}
       />
 
-      <div className="relative bg-white border border-luxury-gold-light/30 w-full max-w-md rounded-3xl shadow-2xl animate-scale-up overflow-hidden">
+      <div className="relative bg-white border border-luxury-gold-light/30 w-full max-w-md rounded-3xl shadow-2xl animate-scale-up overflow-hidden max-h-[90vh] flex flex-col">
         {toastMessage && <Toast message={toastMessage} />}
 
         <button
@@ -147,7 +147,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <X size={18} />
         </button>
 
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
           <AuthModalHeader title={copy.title} subtitle={copy.subtitle} />
 
           <AuthModeTabs mode={mode} onModeChange={setMode} />

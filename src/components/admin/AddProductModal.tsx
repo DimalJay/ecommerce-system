@@ -1,8 +1,20 @@
 import React, { useState, useRef } from 'react';
-import { Plus, UploadCloud, X, AlertCircle } from 'lucide-react';
-import { ModalShell } from '../ui';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus, UploadCloud, X } from 'lucide-react';
+import { ModalShell, Toast } from '../ui';
+import { SizeToggleGrid } from './SizeToggleGrid';
+import { ColorSwatchGrid } from './ColorSwatchGrid';
+import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConstants';
+import {
+  ProductFormStepper,
+  ProductFormFooter,
+  ProductFormAlert,
+} from './productFormShared';
 import { useAddProductMutation } from '../../hooks/useAdminProduct';
 import { useToast } from '../../hooks/useToast';
+import { validateImageFile } from '../../lib/imageUtils';
+import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 
 export interface AddProductModalProps {
   isOpen: boolean;
@@ -19,49 +31,63 @@ export interface AddProductModalProps {
   }) => void;
 }
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
+const DEFAULT_VALUES: ProductFormValues = {
+  sku: '',
+  title: '',
+  category: '',
+  price: 0,
+  stock: 0,
+  color: [],
+  size: [],
+  description: '',
+};
 
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { triggerToast } = useToast();
+  const { toastMessage, triggerToast } = useToast();
   const addProductMutation = useAddProductMutation();
 
-  // Form states
-  const [sku, setSku] = useState('');
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [stockQuantity, setStockQuantity] = useState('');
-  const [color, setColor] = useState('');
-  const [size, setSize] = useState('');
-  const [description, setDescription] = useState('');
+  const [currentStep, setCurrentStep] = useState(1);
 
-  // Drag & drop & file upload states
+  // Drag & drop & file upload state
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    trigger,
+    reset,
+    formState: { errors },
+  } = useForm<ProductFormInput, unknown, ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
+    defaultValues: DEFAULT_VALUES,
+  });
+
+  const color = useWatch({ control, name: 'color' }) ?? [];
+  const size = useWatch({ control, name: 'size' }) ?? [];
+
   if (!isOpen) return null;
 
-  const resetForm = () => {
-    setSku('');
-    setTitle('');
-    setCategory('');
-    setPrice('');
-    setStockQuantity('');
-    setColor('');
-    setSize('');
-    setDescription('');
+  const handleCloseModal = () => {
+    reset(DEFAULT_VALUES);
+    setCurrentStep(1);
     setSelectedFiles([]);
     setFilePreviews([]);
     setValidationError(null);
+    onClose();
   };
 
-  const handleCloseModal = () => {
-    resetForm();
-    onClose();
+  const handleToggleColor = (name: string) => {
+    setValue('color', color.includes(name) ? color.filter((c) => c !== name) : [...color, name]);
+  };
+
+  const handleToggleSize = (item: string) => {
+    setValue('size', size.includes(item) ? size.filter((s) => s !== item) : [...size, item]);
   };
 
   const processFiles = (filesList: FileList | File[]) => {
@@ -70,12 +96,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     const validPreviews: string[] = [];
 
     Array.from(filesList).forEach((file) => {
-      if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
-        setValidationError(`"${file.name}" is not a valid image format (jpg, png, webp, gif).`);
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        setValidationError(`"${file.name}" exceeds max allowed file size of 2MB.`);
+      const error = validateImageFile(file);
+      if (error) {
+        setValidationError(error);
         return;
       }
       validFiles.push(file);
@@ -117,32 +140,47 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
   };
 
   const handleRemoveFile = (index: number) => {
+    URL.revokeObjectURL(filePreviews[index]);
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
     setFilePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleNext = async () => {
+    setValidationError(null);
+    if (currentStep === 1) {
+      const valid = await trigger(['sku', 'title']);
+      if (!valid) return;
+    }
+    setCurrentStep((step) => Math.min(step + 1, PRODUCT_FORM_STEPS.length));
+  };
+
+  const handleBack = () => {
+    setValidationError(null);
+    setCurrentStep((step) => Math.max(step - 1, 1));
+  };
+
+  const handleSave = handleSubmit((values) => {
     setValidationError(null);
 
-    if (!sku.trim() || !title.trim()) {
-      setValidationError('SKU and Title are required fields.');
+    if (selectedFiles.length === 0) {
+      setCurrentStep(3);
+      setValidationError('Add at least one product image.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('sku', sku.trim());
-    formData.append('title', title.trim());
+    formData.append('sku', values.sku.trim());
+    formData.append('title', values.title.trim());
 
-    if (description.trim()) formData.append('description', description.trim());
-    if (color.trim()) formData.append('color', color.trim());
-    if (size.trim()) formData.append('size', size.trim());
-    if (price) formData.append('price', price);
-    if (stockQuantity) formData.append('stock_quantity', stockQuantity);
-    if (category.trim()) formData.append('category', category.trim());
+    if (values.description.trim()) formData.append('description', values.description.trim());
+    if (values.color.length > 0) formData.append('color', values.color.join(','));
+    if (values.size.length > 0) formData.append('size', values.size.join(','));
+    if (values.price > 0) formData.append('price', String(values.price));
+    if (values.stock > 0) formData.append('stock_quantity', String(values.stock));
+    if (values.category.trim()) formData.append('category', values.category.trim());
 
     selectedFiles.forEach((file) => {
-      formData.append('images', file);
+      formData.append('images[]', file);
     });
 
     addProductMutation.mutate(formData, {
@@ -151,14 +189,14 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
         if (onSave) {
           onSave({
-            name: title,
-            sku,
-            category,
-            price: parseFloat(price) || 0,
-            stock: parseInt(stockQuantity) || 0,
+            name: values.title,
+            sku: values.sku,
+            category: values.category,
+            price: values.price,
+            stock: values.stock,
             image: filePreviews[0] || 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=150&q=80',
-            selectedSizes: size ? [size] : [],
-            description,
+            selectedSizes: values.size,
+            description: values.description,
           });
         }
 
@@ -168,44 +206,146 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
         setValidationError(err.message || 'Failed to create product.');
       },
     });
-  };
+  });
+
+  const fieldError = (field: keyof ProductFormValues) =>
+    errors[field] ? (
+      <p className="text-xs text-danger mt-1">{errors[field]?.message}</p>
+    ) : null;
 
   const footer = (
-    <>
-      <button
-        type="button"
-        onClick={handleCloseModal}
-        className="px-5 py-3 text-text-secondary hover:bg-bg-secondary rounded-lg font-medium transition-colors cursor-pointer"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={addProductMutation.isPending}
-        className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-elevated px-6 py-3 rounded-lg font-medium transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <Plus size={18} />
-        <span>{addProductMutation.isPending ? 'Saving...' : 'Save Product'}</span>
-      </button>
-    </>
+    <ProductFormFooter
+      currentStep={currentStep}
+      totalSteps={PRODUCT_FORM_STEPS.length}
+      onCancel={handleCloseModal}
+      onBack={handleBack}
+      onNext={handleNext}
+      onSubmit={handleSave}
+      isSubmitting={addProductMutation.isPending}
+      submitLabel="Save Product"
+      submitIcon={<Plus size={18} />}
+    />
   );
 
   return (
     <ModalShell isOpen={isOpen} onClose={handleCloseModal} title="Add New Product" footer={footer}>
-      <form onSubmit={handleSubmit} className="space-y-5 text-left">
-        {validationError && (
-          <div className="p-3 bg-danger-bg border border-danger/30 text-danger rounded-xl text-xs font-medium flex items-center gap-2">
-            <AlertCircle size={16} className="shrink-0" />
-            <span>{validationError}</span>
-          </div>
-        )}
+      <ProductFormStepper
+        steps={PRODUCT_FORM_STEPS}
+        currentStep={currentStep}
+      />
 
-        {/* Drag and Drop Image Upload Zone */}
+      <ProductFormAlert message={validationError} />
+
+      {/* Step 1: Product Details */}
+      {currentStep === 1 && (
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className={formLabelClass}>
+                SKU <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                {...register('sku')}
+                placeholder="e.g. TSHIRT-BLK-M"
+                className={formInputClass}
+              />
+              {fieldError('sku')}
+            </div>
+
+            <div>
+              <label className={formLabelClass}>
+                Title / Name <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                {...register('title')}
+                placeholder="e.g. Classic Black T-Shirt"
+                className={formInputClass}
+              />
+              {fieldError('title')}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div>
+              <label className={formLabelClass}>Category</label>
+              <select {...register('category')} className={formInputClass}>
+                <option value="">Select Category</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Women">Women</option>
+                <option value="Men">Men</option>
+                <option value="Kids">Kids</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Unisex">Unisex</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={formLabelClass}>Price (Rs.)</label>
+              <input
+                type="number"
+                step="0.01"
+                {...register('price')}
+                placeholder="19.99"
+                className={formInputClass}
+              />
+              {fieldError('price')}
+            </div>
+
+            <div>
+              <label className={formLabelClass}>Stock Quantity</label>
+              <input
+                type="number"
+                {...register('stock')}
+                placeholder="50"
+                className={formInputClass}
+              />
+              {fieldError('stock')}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Options */}
+      {currentStep === 2 && (
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className={formLabelClass}>Sizes</label>
+              <SizeToggleGrid
+                selectedSizes={size}
+                onToggle={handleToggleSize}
+              />
+            </div>
+
+            <div>
+              <label className={formLabelClass}>
+                Colors {color.length > 0 && <span className="text-accent normal-case">— {color.join(', ')}</span>}
+              </label>
+              <ColorSwatchGrid
+                value={color}
+                onToggle={handleToggleColor}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className={formLabelClass}>Description</label>
+            <textarea
+              rows={3}
+              {...register('description')}
+              placeholder="Write a detailed description about the product..."
+              className={`${formInputClass} resize-none`}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Step 3: Images */}
+      {currentStep === 3 && (
         <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-            Product Images (Drag & Drop)
-          </label>
+          <label className={formLabelClass}>Product Images (Drag & Drop)</label>
           <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -235,9 +375,8 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             </p>
           </div>
 
-          {/* Selected Image Thumbnails */}
           {filePreviews.length > 0 && (
-            <div className="mt-4 space-y-2">
+            <div className="mt-2 space-y-2">
               <span className="text-xs font-medium text-text-muted">
                 Selected Images ({filePreviews.length})
               </span>
@@ -262,130 +401,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             </div>
           )}
         </div>
+      )}
 
-        {/* Product SKU and Title */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              SKU <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              value={sku}
-              onChange={(e) => setSku(e.target.value)}
-              placeholder="e.g. TSHIRT-BLK-M"
-              required
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Title / Name <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Classic Black T-Shirt"
-              required
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-        </div>
-
-        {/* Category, Price, and Stock */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Category
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            >
-              <option value="">Select Category</option>
-              <option value="Apparel">Apparel</option>
-              <option value="Women">Women</option>
-              <option value="Men">Men</option>
-              <option value="Kids">Kids</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Unisex">Unisex</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Price (Rs.)
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="19.99"
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Stock Quantity
-            </label>
-            <input
-              type="number"
-              value={stockQuantity}
-              onChange={(e) => setStockQuantity(e.target.value)}
-              placeholder="50"
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-        </div>
-
-        {/* Size and Color */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Size
-            </label>
-            <input
-              type="text"
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-              placeholder="e.g. M, L, XL"
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Color
-            </label>
-            <input
-              type="text"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              placeholder="e.g. Black, White, Beige"
-              className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal"
-            />
-          </div>
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-            Description
-          </label>
-          <textarea
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Write a detailed description about the product..."
-            className="w-full px-4 py-3 bg-luxury-sand/30 border border-luxury-gold-light/20 rounded-xl focus:outline-none focus:border-luxury-gold text-xs font-semibold text-luxury-charcoal resize-none"
-          />
-        </div>
-      </form>
+      {toastMessage && <Toast message={toastMessage} />}
     </ModalShell>
   );
 };

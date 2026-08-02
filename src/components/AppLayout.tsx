@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartDrawer } from './CartDrawer';
@@ -18,7 +18,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     cartItems,
     isCartOpen,
     setIsCartOpen,
-    updateCartQty,
+    updateCartQuantity,
     removeCartItem,
     wishlist,
     isWishlistOpen,
@@ -29,14 +29,23 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     isSizeGuideOpen,
     setIsSizeGuideOpen,
     addToCart,
-    addToCartWithQty
+    addToCartWithQuantity,
+    user
   } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
+  const { isLoadingUser } = useCart();
+  const isLoadingUserRef = useRef(isLoadingUser);
+
+  useEffect(() => {
+    isLoadingUserRef.current = isLoadingUser;
+  }, [isLoadingUser]);
+
   useEffect(() => {
     const handleUnauthorized = () => {
+      if (isLoadingUserRef.current) return;
       setIsAuthOpen(true);
     };
     window.addEventListener('auth:unauthorized', handleUnauthorized);
@@ -45,14 +54,24 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleRequestLogin = () => {
+      setIsAuthOpen(true);
+    };
+    window.addEventListener('auth:request-login', handleRequestLogin);
+    return () => {
+      window.removeEventListener('auth:request-login', handleRequestLogin);
+    };
+  }, []);
+
   const handleMoveToCart = (product: Product, size: string, color: string) => {
     addToCart(product, size, color);
-    setIsCartOpen(true);
+    if (user) setIsCartOpen(true);
   };
 
   const handleAddToCartWithQty = (product: Product, size: string, color: string, qty: number) => {
-    addToCartWithQty(product, size, color, qty);
-    setIsCartOpen(true);
+    addToCartWithQuantity(product, size, color, qty);
+    if (user) setIsCartOpen(true);
   };
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -78,7 +97,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
-        onUpdateQuantity={updateCartQty}
+        onUpdateQuantity={updateCartQuantity}
         onRemoveItem={removeCartItem}
       />
 

@@ -10,7 +10,10 @@ export interface AdminItem {
   price: number;
   stock: number;
   image: string;
+  images?: string[];
   description?: string;
+  color?: string;
+  size?: string;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
 }
 

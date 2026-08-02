@@ -29,6 +29,19 @@ export const getAssetUrl = (path: string): string => {
   return `${ASSET_URL}/${normalized.replace(/^\/+/, "")}`;
 };
 
+/**
+ * Converts an absolute asset URL back to the relative backend path
+ * (e.g. "http://localhost/ecomm/uploads/abc.jpg" -> "uploads/abc.jpg").
+ * Absolute external URLs and already-relative paths are returned as-is.
+ */
+export const toBackendPath = (url: string): string => {
+  if (!url) return url;
+  const normalized = url.replace(/\\/g, "/");
+  const prefix = `${ASSET_URL}/`;
+  if (normalized.startsWith(prefix)) return normalized.slice(prefix.length);
+  return normalized;
+};
+
 export const backend = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,

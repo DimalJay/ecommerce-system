@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { logoutUser } from '../api/authApi';
-import { getUserApi } from '../api/userApi';
+import { getCurrentUserApi } from '../api/userApi';
 
 export interface UserSession {
   email: string;
@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
 
   useEffect(() => {
-    getUserApi()
+    getCurrentUserApi()
       .then((res) => {
         if (res.success && res.data) {
           const userData = res.data;

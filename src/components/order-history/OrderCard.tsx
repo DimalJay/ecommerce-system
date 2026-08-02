@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Order } from '../../types';
 import { getStatusBadgeClass, OrderItemsList, ShippingDetailsCard, BillingReceiptCard } from '../shared/OrderCardSections';
+import { getOrderItemCount } from '../../lib/orderUtils';
 
 interface OrderCardProps {
   order: Order;
@@ -10,7 +11,7 @@ interface OrderCardProps {
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order, isExpanded, onToggleExpand }) => {
-  const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemsCount = getOrderItemCount(order.items);
 
   return (
     <div className="bg-white border border-luxury-gold-light/20 rounded-3xl overflow-hidden shadow-xs hover:border-luxury-gold-light/50 transition-all">
