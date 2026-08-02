@@ -371,7 +371,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               Drag & drop product images here, or <span className="text-accent underline">browse</span>
             </p>
             <p className="text-[11px] text-text-muted mt-1">
-              Supports JPG, PNG, WEBP, GIF (Max 2MB per image)
+              Supports JPG, PNG, WEBP, GIF (Max 10MB per image)
             </p>
           </div>
 

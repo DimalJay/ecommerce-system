@@ -10,7 +10,7 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
   'image/gif',
 ];
 
-export const MAX_IMAGE_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+export const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 /**
  * Validates a single image file against the allowed formats and size limit.
@@ -21,7 +21,7 @@ export const validateImageFile = (file: File): string | null => {
     return `"${file.name}" is not a valid image format (jpg, png, webp, gif).`;
   }
   if (file.size > MAX_IMAGE_FILE_SIZE) {
-    return `"${file.name}" exceeds max allowed file size of 2MB.`;
+    return `"${file.name}" exceeds max allowed file size of 10MB.`;
   }
   return null;
 };
