@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ShoppingBag, Package, Plus, RefreshCw, Boxes, TrendingUp } from 'lucide-react';
 import {
   AdminSidebar,
@@ -15,20 +16,11 @@ import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
 import { useAdminProducts } from '../hooks/useAdminProduct';
-
-const STORAGE_ORDERS_KEY = 'orders';
-
-function loadOrders(): Order[] {
-  try {
-    const data = localStorage.getItem(STORAGE_ORDERS_KEY);
-    if (data) return JSON.parse(data);
-  } catch { /* ignore */ }
-  return [];
-}
-
-function saveOrders(orders: Order[]) {
-  localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
-}
+import {
+  useAdminOrders,
+  ADMIN_ORDERS_QUERY_KEY,
+  type AdminOrdersQueryResult,
+} from '../hooks/useAdminOrders';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
@@ -39,7 +31,17 @@ export const AdminDashboard: React.FC = () => {
     isError: isProductsError,
     refetch: refetchProducts,
   } = useAdminProducts();
-  const [orders, setOrders] = useState<Order[]>(loadOrders);
+  const [ordersPage, setOrdersPage] = useState(1);
+  const {
+    data: ordersData,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError,
+    refetch: refetchOrders,
+  } = useAdminOrders(ordersPage, 'All');
+  const orders = ordersData?.orders ?? [];
+  const totalOrdersCount = ordersData?.total ?? 0;
+  const ordersPageCount = Math.max(ordersData?.pageCount ?? 1, 1);
+  const queryClient = useQueryClient();
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,6 +57,11 @@ export const AdminDashboard: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<AdminItem | null>(null);
 
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
+
+  const handleOrderSearch = (query: string) => {
+    setOrderSearchQuery(query);
+    setOrdersPage(1);
+  };
 
   const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
   const processingCount = orders.filter((o) => o.status === 'Processing').length;
@@ -75,9 +82,16 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    const updated = orders.map((o) => o.id === orderId ? { ...o, status: newStatus } : o);
-    setOrders(updated);
-    saveOrders(updated);
+    queryClient.setQueriesData<AdminOrdersQueryResult>(
+      { queryKey: ADMIN_ORDERS_QUERY_KEY },
+      (current) => {
+        if (!current) return current;
+        return {
+          ...current,
+          orders: current.orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
+        };
+      },
+    );
   };
 
   const toggleExpandOrder = (id: string) => {
@@ -116,7 +130,7 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-text-muted text-sm mt-1">Manage orders and inventory from one place.</p>
             </div>
             <button
-              onClick={() => { setOrders(loadOrders()); refetchProducts(); }}
+              onClick={() => { refetchOrders(); refetchProducts(); }}
               className="flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
             >
               <RefreshCw size={14} />
@@ -148,7 +162,7 @@ export const AdminDashboard: React.FC = () => {
               <ShoppingBag size={22} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-luxury-charcoal">{orders.length}</p>
+              <p className="text-2xl font-bold text-luxury-charcoal">{totalOrdersCount}</p>
               <p className="text-xs text-text-muted font-medium uppercase tracking-wider">Total Orders</p>
             </div>
           </div>
@@ -184,10 +198,33 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'orders' && (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <SearchInput value={orderSearchQuery} onChange={setOrderSearchQuery} placeholder="Search orders by ID, name, email..." className="w-full sm:w-96" />
+              <SearchInput value={orderSearchQuery} onChange={handleOrderSearch} placeholder="Search orders by ID, name, email..." className="w-full sm:w-96" />
             </div>
 
-            {filteredOrders.length === 0 ? (
+            {isOrdersLoading ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center">
+                <div className="w-10 h-10 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-text-muted text-sm mt-4 font-medium">Loading orders...</p>
+              </div>
+            ) : isOrdersError ? (
+              <div className="w-full bg-white rounded-3xl shadow-xs border border-luxury-gold-light/30 p-12 text-center space-y-4">
+                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                  <ShoppingBag size={28} />
+                </div>
+                <h3 className="text-lg font-bold text-luxury-charcoal uppercase tracking-wider">Failed to Load Orders</h3>
+                <p className="text-text-muted text-xs max-w-sm mx-auto">
+                  Could not fetch orders from the server. Make sure you are logged in as admin, then try refreshing.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => refetchOrders()}
+                  className="inline-flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  <RefreshCw size={14} />
+                  <span>Retry</span>
+                </button>
+              </div>
+            ) : filteredOrders.length === 0 ? (
               <div className="bg-white border border-luxury-gold-light/20 rounded-3xl p-12 text-center space-y-4">
                 <div className="w-16 h-16 bg-luxury-sand/40 text-luxury-gold rounded-full flex items-center justify-center mx-auto">
                   <ShoppingBag size={28} />
@@ -210,6 +247,32 @@ export const AdminDashboard: React.FC = () => {
                     onStatusChange={handleStatusChange}
                   />
                 ))}
+
+                {ordersPageCount > 1 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-sm">
+                    <p className="text-text-muted text-xs">
+                      Page {ordersPage} of {ordersPageCount} ({totalOrdersCount} orders)
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        disabled={ordersPage <= 1}
+                        onClick={() => setOrdersPage((p) => Math.max(p - 1, 1))}
+                        className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 bg-white border-luxury-sand text-text-primary hover:border-luxury-gold"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        type="button"
+                        disabled={ordersPage >= ordersPageCount}
+                        onClick={() => setOrdersPage((p) => Math.min(p + 1, ordersPageCount))}
+                        className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 bg-luxury-gold hover:bg-luxury-gold-dark text-white border-luxury-gold"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

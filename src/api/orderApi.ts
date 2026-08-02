@@ -74,3 +74,28 @@ export const getOrders = (): Promise<OrdersResponse> =>
  */
 export const createOrder = (payload: CreateOrderPayload): Promise<CreateOrderResponse> =>
   request('/orders', { method: 'POST', data: payload });
+
+export interface AdminOrdersParams {
+  /** Filter by order status (Processing, Accepted, Shipped, Delivered, Rejected). */
+  status?: string;
+  /** Page number (default 1). */
+  page?: number;
+  /** Results per page, max 100 (default 10). */
+  limit?: number;
+}
+
+export type AdminOrdersResponse = Response<ApiOrder[]> & {
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+  };
+};
+
+/**
+ * Returns all orders across the store (admin only). Requires a valid admin_token cookie.
+ * GET /admin/orders
+ */
+export const getAdminOrders = (params: AdminOrdersParams = {}): Promise<AdminOrdersResponse> =>
+  request('/admin/orders', { method: 'GET', params });
