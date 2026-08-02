@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ShieldCheck, PackageCheck, Truck } from 'lucide-react';
 import { AppLayout } from '../components';
@@ -19,7 +19,6 @@ import { getCheckoutSchema } from '../lib/validations/checkout';
 
 export const CheckoutPage: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuthContext();
   const {
     cartItems: fullCartItems,
     removeCheckedOutItems,
