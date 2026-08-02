@@ -185,6 +185,14 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const addToCartWithQuantity = async (product: Product, size: string, color: string, quantity: number) => {
     if (!requireAuth()) return;
     const targetColor = color === 'Default' ? product.colorName : color;
+    const existingItem = cartItems.find(
+      (i) => i.product.id === product.id && i.selectedSize === size && i.selectedColor === targetColor
+    );
+    const existingQuantity = existingItem ? existingItem.quantity : 0;
+    if (product.stock !== undefined && existingQuantity + quantity > product.stock) {
+      triggerToast(`Cannot add items. Only ${product.stock} items are available in stock.`);
+      return;
+    }
     try {
       const res = await addCartItemApi({
         product_id: product.id,
@@ -208,6 +216,11 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       (i) => i.product.id === productId && i.selectedSize === size && i.selectedColor === color
     );
     if (!item || newQuantity === item.quantity) return;
+
+    if (item.product.stock !== undefined && newQuantity > item.product.stock) {
+      triggerToast(`Only ${item.product.stock} items are available in stock.`);
+      return;
+    }
 
     try {
       let mapped: CartItem | null;
