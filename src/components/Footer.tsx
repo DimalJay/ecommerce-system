@@ -4,7 +4,8 @@ import {
   Mail,
   Phone,
   Clock,
-  Globe
+  Globe,
+  MapPin
 } from 'lucide-react';
 import webLogo from '../assets/Web Logo.png';
 
@@ -37,20 +38,29 @@ export const Footer: React.FC = () => {
 
             <p className="text-sm text-footer-text/60 leading-relaxed max-w-xs">
               Premium apparel and accessories crafted for those who value quality, comfort, and timeless style.
+              Proudly based in Sri Lanka, delivering worldwide.
             </p>
 
             <div className="space-y-3 text-sm text-footer-text">
               <div className="flex items-center gap-3">
+                <MapPin size={14} className="text-accent shrink-0" />
+                <span>No. 42, Galle Road, Colombo 03, Sri Lanka</span>
+              </div>
+              <div className="flex items-center gap-3">
                 <Mail size={14} className="text-accent shrink-0" />
-                <span>support@aurafashion.com</span>
+                <span>support@aurafashion.lk</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={14} className="text-accent shrink-0" />
-                <span>+1 (800) 287-2327 (Toll-Free)</span>
+                <span>+94 11 234 5678 (Colombo)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone size={14} className="text-accent shrink-0" />
+                <span>+94 77 123 4567 (WhatsApp)</span>
               </div>
               <div className="flex items-center gap-3">
                 <Clock size={14} className="text-accent shrink-0" />
-                <span>Mon - Fri: 9:00 AM - 8:00 PM EST</span>
+                <span>Mon - Sat: 9:00 AM - 6:00 PM (SLST)</span>
               </div>
             </div>
           </div>
@@ -80,7 +90,7 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-4 bg-footer-border/30 border border-footer-border p-6 rounded-2xl space-y-4">
             <h4 className="text-xs font-semibold text-elevated uppercase tracking-wider">Stay Updated</h4>
             <p className="text-sm text-footer-text/60 leading-relaxed">
-              Subscribe for updates on new arrivals, exclusive offers, and 15% off your first order.
+              Subscribe for updates on new arrivals, exclusive offers, and 10% off your first order.
             </p>
 
             {subscribed ? (
@@ -131,9 +141,9 @@ export const Footer: React.FC = () => {
             <span>|</span>
             <span>AMEX</span>
             <span>|</span>
-            <span>APPLE PAY</span>
+            <span>UNIONPAY</span>
             <span>|</span>
-            <span>PAYPAL</span>
+            <span>KOKO</span>
           </div>
         </div>
       </div>
