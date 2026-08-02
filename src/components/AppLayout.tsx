@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartDrawer } from './CartDrawer';
@@ -36,8 +36,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
+  const { isLoadingUser } = useCart();
+  const isLoadingUserRef = useRef(isLoadingUser);
+
+  useEffect(() => {
+    isLoadingUserRef.current = isLoadingUser;
+  }, [isLoadingUser]);
+
   useEffect(() => {
     const handleUnauthorized = () => {
+      if (isLoadingUserRef.current) return;
       setIsAuthOpen(true);
     };
     window.addEventListener('auth:unauthorized', handleUnauthorized);

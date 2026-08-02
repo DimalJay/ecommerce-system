@@ -61,6 +61,7 @@ export interface CartContextType {
   isSizeGuideOpen: boolean;
   setIsSizeGuideOpen: (open: boolean) => void;
   user: UserSession | null;
+  isLoadingUser: boolean;
   login: (email: string, fullName: string, extra?: { id?: string; first_name?: string; last_name?: string }) => void;
   logout: () => void;
 }
@@ -69,6 +70,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, login, logout } = useAuthContext();
+  const { isLoadingUser } = useAuthContext();
   const { triggerToast } = useToast();
 
   const requireAuth = (): boolean => {
@@ -302,6 +304,7 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         isSizeGuideOpen,
         setIsSizeGuideOpen,
         user,
+        isLoadingUser,
         login,
         logout,
       }}
