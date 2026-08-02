@@ -16,11 +16,8 @@ import { SearchInput } from '../components/ui';
 import type { Order } from '../types';
 import type { AdminItem } from '../types';
 import { useAdminProducts } from '../hooks/useAdminProduct';
-import {
-  useAdminOrders,
-  ADMIN_ORDERS_QUERY_KEY,
-  type AdminOrdersQueryResult,
-} from '../hooks/useAdminOrders';
+import {useAdminOrders} from '../hooks/useAdminOrders';
+import { updateOrderStatus } from '../api/orderApi';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
@@ -41,7 +38,6 @@ export const AdminDashboard: React.FC = () => {
   const orders = ordersData?.orders ?? [];
   const totalOrdersCount = ordersData?.total ?? 0;
   const ordersPageCount = Math.max(ordersData?.pageCount ?? 1, 1);
-  const queryClient = useQueryClient();
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,18 +77,29 @@ export const AdminDashboard: React.FC = () => {
     setSelectedItem(null);
   };
 
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    queryClient.setQueriesData<AdminOrdersQueryResult>(
-      { queryKey: ADMIN_ORDERS_QUERY_KEY },
-      (current) => {
-        if (!current) return current;
-        return {
-          ...current,
-          orders: current.orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
-        };
-      },
-    );
-  };
+ const handleStatusChange = async (
+  orderId: number,
+  newStatus: Order['status']
+) => {
+  try {
+    console.log('Updating order:', orderId, newStatus);
+
+    const response = await updateOrderStatus(orderId, newStatus);
+
+    console.log('Update response:', response);
+
+    if (!response.success) {
+      console.error('Failed to update order status:', response.message);
+      return;
+    }
+
+    // Refresh orders from database after successful update
+    await refetchOrders();
+
+  } catch (error) {
+    console.error('Failed to update order status:', error);
+  }
+};
 
   const toggleExpandOrder = (id: string) => {
     setExpandedOrderId(expandedOrderId === id ? null : id);

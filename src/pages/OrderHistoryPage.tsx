@@ -6,9 +6,9 @@ import { OrderCard, OrderHistoryEmptyState } from '../components/order-history';
 import { useCart } from '../context/CartContext';
 import { useOrders } from '../hooks/useOrders';
 
-export type StatusFilter = 'All' | 'Accepted' | 'Processing' | 'Shipped' | 'Delivered' | 'Rejected';
+export type StatusFilter = 'All' |'Processing' | 'Shipped' | 'Delivered' ;
 
-const FILTER_OPTIONS: StatusFilter[] = ['All', 'Accepted', 'Processing', 'Shipped', 'Delivered', 'Rejected'];
+const FILTER_OPTIONS: StatusFilter[] = ['All', 'Processing', 'Shipped', 'Delivered'];
 
 const ITEMS_PER_PAGE = 10;
 

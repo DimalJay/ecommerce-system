@@ -5,6 +5,7 @@ import { OrderControls } from '../components/admin/OrderControls';
 import { AdminOrderCard } from '../components/admin/AdminOrderCard';
 import type { Order } from '../types';
 import { formatCustomerName } from '../lib/orderUtils';
+import { updateOrderStatus } from '../api/orderApi';
 
 export const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>(() => {
@@ -34,21 +35,29 @@ export const OrderManagement: React.FC = () => {
   };
 
   // Update order status in state & localStorage
-  const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
-    const updatedOrders = orders.map((order) => {
-      if (order.id === orderId) {
-        return { ...order, status: newStatus };
-      }
-      return order;
-    });
+const handleStatusChange = async (
+  orderId: number,
+  newStatus: Order['status']
+) => {
+  try {
+    const response = await updateOrderStatus(orderId, newStatus);
 
-    setOrders(updatedOrders);
-    try {
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
-    } catch (err) {
-      console.error('Failed to save updated orders:', err);
+    if (!response.success) {
+      console.error('Failed to update order status:', response.message);
+      return;
     }
-  };
+
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.backendId === orderId
+          ? { ...order, status: newStatus }
+          : order
+      )
+    );
+  } catch (err) {
+    console.error('Failed to update order status:', err);
+  }
+};
 
   // Toggle order expanded detail view
   const toggleExpandOrder = (id: string) => {

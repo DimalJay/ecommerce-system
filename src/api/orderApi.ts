@@ -99,3 +99,14 @@ export type AdminOrdersResponse = Response<ApiOrder[]> & {
  */
 export const getAdminOrders = (params: AdminOrdersParams = {}): Promise<AdminOrdersResponse> =>
   request('/admin/orders', { method: 'GET', params });
+
+export type UpdateOrderStatusResponse = Response<ApiOrder>;
+
+export const updateOrderStatus = (
+  id: number,
+  status: string
+): Promise<UpdateOrderStatusResponse> =>
+  request(`/orders/${id}/status`, {
+    method: 'PUT',
+    data: { status },
+  });

@@ -8,7 +8,7 @@ interface AdminOrderCardProps {
   order: Order;
   isExpanded: boolean;
   onToggleExpand: () => void;
-  onStatusChange: (id: string, newStatus: Order['status']) => void;
+  onStatusChange: (id: number, newStatus: Order['status']) => void;
 }
 
 export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
@@ -50,7 +50,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Fulfillment:</span>
             <select
               value={order.status}
-              onChange={(e) => onStatusChange(order.id, e.target.value as Order['status'])}
+              onChange={(e) => onStatusChange(order.backendId, e.target.value as Order['status'])}
               className={`px-3 py-2 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusBadgeClass(
                 order.status
               )} focus:outline-none`}

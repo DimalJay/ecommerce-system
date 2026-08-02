@@ -12,6 +12,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+   backendId: number;
   date: string;
   items: OrderItem[];
   shippingInfo: {

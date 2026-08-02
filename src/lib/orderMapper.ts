@@ -32,6 +32,7 @@ export const toOrderFromApi = (apiOrder: ApiOrder): Order => {
       });
 
   return {
+    backendId: apiOrder.id,
     id: apiOrder.order_code,
     date,
     items: (apiOrder.items ?? []).map((item) => ({
