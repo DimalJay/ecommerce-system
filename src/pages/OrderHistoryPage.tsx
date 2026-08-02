@@ -14,7 +14,7 @@ const ITEMS_PER_PAGE = 10;
 
 export const OrderHistoryPage: React.FC = () => {
   const { user } = useCart();
-  const { data: orders = [], isLoading } = useOrders();
+  const { data: orders = [], isLoading, isError, error, refetch } = useOrders();
 
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<StatusFilter>('All');
@@ -112,6 +112,19 @@ export const OrderHistoryPage: React.FC = () => {
         {isLoading ? (
           <div className="text-center py-12 text-slate-500 font-semibold animate-pulse">
             Loading your order history...
+          </div>
+        ) : isError ? (
+          <div className="text-center py-12 space-y-4">
+            <p className="text-slate-600 font-semibold">Failed to load your order history.</p>
+            <p className="text-xs text-text-muted max-w-sm mx-auto">
+              {error instanceof Error ? error.message : 'Please try again.'}
+            </p>
+            <button
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 bg-luxury-gold hover:bg-luxury-gold-dark text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            >
+              Try Again
+            </button>
           </div>
         ) : filteredOrders.length === 0 ? (
           <OrderHistoryEmptyState />

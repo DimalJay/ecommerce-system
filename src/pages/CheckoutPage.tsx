@@ -14,11 +14,13 @@ import type { PaymentMethod, CheckoutForm, FieldChangeHandler } from '../types/c
 import type { Order, CartItem } from '../types';
 import { TAX_RATE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 import { createOrder, type CreateOrderPayload } from '../api/orderApi';
+import { useQueryClient } from '@tanstack/react-query';
 import { toOrderFromApi } from '../lib/orderMapper';
 import { getCheckoutSchema } from '../lib/validations/checkout';
 
 export const CheckoutPage: React.FC = () => {
   const location = useLocation();
+  const queryClient = useQueryClient();
   const {
     cartItems: fullCartItems,
     removeCheckedOutItems,
@@ -155,6 +157,9 @@ export const CheckoutPage: React.FC = () => {
 
         // Set completed order to trigger modal
         setCompletedOrder(newOrder);
+
+        // Refresh cached order history for this user
+        queryClient.invalidateQueries({ queryKey: ['orders'] });
 
         // Clear cart items
         const keysToRemove = checkoutItems.map(getItemKey);

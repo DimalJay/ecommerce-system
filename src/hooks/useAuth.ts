@@ -4,7 +4,10 @@ import { getCurrentUserApi } from '../api/userApi';
 
 const useInvalidateUserQueries = () => {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: ['user'] });
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ['user'] });
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
+  };
 };
 
 export const useLoginMutation = () => {
