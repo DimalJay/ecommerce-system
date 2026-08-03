@@ -9,6 +9,7 @@ import { CartToolbar } from '../components/cart/CartToolbar';
 import { CartSummary } from '../components/cart/CartSummary';
 import { CartItemCard } from '../components/cart/CartItemCard';
 import { useToast } from '../hooks/useToast';
+import { Toast } from '../components/ui';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const CartPage: React.FC = () => {
