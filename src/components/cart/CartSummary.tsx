@@ -45,11 +45,10 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         type="button"
         onClick={onCheckout}
         disabled={selectedCount === 0 || isCheckingOut}
-        className={`w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
-          selectedCount === 0 || isCheckingOut
+        className={`w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${selectedCount === 0 || isCheckingOut
             ? 'bg-bg-tertiary text-text-disabled cursor-not-allowed'
             : 'bg-accent hover:bg-accent-hover text-elevated hover:-translate-y-0.5'
-        }`}
+          }`}
       >
         <CreditCard size={16} />
         {isCheckingOut ? 'Redirecting to checkout...' : `Proceed to Secure Checkout (${selectedCount})`}
