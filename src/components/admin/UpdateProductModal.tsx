@@ -292,6 +292,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   {...register('price', { valueAsNumber: true })}
                   className={formInputClass}
                 />
@@ -302,6 +303,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
                 <label className={formLabelClass}>Stock</label>
                 <input
                   type="number"
+                  min="0"
                   {...register('stock', { valueAsNumber: true })}
                   className={formInputClass}
                 />
