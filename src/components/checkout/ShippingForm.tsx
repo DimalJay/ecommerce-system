@@ -142,9 +142,13 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
         <CheckoutField label="Postal Code" required error={errors?.postalCode} className="sm:col-span-2">
           <input
             type="text"
-            placeholder="10001 or 00100"
+            placeholder="e.g. 10000"
             value={form.postalCode}
-            onChange={onChange('postalCode')}
+            maxLength={5}
+            onChange={(e) => {
+              e.target.value = e.target.value.replace(/\D/g, '');
+              onChange('postalCode')(e);
+            }}
             className={getInputClass(!!errors?.postalCode)}
             required
           />

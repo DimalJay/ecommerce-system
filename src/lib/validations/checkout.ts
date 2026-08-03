@@ -16,7 +16,11 @@ const baseFields = {
   apartment: z.string().optional(),
   city: z.string().trim().min(1, 'City is required'),
   state: z.string().min(1, 'Please select a state or province'),
-  postalCode: z.string().trim().min(1, 'Postal code is required'),
+  postalCode: z
+    .string()
+    .trim()
+    .min(1, 'Postal code is required')
+    .regex(/^\d{5}$/, 'Postal code must be exactly 5 digits'),
   country: z.string().min(1, 'Country is required'),
   notes: z.string().optional(),
 };
