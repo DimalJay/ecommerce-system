@@ -84,10 +84,6 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             required
           >
             <option value="Sri Lanka">Sri Lanka</option>
-            <option value="United States">United States</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="Australia">Australia</option>
-            <option value="Canada">Canada</option>
           </select>
         </CheckoutField>
 
