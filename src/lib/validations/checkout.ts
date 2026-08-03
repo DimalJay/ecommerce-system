@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const CARD_NUMBER = /^\d{16}$/;
+const CARD_NUMBER = /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/;
 const EXPIRY = /^(0[1-9]|1[0-2])\s*\/\s*([0-9]{2})$/;
 const CVV = /^\d{3,4}$/;
 
