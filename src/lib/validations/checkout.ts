@@ -7,7 +7,11 @@ const CVV = /^\d{3,4}$/;
 const baseFields = {
   fullName: z.string().trim().min(1, 'Full Name is required'),
   email: z.string().trim().email('Please enter a valid email address'),
-  phone: z.string().trim().min(1, 'Phone number is required'),
+  phone: z
+    .string()
+    .trim()
+    .min(1, 'Phone number is required')
+    .regex(/^\d{9}$/, 'Phone number must be exactly 9 digits'),
   address: z.string().trim().min(1, 'Street address is required'),
   apartment: z.string().optional(),
   city: z.string().trim().min(1, 'City is required'),
