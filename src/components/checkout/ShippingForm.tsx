@@ -44,9 +44,8 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             onChange={onChange('email')}
             disabled={emailReadonly}
             title={emailReadonly ? 'Email is tied to your account and cannot be changed' : undefined}
-            className={`${getInputClass(!!errors?.email)} ${
-              emailReadonly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''
-            }`}
+            className={`${getInputClass(!!errors?.email)} ${emailReadonly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''
+              }`}
             required
           />
           {emailReadonly && (
@@ -58,14 +57,23 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
         </CheckoutField>
 
         <CheckoutField label="Phone Number" required error={errors?.phone}>
-          <input
-            type="tel"
-            placeholder="+94 77 123 4567"
-            value={form.phone}
-            onChange={onChange('phone')}
-            className={getInputClass(!!errors?.phone)}
-            required
-          />
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted select-none pointer-events-none">
+              +94
+            </span>
+            <input
+              type="tel"
+              placeholder="771234567"
+              value={form.phone}
+              maxLength={9}
+              onChange={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                onChange('phone')(e);
+              }}
+              className={`${getInputClass(!!errors?.phone)} pl-12`}
+              required
+            />
+          </div>
         </CheckoutField>
 
         <CheckoutField label="Country" required error={errors?.country}>
