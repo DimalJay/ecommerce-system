@@ -126,7 +126,7 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             className={getInputClass(!!errors?.state)}
             required
           >
-            <option value="">Select Province / State</option>
+            <option value="">Select Province</option>
             <option value="Western">Western Province</option>
             <option value="Central">Central Province</option>
             <option value="Southern">Southern Province</option>
@@ -136,9 +136,6 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             <option value="Uva">Uva Province</option>
             <option value="North Central">North Central Province</option>
             <option value="Northern">Northern Province</option>
-            <option value="California">California (US)</option>
-            <option value="New York">New York (US)</option>
-            <option value="Other">Other / International</option>
           </select>
         </CheckoutField>
 
