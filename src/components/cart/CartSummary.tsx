@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tag, CheckCircle2, CreditCard, ShieldCheck } from 'lucide-react';
+import { CreditCard, ShieldCheck } from 'lucide-react';
 import { PriceRow } from '../shared/PriceRow';
 
 interface CartSummaryProps {
@@ -46,8 +46,8 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         onClick={onCheckout}
         disabled={selectedCount === 0 || isCheckingOut}
         className={`w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${selectedCount === 0 || isCheckingOut
-            ? 'bg-bg-tertiary text-text-disabled cursor-not-allowed'
-            : 'bg-accent hover:bg-accent-hover text-elevated hover:-translate-y-0.5'
+          ? 'bg-bg-tertiary text-text-disabled cursor-not-allowed'
+          : 'bg-accent hover:bg-accent-hover text-elevated hover:-translate-y-0.5'
           }`}
       >
         <CreditCard size={16} />
