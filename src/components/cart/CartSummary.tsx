@@ -3,14 +3,8 @@ import { Tag, CheckCircle2, CreditCard, ShieldCheck } from 'lucide-react';
 import { PriceRow } from '../shared/PriceRow';
 
 interface CartSummaryProps {
-  promoCode: string;
-  setPromoCode: (code: string) => void;
-  promoApplied: boolean;
-  promoError: string;
-  onApplyPromo: (e: React.FormEvent) => void;
   selectedCount: number;
   selectedSubtotal: number;
-  discount: number;
   shipping: number;
   total: number;
   onCheckout: () => void;
@@ -18,14 +12,8 @@ interface CartSummaryProps {
 }
 
 export const CartSummary: React.FC<CartSummaryProps> = ({
-  promoCode,
-  setPromoCode,
-  promoApplied,
-  promoError,
-  onApplyPromo,
   selectedCount,
   selectedSubtotal,
-  discount,
   shipping,
   total,
   onCheckout,

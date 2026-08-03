@@ -139,9 +139,8 @@ export const CartPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-4 sticky top-24 space-y-6">
-              <CartSummary promoCode={promoCode} setPromoCode={setPromoCode} promoApplied={promoApplied} promoError={promoError}
-                onApplyPromo={handleFormSubmitPromo} selectedCount={selectedCartItems.length} selectedSubtotal={selectedSubtotal}
-                discount={discount} shipping={shipping} total={total} onCheckout={handleCheckout} isCheckingOut={isCheckingOut}
+              <CartSummary selectedCount={selectedCartItems.length} selectedSubtotal={selectedSubtotal}
+                shipping={shipping} total={total} onCheckout={handleCheckout} isCheckingOut={isCheckingOut}
               />
             </div>
           </div>
