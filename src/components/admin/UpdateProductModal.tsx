@@ -14,7 +14,6 @@ import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConsta
 import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 import type { AdminItem } from '../../types';
 import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
-import { useToast } from '../../hooks/useToast';
 import { validateImageFile } from '../../lib/imageUtils';
 import { toBackendPath } from '../../lib/request';
 import { parseColorNames } from '../../lib/colorUtils';
@@ -48,7 +47,6 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
   });
   const [isDragging, setIsDragging] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const { toastMessage, triggerToast } = useToast();
   const updateProductMutation = useUpdateProductMutation();
 
   const {
@@ -193,7 +191,6 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
       { id: item.id, formData: payload },
       {
         onSuccess: (response) => {
-          triggerToast(`Product "${response.data.title}" updated successfully!`);
           onSave({
             ...item,
             sku: values.sku,

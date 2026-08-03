@@ -65,16 +65,28 @@ export const backend = axios.create({
   withCredentials: true,
 });
 
+const shouldShowToast = (config: AxiosRequestConfig): boolean => {
+  if (!isWriteMethod(config)) return false;
+  const url = config.url ?? "";
+  return !(
+    url.startsWith("/auth/") ||
+    url.startsWith("/cart") ||
+    url === "/orders" ||
+    url.includes("/review") ||
+    url === "/admin/logout"
+  );
+};
+
 backend.interceptors.response.use(
   (response) => {
     if (response.data?.error || response.data?.success === false) {
       const message = response.data?.error ?? response.data?.message ?? "Request failed";
-      if (isWriteMethod(response.config)) {
+      if (shouldShowToast(response.config)) {
         showGlobalToast(message, "error");
       }
       throw new Error(message);
     }
-    if (isWriteMethod(response.config)) {
+    if (shouldShowToast(response.config)) {
       showGlobalToast(successMessageFor(response.config, response.data?.message));
     }
     return response;
@@ -82,7 +94,7 @@ backend.interceptors.response.use(
   (error: AxiosError) => {
     const apiData = error.response?.data as { message?: string } | undefined;
     const message = apiData?.message ?? "Failed to Fetch. Status: " + (error.response?.status ?? "");
-    if (isWriteMethod(error.config ?? {}) && error.response?.status !== 401) {
+    if (error.config && shouldShowToast(error.config) && error.response?.status !== 401) {
       showGlobalToast(message, "error");
     }
     if (error.response?.status === 401) {

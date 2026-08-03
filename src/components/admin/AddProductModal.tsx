@@ -12,7 +12,6 @@ import {
   ProductFormAlert,
 } from './productFormShared';
 import { useAddProductMutation } from '../../hooks/useAdminProduct';
-import { useToast } from '../../hooks/useToast';
 import { validateImageFile } from '../../lib/imageUtils';
 import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 
@@ -44,7 +43,6 @@ const DEFAULT_VALUES: ProductFormValues = {
 
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toastMessage, triggerToast } = useToast();
   const addProductMutation = useAddProductMutation();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -185,8 +183,6 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
     addProductMutation.mutate(formData, {
       onSuccess: (response) => {
-        triggerToast(`Product "${response.data.title}" created successfully!`);
-
         if (onSave) {
           onSave({
             name: values.title,
