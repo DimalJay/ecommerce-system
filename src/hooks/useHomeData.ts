@@ -41,8 +41,11 @@ export const useHomeData = () => {
   const { data: allWomenProducts = [] } = useCategoryProducts('women');
   const womenProducts = allWomenProducts.slice(0, WOMEN_LIMIT);
 
+  const { data: allMenProducts = [] } = useCategoryProducts('men');
+  const menProducts = allMenProducts.slice(0, WOMEN_LIMIT); // Keep same limit (3)
+
   const { data: allNewArrivals = [] } = useCategoryProducts('new-arrivals');
   const newArrivals = allNewArrivals.slice(0, NEW_ARRIVALS_LIMIT);
 
-  return { categories, womenProducts, newArrivals };
+  return { categories, womenProducts, menProducts, newArrivals };
 };

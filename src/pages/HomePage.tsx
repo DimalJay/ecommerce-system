@@ -18,7 +18,7 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, wishlist, toggleWishlist, setActiveQuickViewProduct } = useCart();
   const { toastMessage, triggerToast } = useToast();
-  const { categories, womenProducts, newArrivals } = useHomeData();
+  const { categories, womenProducts, menProducts, newArrivals } = useHomeData();
 
   const handleAddToCart = (product: Product, size: string = 'M', color: string = 'Default') => {
     addToCart(product, size, color);
@@ -92,7 +92,21 @@ export const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* Featured Collection */}
+        {/* Men's Collection */}
+        <ProductSpotlightSection
+          title="Men's Collection"
+          description="Tailored essentials and modern classics designed for the contemporary wardrobe."
+          spotlightImage={menProducts[0]?.image ?? 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80'}
+          spotlightTitle="Modern Classics"
+          products={menProducts}
+          wishlist={wishlist}
+          onToggleWishlist={toggleWishlist}
+          onAddToCart={handleAddToCart}
+          onOpenQuickView={setActiveQuickViewProduct}
+          onShopMore={() => navigate('/category/men')}
+        />
+
+        {/* Women's Collection */}
         <ProductSpotlightSection
           title="Women's Collection"
           description="Thoughtfully designed pieces that transition effortlessly from day to evening."
