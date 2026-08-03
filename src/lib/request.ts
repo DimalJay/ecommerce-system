@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
-import { showGlobalToast } from "../components/ui/GlobalToast";
+import { showGlobalToast } from "./toastUtils";
 
 export class HTTPError extends Error {
   response?: AxiosResponse;

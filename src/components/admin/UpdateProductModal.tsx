@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, UploadCloud, X, ChevronUp, ChevronDown } from 'lucide-react';
-import { ModalShell, Toast } from '../ui';
+import { ModalShell } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 import { ColorSwatchGrid } from './ColorSwatchGrid';
 import {
@@ -190,7 +190,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
     updateProductMutation.mutate(
       { id: item.id, formData: payload },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           onSave({
             ...item,
             sku: values.sku,
@@ -449,7 +449,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
         )}
       </form>
 
-      {toastMessage && <Toast message={toastMessage} />}
+
     </ModalShell>
   );
 };
