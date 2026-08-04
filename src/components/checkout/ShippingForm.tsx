@@ -44,9 +44,8 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             onChange={onChange('email')}
             disabled={emailReadonly}
             title={emailReadonly ? 'Email is tied to your account and cannot be changed' : undefined}
-            className={`${getInputClass(!!errors?.email)} ${
-              emailReadonly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''
-            }`}
+            className={`${getInputClass(!!errors?.email)} ${emailReadonly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''
+              }`}
             required
           />
           {emailReadonly && (
@@ -58,14 +57,23 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
         </CheckoutField>
 
         <CheckoutField label="Phone Number" required error={errors?.phone}>
-          <input
-            type="tel"
-            placeholder="+94 77 123 4567"
-            value={form.phone}
-            onChange={onChange('phone')}
-            className={getInputClass(!!errors?.phone)}
-            required
-          />
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted select-none pointer-events-none">
+              +94
+            </span>
+            <input
+              type="tel"
+              placeholder="771234567"
+              value={form.phone}
+              maxLength={9}
+              onChange={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                onChange('phone')(e);
+              }}
+              className={`${getInputClass(!!errors?.phone)} pl-12`}
+              required
+            />
+          </div>
         </CheckoutField>
 
         <CheckoutField label="Country" required error={errors?.country}>
@@ -76,10 +84,6 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             required
           >
             <option value="Sri Lanka">Sri Lanka</option>
-            <option value="United States">United States</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="Australia">Australia</option>
-            <option value="Canada">Canada</option>
           </select>
         </CheckoutField>
 
@@ -122,7 +126,7 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             className={getInputClass(!!errors?.state)}
             required
           >
-            <option value="">Select Province / State</option>
+            <option value="">Select Province</option>
             <option value="Western">Western Province</option>
             <option value="Central">Central Province</option>
             <option value="Southern">Southern Province</option>
@@ -132,18 +136,19 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ form, onChange, erro
             <option value="Uva">Uva Province</option>
             <option value="North Central">North Central Province</option>
             <option value="Northern">Northern Province</option>
-            <option value="California">California (US)</option>
-            <option value="New York">New York (US)</option>
-            <option value="Other">Other / International</option>
           </select>
         </CheckoutField>
 
         <CheckoutField label="Postal Code" required error={errors?.postalCode} className="sm:col-span-2">
           <input
             type="text"
-            placeholder="10001 or 00100"
+            placeholder="e.g. 10000"
             value={form.postalCode}
-            onChange={onChange('postalCode')}
+            maxLength={5}
+            onChange={(e) => {
+              e.target.value = e.target.value.replace(/\D/g, '');
+              onChange('postalCode')(e);
+            }}
             className={getInputClass(!!errors?.postalCode)}
             required
           />

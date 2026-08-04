@@ -10,7 +10,7 @@ import { CartSummary } from '../components/cart/CartSummary';
 import { CartItemCard } from '../components/cart/CartItemCard';
 import { useToast } from '../hooks/useToast';
 import { Toast } from '../components/ui';
-import { PROMO_CODE, PROMO_DISCOUNT_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '../lib/constants';
 
 export const CartPage: React.FC = () => {
   const {
@@ -18,11 +18,6 @@ export const CartPage: React.FC = () => {
     updateCartQuantity,
     removeCartItem,
     removeCheckedOutItems,
-    promoCode,
-    setPromoCode,
-    promoApplied,
-    promoError,
-    handleApplyPromo
   } = useCart();
 
   const navigate = useNavigate();
@@ -65,20 +60,13 @@ export const CartPage: React.FC = () => {
 
   const selectedCartItems = cartItems.filter((item) => selectedKeys.has(getItemKey(item)));
   const selectedSubtotal = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const discount = promoApplied ? selectedSubtotal * PROMO_DISCOUNT_RATE : 0;
   const shipping = selectedSubtotal >= FREE_SHIPPING_THRESHOLD || selectedSubtotal === 0 ? 0 : SHIPPING_COST;
-  const total = selectedSubtotal - discount + shipping;
+  const total = selectedSubtotal + shipping;
 
   const handleRemoveSelected = () => {
     removeCheckedOutItems(Array.from(selectedKeys));
     setSelectedKeys(new Set());
     triggerToast('Selected items removed from your bag');
-  };
-
-  const handleFormSubmitPromo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!promoCode.trim()) return;
-    if (handleApplyPromo(promoCode)) triggerToast(`Promo code ${PROMO_CODE} applied (-${PROMO_DISCOUNT_RATE * 100}%)`);
   };
 
   const handleCheckout = () => {
@@ -139,9 +127,8 @@ export const CartPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-4 sticky top-24 space-y-6">
-              <CartSummary promoCode={promoCode} setPromoCode={setPromoCode} promoApplied={promoApplied} promoError={promoError}
-                onApplyPromo={handleFormSubmitPromo} selectedCount={selectedCartItems.length} selectedSubtotal={selectedSubtotal}
-                discount={discount} shipping={shipping} total={total} onCheckout={handleCheckout} isCheckingOut={isCheckingOut}
+              <CartSummary selectedCount={selectedCartItems.length} selectedSubtotal={selectedSubtotal}
+                shipping={shipping} total={total} onCheckout={handleCheckout} isCheckingOut={isCheckingOut}
               />
             </div>
           </div>
