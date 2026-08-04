@@ -57,16 +57,32 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1 text-xs font-black uppercase tracking-widest text-slate-600">
-            {navItems.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.path}
-                onClick={onClose}
-                className="hover:text-luxury-gold transition-colors py-3 border-b border-slate-100/60"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item, idx) =>
+              item.path.startsWith('#') ? (
+                <a
+                  key={idx}
+                  href={item.path}
+                  onClick={onClose}
+                  className="hover:text-luxury-gold transition-colors py-3 border-b border-slate-100/60"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  onClick={() => {
+                    onClose();
+                    if (item.path === '/') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  className="hover:text-luxury-gold transition-colors py-3 border-b border-slate-100/60"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </nav>
         </div>
 

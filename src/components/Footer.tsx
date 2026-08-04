@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-footer-bg border-t border-footer-border pt-12 sm:pt-14 pb-10 px-6 sm:px-8 lg:px-10 mt-12 sm:mt-16 text-footer-text">
+    <footer id="footer" className="bg-footer-bg border-t border-footer-border pt-12 sm:pt-14 pb-10 px-6 sm:px-8 lg:px-10 mt-12 sm:mt-16 text-footer-text">
       <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
 
         {/* Main Footer Links Columns */}
