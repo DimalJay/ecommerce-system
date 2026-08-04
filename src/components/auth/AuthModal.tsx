@@ -105,19 +105,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const { confirm_password, ...payload } = data;
     void confirm_password;
     registerMutation.mutate(payload, {
-      onSuccess: async (response) => {
-        const session = await resolveUserSession({
-          id: response.data,
-          email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name,
-        });
-        login(session.email, session.name, {
-          id: session.id,
-          first_name: session.first_name,
-          last_name: session.last_name,
-        });
-        completeAuth(`Account created successfully! Welcome ${session.first_name}!`);
+      onSuccess: () => {
+        setMode('login');
+        triggerToast('Account created successfully! Please sign in.');
       },
       onError: (err) => triggerToast(err.message),
     });
