@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 
 const SLIDES = [
   {
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=80',
+    image: 'https://plus.unsplash.com/premium_photo-1713483864121-bb85ae97d2ac?auto=format&fit=crop&w=1600&q=80',
     title: 'New Season Arrivals',
     subtitle: 'Discover curated pieces for the modern wardrobe',
     link: '/category/new-arrivals'
   },
   {
-    image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1600&q=80',
+    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80',
     title: 'Women\'s Collection',
     subtitle: 'Timeless elegance meets contemporary design',
     link: '/category/women'
   },
   {
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1600&q=80',
-    title: 'Men\'s Collection',
-    subtitle: 'Refined essentials for every occasion',
-    link: '/category/men'
+    image: 'https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?auto=format&fit=crop&w=1600&q=80',
+    title: 'Accessories Collection',
+    subtitle: 'Complete your look with premium shoes and essentials',
+    link: '/category/accessories'
   }
 ];
 
