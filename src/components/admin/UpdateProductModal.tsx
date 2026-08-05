@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, UploadCloud, X, ChevronUp, ChevronDown } from 'lucide-react';
-import { ModalShell, Toast } from '../ui';
+import { ModalShell } from '../ui';
 import { SizeToggleGrid } from './SizeToggleGrid';
 import { ColorSwatchGrid } from './ColorSwatchGrid';
 import {
@@ -14,7 +14,6 @@ import { PRODUCT_FORM_STEPS, formInputClass, formLabelClass } from './formConsta
 import { productFormSchema, type ProductFormValues, type ProductFormInput } from '../../lib/validations/product';
 import type { AdminItem } from '../../types';
 import { useUpdateProductMutation } from '../../hooks/useAdminProduct';
-import { useToast } from '../../hooks/useToast';
 import { validateImageFile } from '../../lib/imageUtils';
 import { toBackendPath } from '../../lib/request';
 import { parseColorNames } from '../../lib/colorUtils';
@@ -48,7 +47,6 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
   });
   const [isDragging, setIsDragging] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const { toastMessage, triggerToast } = useToast();
   const updateProductMutation = useUpdateProductMutation();
 
   const {
@@ -192,8 +190,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
     updateProductMutation.mutate(
       { id: item.id, formData: payload },
       {
-        onSuccess: (response) => {
-          triggerToast(`Product "${response.data.title}" updated successfully!`);
+        onSuccess: () => {
           onSave({
             ...item,
             sku: values.sku,
@@ -454,7 +451,7 @@ export const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ isOpen, 
         )}
       </form>
 
-      {toastMessage && <Toast message={toastMessage} />}
+
     </ModalShell>
   );
 };
