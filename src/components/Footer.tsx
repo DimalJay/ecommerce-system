@@ -126,7 +126,7 @@ export const Footer: React.FC = () => {
             <span>&copy; 2026 AuraFashion. All rights reserved.</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-footer-text/50">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-footer-text/50">
             <a href="#privacy" className="hover:text-accent transition-colors">Privacy Policy</a>
             <span className="text-footer-text/20">|</span>
             <a href="#terms" className="hover:text-accent transition-colors">Terms of Service</a>
@@ -139,11 +139,11 @@ export const Footer: React.FC = () => {
             <span>|</span>
             <span>MASTERCARD</span>
             <span>|</span>
-            <span>AMEX</span>
+            <span>PAYPAL</span>
             <span>|</span>
-            <span>UNIONPAY</span>
+            <span>CASH ON DELIVERY</span>
             <span>|</span>
-            <span>KOKO</span>
+            <span>BANK TRANSFER</span>
           </div>
         </div>
       </div>
