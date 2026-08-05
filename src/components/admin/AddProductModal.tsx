@@ -146,7 +146,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
   const handleNext = async () => {
     setValidationError(null);
     if (currentStep === 1) {
-      const valid = await trigger(['sku', 'title']);
+      const valid = await trigger(['sku', 'title', 'price', 'stock']);
       if (!valid) return;
     }
     setCurrentStep((step) => Math.min(step + 1, PRODUCT_FORM_STEPS.length));
@@ -282,6 +282,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               <input
                 type="number"
                 step="0.01"
+                min="0"
                 {...register('price')}
                 placeholder="19.99"
                 className={formInputClass}
@@ -293,6 +294,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
               <label className={formLabelClass}>Stock Quantity</label>
               <input
                 type="number"
+                min="0"
                 {...register('stock')}
                 placeholder="50"
                 className={formInputClass}

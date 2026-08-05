@@ -131,7 +131,7 @@ export const CheckoutPage: React.FC = () => {
     const payload: CreateOrderPayload = {
       full_name: form.fullName.trim() || accountFullName,
       email: form.email.trim() || accountEmail,
-      phone: form.phone,
+      phone: `+94${form.phone.trim()}`,
       address: form.address,
       apartment: form.apartment || null,
       city: form.city,

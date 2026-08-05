@@ -1,18 +1,26 @@
 import { z } from 'zod';
 
-const CARD_NUMBER = /^\d{16}$/;
+const CARD_NUMBER = /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/;
 const EXPIRY = /^(0[1-9]|1[0-2])\s*\/\s*([0-9]{2})$/;
 const CVV = /^\d{3,4}$/;
 
 const baseFields = {
   fullName: z.string().trim().min(1, 'Full Name is required'),
   email: z.string().trim().email('Please enter a valid email address'),
-  phone: z.string().trim().min(1, 'Phone number is required'),
+  phone: z
+    .string()
+    .trim()
+    .min(1, 'Phone number is required')
+    .regex(/^\d{9}$/, 'Phone number must be exactly 9 digits'),
   address: z.string().trim().min(1, 'Street address is required'),
   apartment: z.string().optional(),
   city: z.string().trim().min(1, 'City is required'),
   state: z.string().min(1, 'Please select a state or province'),
-  postalCode: z.string().trim().min(1, 'Postal code is required'),
+  postalCode: z
+    .string()
+    .trim()
+    .min(1, 'Postal code is required')
+    .regex(/^\d{5}$/, 'Postal code must be exactly 5 digits'),
   country: z.string().min(1, 'Country is required'),
   notes: z.string().optional(),
 };

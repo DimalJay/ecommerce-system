@@ -48,8 +48,8 @@ export const ProductSpotlightSection: React.FC<ProductSpotlightSectionProps> = (
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        <div className="lg:col-span-4 relative rounded-xl overflow-hidden bg-secondary min-h-90 group border border-border">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div className="lg:col-span-4 relative rounded-xl overflow-hidden bg-secondary h-[400px] lg:h-[500px] w-full group border border-border">
           <img
             src={spotlightImage}
             alt={spotlightTitle}
