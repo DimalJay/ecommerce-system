@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Ruler } from 'lucide-react';
 import type { Product } from '../types';
 import { ProductImage, StarRating, SizeSelector, ColorSwatches, QuantitySelector } from './ui';
+import { useProductReviews } from '../hooks/useProductReviews';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -23,7 +24,13 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const [selectedColor, setSelectedColor] = useState(() => product?.swatches?.[0] ?? product?.colorName ?? '');
   const [quantity, setQuantity] = useState(1);
 
+  const { data: reviewsResponse } = useProductReviews(product?.id);
+  const reviewsData = reviewsResponse?.data;
+
   if (!isOpen || !product) return null;
+
+  const rating = reviewsData ? Number(reviewsData.average_rating) : product.rating;
+  const reviewsCount = reviewsData ? Number(reviewsData.total_reviews) : product.reviewsCount;
 
   const handleAddToCart = () => {
     if (product.stock !== undefined && product.stock <= 0) return;
@@ -76,8 +83,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             </h2>
 
             {/* Ratings and Reviews */}
-            <StarRating rating={product.rating} showValue>
-              <span className="text-text-muted">({product.reviewsCount} customer reviews)</span>
+            <StarRating rating={rating} showValue>
+              <span className="text-text-muted">({reviewsCount} customer reviews)</span>
             </StarRating>
 
             {/* Price tag */}
@@ -93,7 +100,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             </div>
 
             <p className="text-xs text-text-secondary leading-relaxed pt-2">
-              Crafted from premium materials with attention to detail. {product.title} combines comfort, durability, and effortless style for everyday wear.
+              {product.description || `Crafted from premium materials with attention to detail. ${product.title} combines comfort, durability, and effortless style for everyday wear.`}
             </p>
 
             {/* Size Selector */}
