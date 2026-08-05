@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle2,
   Mail,
@@ -65,24 +66,23 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Column 2: Company */}
+          {/* Column 2: Quick Links */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold text-elevated uppercase tracking-wider mb-5">Company</h4>
+            <h4 className="text-xs font-semibold text-elevated uppercase tracking-wider mb-5">Quick Links</h4>
             <ul className="space-y-3 text-sm text-footer-text/60">
-              <li><a href="#about" className="hover:text-accent transition-colors">About AuraFashion</a></li>
-              <li><a href="#careers" className="hover:text-accent transition-colors">Careers</a></li>
+              <li><Link to="/" className="hover:text-accent transition-colors">Home</Link></li>
+              <li><Link to="/cart" className="hover:text-accent transition-colors">Shopping Cart</Link></li>
+              <li><Link to="/order-history" className="hover:text-accent transition-colors">My Orders</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Customer Care */}
+          {/* Column 3: Categories */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold text-elevated uppercase tracking-wider mb-5">Customer Care</h4>
+            <h4 className="text-xs font-semibold text-elevated uppercase tracking-wider mb-5">Categories</h4>
             <ul className="space-y-3 text-sm text-footer-text/60">
-              <li><a href="#track" className="hover:text-accent transition-colors">Track Your Order</a></li>
-              <li><a href="#returns" className="hover:text-accent transition-colors">Returns &amp; Exchanges</a></li>
-              <li><a href="#shipping" className="hover:text-accent transition-colors">Shipping Information</a></li>
-              <li><a href="#size-guide" className="hover:text-accent transition-colors">Interactive Size Guide</a></li>
-              <li><a href="#help" className="hover:text-accent transition-colors">Help Center &amp; FAQ</a></li>
+              <li><Link to="/category/women" className="hover:text-accent transition-colors">Women's Collection</Link></li>
+              <li><Link to="/category/men" className="hover:text-accent transition-colors">Men's Collection</Link></li>
+              <li><Link to="/category/new-arrivals" className="hover:text-accent transition-colors">New Arrivals</Link></li>
             </ul>
           </div>
 
