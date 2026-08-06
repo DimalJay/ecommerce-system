@@ -71,6 +71,21 @@ export const CartPage: React.FC = () => {
 
   const handleCheckout = () => {
     if (selectedCartItems.length === 0) return;
+
+    // Check stock for all selected items
+    const invalidItem = selectedCartItems.find(
+      (item) => item.product.stock !== undefined && item.quantity > item.product.stock
+    );
+
+    if (invalidItem) {
+      if (invalidItem.product.stock === 0) {
+        triggerToast(`${invalidItem.product.title} is out of stock.`);
+      } else {
+        triggerToast(`Only ${invalidItem.product.stock} units available for ${invalidItem.product.title}.`);
+      }
+      return;
+    }
+
     setIsCheckingOut(true);
     setTimeout(() => {
       setIsCheckingOut(false);

@@ -94,10 +94,7 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const upsertCartItem = (item: CartItem) => {
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
-        (i) =>
-          i.product.id === item.product.id &&
-          i.selectedSize === item.selectedSize &&
-          i.selectedColor === item.selectedColor
+        (i) => i.product.id === item.product.id
       );
       if (existingIndex > -1) {
         const next = [...prev];
@@ -145,7 +142,20 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         const items = (res.data ?? [])
           .map(toCartItem)
           .filter((item): item is CartItem => item !== null);
-        setCartItems(items);
+        
+        const uniqueItems: CartItem[] = [];
+        const seenIds = new Set<number>();
+        for (const item of items) {
+          if (!seenIds.has(item.product.id)) {
+            seenIds.add(item.product.id);
+            uniqueItems.push(item);
+          } else {
+            if (item.cartItemId) {
+              void removeCartItemApi(item.cartItemId);
+            }
+          }
+        }
+        setCartItems(uniqueItems);
       })
       .catch(() => {
         // Backend cart endpoint unavailable: keep the local cache.
@@ -186,10 +196,13 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     if (!requireAuth()) return;
     const targetColor = color === 'Default' ? product.colorName : color;
     const existingItem = cartItems.find(
-      (i) => i.product.id === product.id && i.selectedSize === size && i.selectedColor === targetColor
+      (i) => i.product.id === product.id
     );
-    const existingQuantity = existingItem ? existingItem.quantity : 0;
-    if (product.stock !== undefined && existingQuantity + quantity > product.stock) {
+    if (existingItem) {
+      triggerToast('Product is already in your bag.');
+      return;
+    }
+    if (product.stock !== undefined && quantity > product.stock) {
       triggerToast(`Cannot add items. Only ${product.stock} items are available in stock.`);
       return;
     }
@@ -213,7 +226,7 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       return;
     }
     const item = cartItems.find(
-      (i) => i.product.id === productId && i.selectedSize === size && i.selectedColor === color
+      (i) => i.product.id === productId
     );
     if (!item || newQuantity === item.quantity) return;
 
@@ -229,8 +242,8 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         const res = await addCartItemApi({
           product_id: productId,
           quantity: newQuantity - item.quantity,
-          selected_size: size,
-          selected_color: color,
+          selected_size: item.selectedSize,
+          selected_color: item.selectedColor,
         });
         mapped = toCartItem(res.data);
       } else {
@@ -239,8 +252,8 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         const res = await addCartItemApi({
           product_id: productId,
           quantity: newQuantity,
-          selected_size: size,
-          selected_color: color,
+          selected_size: item.selectedSize,
+          selected_color: item.selectedColor,
         });
         mapped = toCartItem(res.data);
       }
@@ -250,16 +263,16 @@ const InnerCartProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }
   };
 
-  const removeCartItem = async (productId: number, size: string, color: string) => {
+  const removeCartItem = async (productId: number, _size: string, _color: string) => {
     const item = cartItems.find(
-      (i) => i.product.id === productId && i.selectedSize === size && i.selectedColor === color
+      (i) => i.product.id === productId
     );
     if (!item) return;
     try {
       if (item.cartItemId) await removeCartItemApi(item.cartItemId);
       setCartItems((prev) =>
         prev.filter(
-          (i) => !(i.product.id === productId && i.selectedSize === size && i.selectedColor === color)
+          (i) => i.product.id !== productId
         )
       );
     } catch (err) {

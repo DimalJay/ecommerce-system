@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
@@ -24,10 +24,12 @@ interface NavbarProps {
 }
 
 const NAV_ITEMS = [
-  { label: 'Shop All', path: '/' },
+  { label: 'Home', path: '/' },
+  { label: 'New Arrivals', path: '/category/new-arrivals' },
   { label: 'Women', path: '/category/women' },
   { label: 'Men', path: '/category/men' },
-  { label: 'New Arrivals', path: '/category/new-arrivals' },
+  { label: 'Accessories', path: '/category/accessories' },
+  { label: 'Contact', path: '#footer' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -40,9 +42,46 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAuth
 }) => {
   const { user, logout } = useCart();
+  const location = useLocation();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const footer = document.querySelector('footer');
+    if (footer) {
+      observer.observe(footer);
+    }
+
+    return () => {
+      if (footer) {
+        observer.unobserve(footer);
+      }
+    };
+  }, [location.pathname]);
+
+  const handleNavClick = (path: string, e: React.MouseEvent) => {
+    if (path === '/') {
+      if (location.pathname === '/') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (path === '#contact') {
+      e.preventDefault();
+      const footer = document.querySelector('footer');
+      if (footer) {
+        footer.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   const toggleSearch = () => {
     setIsSearchOpen((prev) => {
@@ -84,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Menu size={18} className="sm:w-5 sm:h-5" />
             </button>
 
-            <Link to="/" className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
+            <Link to="/" onClick={(e) => handleNavClick('/', e)} className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
               <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105 shrink-0" />
               <span className="hidden sm:inline text-lg sm:text-xl font-bold tracking-tight text-text-primary">
                 Aura<span className="text-accent">Fashion</span>
@@ -94,18 +133,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-            <Link to="/" className="text-accent border-b-2 border-accent pb-1 py-2">
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="hover:text-accent transition-colors py-2"
+            >
+              Home
+            </Link>
+            <Link to="/category/new-arrivals" className="hover:text-accent transition-colors py-2">
               New Arrivals
             </Link>
-            <Link to="/" className="hover:text-accent transition-colors py-2">
-              Collections
+            <Link to="/category/women" className="hover:text-accent transition-colors py-2">
+              Women
             </Link>
-            <Link to="/" className="hover:text-accent transition-colors py-2">
-              Shop
+            <Link to="/category/men" className="hover:text-accent transition-colors py-2">
+              Men
             </Link>
-            <Link to="/" className="hover:text-accent transition-colors py-2">
-              Deals
+            <Link to="/category/accessories" className="hover:text-accent transition-colors py-2">
+              Accessories
             </Link>
+            <a href="#footer" className="hover:text-accent transition-colors py-2">
+              Contact
+            </a>
           </nav>
 
           {/* Right Search Bar & Actions */}

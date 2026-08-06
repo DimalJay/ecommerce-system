@@ -73,7 +73,8 @@ const shouldShowToast = (config: AxiosRequestConfig): boolean => {
     url.startsWith("/cart") ||
     url === "/orders" ||
     url.includes("/review") ||
-    url === "/admin/logout"
+    url === "/admin/logout" ||
+    url === "/admin/login"
   );
 };
 
