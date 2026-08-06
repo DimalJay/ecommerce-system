@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
@@ -42,9 +42,46 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAuth
 }) => {
   const { user, logout } = useCart();
+  const location = useLocation();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const footer = document.querySelector('footer');
+    if (footer) {
+      observer.observe(footer);
+    }
+
+    return () => {
+      if (footer) {
+        observer.unobserve(footer);
+      }
+    };
+  }, [location.pathname]);
+
+  const handleNavClick = (path: string, e: React.MouseEvent) => {
+    if (path === '/') {
+      if (location.pathname === '/') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (path === '#contact') {
+      e.preventDefault();
+      const footer = document.querySelector('footer');
+      if (footer) {
+        footer.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   const toggleSearch = () => {
     setIsSearchOpen((prev) => {
@@ -86,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Menu size={18} className="sm:w-5 sm:h-5" />
             </button>
 
-            <Link to="/" className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
+            <Link to="/" onClick={(e) => handleNavClick('/', e)} className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
               <img src={webLogo} alt="Aura Fashion Logo" className="h-7 sm:h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105 shrink-0" />
               <span className="hidden sm:inline text-lg sm:text-xl font-bold tracking-tight text-text-primary">
                 Aura<span className="text-accent">Fashion</span>
