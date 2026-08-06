@@ -50,7 +50,7 @@
   --color-luxury-charcoal: #1c1917;
 }
 
-body {
+html, body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);

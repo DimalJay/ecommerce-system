@@ -25,9 +25,11 @@ interface NavbarProps {
 
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
-  { label: "Men's", path: '/category/men' },
-  { label: "Women's", path: '/category/women' },
-  { label: 'Contact', path: '#contact' },
+  { label: 'New Arrivals', path: '/category/new-arrivals' },
+  { label: 'Women', path: '/category/women' },
+  { label: 'Men', path: '/category/men' },
+  { label: 'Accessories', path: '/category/accessories' },
+  { label: 'Contact', path: '#footer' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -131,30 +133,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-            {NAV_ITEMS.map((item, idx) => {
-              let isActive = false;
-              if (item.path === '#contact') {
-                isActive = isFooterVisible;
-              } else if (item.path === '/') {
-                isActive = location.pathname === '/' && !isFooterVisible;
-              } else {
-                isActive = location.pathname === item.path && !isFooterVisible;
-              }
-              return (
-                <Link
-                  key={idx}
-                  to={item.path}
-                  onClick={(e) => handleNavClick(item.path, e)}
-                  className={`transition-colors py-2 ${
-                    isActive
-                      ? 'text-accent border-b-2 border-accent pb-1'
-                      : 'hover:text-accent'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="hover:text-accent transition-colors py-2"
+            >
+              Home
+            </Link>
+            <Link to="/category/new-arrivals" className="hover:text-accent transition-colors py-2">
+              New Arrivals
+            </Link>
+            <Link to="/category/women" className="hover:text-accent transition-colors py-2">
+              Women
+            </Link>
+            <Link to="/category/men" className="hover:text-accent transition-colors py-2">
+              Men
+            </Link>
+            <Link to="/category/accessories" className="hover:text-accent transition-colors py-2">
+              Accessories
+            </Link>
+            <a href="#footer" className="hover:text-accent transition-colors py-2">
+              Contact
+            </a>
           </nav>
 
           {/* Right Search Bar & Actions */}

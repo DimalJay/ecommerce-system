@@ -98,6 +98,12 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
                 Rs. {item.product.price.toFixed(2)}
               </span>
             </div>
+
+            {item.product.stock !== undefined && item.quantity > item.product.stock && (
+              <div className="text-xs font-bold text-rose-500 mt-1">
+                {item.product.stock === 0 ? 'Out of stock' : `Only ${item.product.stock} units available`}
+              </div>
+            )}
           </div>
         </div>
       </div>
