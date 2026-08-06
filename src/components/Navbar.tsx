@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [_, setIsFooterVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
